@@ -31,12 +31,16 @@ app.use('/api',
     productRequirementRouter
 );
 
+// Serve the static frontend
+app.use('/', express.static('../BakerySite'));
+
+// Docker healthcheck
 app.get('/health', (req, res) => {
     res.status(200).send("Healthy: OK");
 })
 
 app.listen(port, () => {
-    console.log(`API server listening on port ${port}`);
+    console.log(`Server listening on port ${port}`);
 });
 
 module.exports = app;
