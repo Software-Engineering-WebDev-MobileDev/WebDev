@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Nothing for now
 
+
+## [0.0.5] - 2024-08-28
+
+### Added
+
+- Partial backend skeleton
+- Dockerized the project
+- Serve the (currently static) frontend with a route in Express.js
+- General preparation for CI/CD setup
+
 ## [0.0.4] - 2024-08-28
 
 ### Changed
