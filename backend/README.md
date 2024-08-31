@@ -1,6 +1,6 @@
 # Setup
 
-First, [install node.js](https://nodejs.org/en/download/package-manager/current)
+First, ensure you have installed [node.js](https://nodejs.org/en/download/package-manager/current)
 
 Then, from within the `backend` directory, run:
 
