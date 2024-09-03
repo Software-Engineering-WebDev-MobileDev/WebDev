@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Nothing for now
 
+## [0.0.6] - 2024-09-03
+
+## Added
+
+- Bread Icon Picture
+- Bread Background Picture (Temporary)
+
+## Removed
+- Old Icon Image
+- Old Background Picture
 
 ## [0.0.5] - 2024-08-28
 
