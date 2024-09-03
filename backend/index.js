@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const express = require('express');
 const logger = require('morgan');
 const path = require('path');
+const sql = require('mssql');
 
 // Routes
 const loginRouter = require('./routes/login')
