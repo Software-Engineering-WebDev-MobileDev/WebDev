@@ -29,7 +29,7 @@ await fetch("base_uri/api/create_account",
         headers: {
             username: "user",
             password: "password",
-            role: "user"
+            role: "user"    // Either user or employee currently
         },
     })
     .then((result) => {
