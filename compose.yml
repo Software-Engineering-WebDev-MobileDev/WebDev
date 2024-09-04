@@ -1,0 +1,19 @@
+services:
+  # Local database instance for testing
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    container_name: databased
+    ports:
+      - 1433:1433
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "MSSQL_SA_PASSWORD=Password123"
+    hostname: databased
+  server:
+    build: .
+    container_name: dev-server
+    ports:
+      - 3000:300
+    environment:
+      - "NODE_ENV=development"

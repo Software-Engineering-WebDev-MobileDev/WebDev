@@ -2,6 +2,52 @@
 
 Routes
 
+## Create Account (POST)
+
+`/api/login`
+
+### Arguments:
+
+(header)
+
+username (str): username
+
+password (str): password
+
+### Example
+
+Query:
+
+```
+base_uri/api/create_account
+```
+
+```js 
+await fetch("base_uri/api/create_account",
+    {
+        method: "POST",
+        headers: {
+            username: "user",
+            password: "password",
+            role: "user"
+        },
+    })
+    .then((result) => {
+        console.log(result);
+        return result;
+    })
+    .catch((e) => {
+        console.log(e);
+        return e;
+    });
+```
+
+Response:
+
+```
+JWT?
+```
+
 ## Login (POST)
 
 `/api/login`
@@ -23,15 +69,22 @@ base_uri/api/login
 ```
 
 ```js 
-await fetch("base_uri/api/login", 
-	{
-		method: "POST",
-		username: "username",
-		password: "password"
-	}
-	).then(
-		(response) => {response.json();}
-	).catch(() => {});
+await fetch("base_uri/api/login",
+    {
+        method: "POST",
+        headers: {
+            username: "user",
+            password: "password",
+        },
+    })
+    .then((result) => {
+        console.log(result);
+        return result;
+    })
+    .catch((e) => {
+        console.log(e);
+        return e;
+    });
 ```
 
 Response:
@@ -60,7 +113,9 @@ base_uri/api/logout
 await fetch("base_uri/api/logout", 
 	{
 		method: "POST",
-		jwt: "?"
+        headers: {
+            jwt: "?"
+        },
 	}
 	).then(
 		(response) => {response.json();}
