@@ -8,11 +8,27 @@ Then, from within the `backend` directory, run:
 npm install
 ```
 
-The backend server can then be run with the following:
+## Backend
+
+The backend server can be run with the following:
 
 ```shell 
 node index.js
 ```
+
+## Database Only
+
+The database can be started with:
+```shell 
+make start-db
+```
+
+If you are on Linux, you may need to run the command with root privileges like so:
+```bash 
+sudo docker compose up -d database
+```
+
+## Full Stack 
 
 The development database is defined in [compose.yml](../compose.yml).
 
