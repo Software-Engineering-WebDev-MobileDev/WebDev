@@ -4,7 +4,9 @@
   "description": "The backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "set NODE_ENV=development && node index.js",
+    "dev_posix": "NODE_ENV=development node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,8 +19,10 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "mssql": "^11.0.1"
   }
 }

@@ -6,10 +6,13 @@ const cookieParser = require('cookie-parser');
 const express = require('express');
 const logger = require('morgan');
 const path = require('path');
+const config = require('./config.js');
+const Database = require('./database');
 
 // Routes
 const loginRouter = require('./routes/login')
 const productRequirementRouter = require('./routes/product_requirements')
+const inventoryRouter = require('./routes/inventory')
 
 // App
 const app = express();
@@ -17,6 +20,146 @@ const port = process.env.PORT || 3000;
 app.use(helmet());  // For security policy
 app.use(cors());    // For Cross-Origin Resource Sharing
 app.use(compression());     // For bandwidth saving on the more intensive actions
+
+
+// Development only
+// Run this to create the tables in the database
+if (process.env.NODE_ENV.trim() === 'development') {
+    const database = new Database(config);
+    database
+        .executeQuery(
+            `CREATE TABLE Users (
+                    id INT PRIMARY KEY IDENTITY(1,1),
+                    username VARCHAR(255) NOT NULL UNIQUE,
+                    password VARCHAR(255) NOT NULL,
+                    role VARCHAR(50)
+                );`
+        )
+        .then(() => {
+            console.log('Table created');
+        })
+        .catch((err) => {
+            // Table may already exist
+            console.error(`Error creating table: ${err}`);
+        });
+    database
+        .executeQuery(
+            `CREATE TABLE Ingredients (
+                    ingredient_id INT PRIMARY KEY IDENTITY(1,1),
+                    name NVARCHAR(100) NOT NULL,
+                    unit NVARCHAR(50) NOT NULL,
+                    calories_per_unit DECIMAL(10, 2) NOT NULL
+                );`
+        )
+        .then(() => {
+            console.log('Table created');
+        })
+        .catch((err) => {
+            // Table may already exist
+            console.error(`Error creating table: ${err}`);
+        });
+    database
+        .executeQuery(
+            `CREATE TABLE Inventory (
+                    inventory_id INT PRIMARY KEY IDENTITY(1,1),
+                    ingredient_id INT NOT NULL,
+                    quantity DECIMAL(18, 2) NOT NULL,
+                    last_updated DATETIME DEFAULT GETDATE(),
+                    FOREIGN KEY (ingredient_id) REFERENCES Ingredients(ingredient_id)
+                );`
+        )
+        .then(() => {
+            console.log('Table created');
+        })
+        .catch((err) => {
+            // Table may already exist
+            console.error(`Error creating table: ${err}`);
+        });
+    database
+        .executeQuery(
+            `CREATE TABLE Recipes (
+                    recipe_id INT PRIMARY KEY IDENTITY(1,1),
+                    recipe_name NVARCHAR(100) NOT NULL,
+                    instructions NVARCHAR(MAX) NOT NULL,
+                    prep_time INT NOT NULL,
+                    baking_time INT NOT NULL
+                );`
+        )
+        .then(() => {
+            console.log('Table created');
+        })
+        .catch((err) => {
+            // Table may already exist
+            console.error(`Error creating table: ${err}`);
+        });
+    database
+        .executeQuery(
+            `CREATE TABLE Recipe_ingredients (
+                    recipe_ingredient_id INT PRIMARY KEY IDENTITY(1,1),
+                    recipe_id INT NOT NULL,
+                    ingredient_id INT NOT NULL,
+                    quantity_required DECIMAL(18, 2) NOT NULL,
+                    unit VARCHAR(50) NOT NULL,
+                    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id),
+                    FOREIGN KEY (ingredient_id) REFERENCES Ingredients(ingredient_id)
+                );`
+        )
+        .then(() => {
+            console.log('Table created');
+        })
+        .catch((err) => {
+            // Table may already exist
+            console.error(`Error creating table: ${err}`);
+        });
+    database
+        .executeQuery(
+            `CREATE TABLE Employees (
+                    EmployeeID INT PRIMARY KEY IDENTITY(1,1),
+                    Name VARCHAR(100) NOT NULL,
+                    Username VARCHAR(50) UNIQUE,
+                    Password VARCHAR(100)
+                );`
+        )
+        .then(() => {
+            console.log('Table created');
+        })
+        .catch((err) => {
+            // Table may already exist
+            console.error(`Error creating table: ${err}`);
+        });
+    database
+        .executeQuery(
+            `CREATE TABLE Shifts (
+                    ShiftID INT PRIMARY KEY IDENTITY(1,1),
+                    StartTime DATETIME,
+                    EndTime DATETIME
+                );`
+        )
+        .then(() => {
+            console.log('Table created');
+        })
+        .catch((err) => {
+            // Table may already exist
+            console.error(`Error creating table: ${err}`);
+        });
+    database
+        .executeQuery(
+            `CREATE TABLE Tasks (
+                    TaskID INT PRIMARY KEY IDENTITY(1,1),
+                    Description VARCHAR(255) NOT NULL,
+                    Status VARCHAR(20), -- (e.g., "Pending", "In Progress", "Completed")
+                    ShiftID INT FOREIGN KEY REFERENCES Shifts(ShiftID),
+                    EmployeeID INT FOREIGN KEY REFERENCES Employees(EmployeeID)
+                );`
+        )
+        .then(() => {
+            console.log('Table created');
+        })
+        .catch((err) => {
+            // Table may already exist
+            console.error(`Error creating table: ${err}`);
+        });
+}
 
 // Express setup
 app.use(logger('dev'));
@@ -28,7 +171,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Routes usage
 app.use('/api',
     loginRouter,
-    productRequirementRouter
+    productRequirementRouter,
+    inventoryRouter
 );
 
 // Serve the static frontend
