@@ -1,10 +1,12 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const crypto = require('crypto');
+const {return_500, return_400} = require('./codes')
 
 // Database setup:
 const config = require('../config.js');
 const Database = require('../database');
+const {RequestError} = require("mssql/lib/base");
 const database = new Database(config);
 
 // Used for API routes
@@ -36,18 +38,15 @@ app.post('/create_account', (req, res) => {
         }
         // Prevent SQL injection with the username
         else if (!username.match(/^[A-Za-z0-9]+$/)) {
-            res.status(400).send({
-                status: "error",
-                reason: "Invalid username contents"
-            });
+            return_400(res, "Invalid username contents")
         }
         // Ensure that role is valid
         else if (!roles.includes(role)) {
-            res.status(400).send({
-                status: "error",
-                reason: "Invalid role"
-            });
-        } else {
+            return_400(res, "Invalid role")
+        } else if (!username || !password || !role) {
+            return_400(res, "Missing username, password, or role");
+        }
+        else {
             // Since we're hashing the password, we don't need to check it for SQL injection.
             const password_hash =
                 crypto.createHash('sha512')
@@ -68,34 +67,26 @@ app.post('/create_account', (req, res) => {
                     }
                 );
             }).catch((e) => {
-                console.log(e);
-                res.status(500).send(
-                    {
-                        status: "error",
-                        reason: "The server is having a bad day. Please send encouraging words."
-                    }
-                );
+                if (e instanceof RequestError) {
+                    console.log(e);
+                    console.log("If this is thrown in the dev environment, you likely wrote a bad SQL query.");
+                    return_500(res);
+                }
+                else {
+                    console.log(e);
+                    return_500(res);
+                }
             })
         }
     }
     catch (e) {
         // TypeError is thrown if any field is undefined
         if (e instanceof TypeError) {
-            res.status(400).send(
-                {
-                    status: "error",
-                    reason: "Missing username or password, or invalid role."
-                }
-            );
+            return_400(res, "Missing username or password, or invalid role.")
         }
         // Something else went wrong
         else {
-            res.status(500).send(
-                {
-                    status: "error",
-                    reason: "The server is having a bad day. Please send encouraging words."
-                }
-            );
+            return_500(res);
         }
     }
 });
@@ -163,12 +154,7 @@ app.post('/logout', (req, res) => {
             );
         }
         else {
-            res.status(500).send(
-                {
-                    status: "error",
-                    reason: "The server is having a bad day. Please send encouraging words."
-                }
-            );
+            return_500(res);
         }
     }
 });

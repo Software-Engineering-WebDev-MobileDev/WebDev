@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
+const {return_500, return_400} = require('./codes')
 
 // Database setup:
 const config = require('../config.js');
@@ -37,20 +38,10 @@ app.get("/product_requirements", (req, res) => {
         );
     } catch (e) {
         if (e instanceof TypeError) {
-            res.status(400).send(
-                {
-                    status: "error",
-                    reason: "Bad request"
-                }
-            );
+            return_400(res, "Invalid query string");
         }
         else {
-            res.status(500).send(
-                {
-                    status: "error",
-                    reason: "The server is having a bad day. Please send encouraging words."
-                }
-            );
+            return_500(res);
         }
     }
 });
@@ -67,30 +58,15 @@ app.post('/add_product_requirements', (req, res) => {
             }
         ).catch((e) => {
             console.log(e);
-            res.status(400).send(
-                {
-                    status: "error",
-                    reason: "Bad request"
-                }
-            );
+            return_400(res);
         });
     }
     catch (e) {
         if (e instanceof TypeError) {
-            res.status(400).send(
-                {
-                    status: "error",
-                    reason: "Bad request"
-                }
-            );
+            return_400(res, "Invalid query string");
         }
         else {
-            res.status(500).send(
-                {
-                    status: "error",
-                    reason: "The server is having a bad day. Please send encouraging words."
-                }
-            );
+            return_500(res);
         }
     }
 });
@@ -105,20 +81,10 @@ app.delete('/delete_product_requirements', (req, res) => {
     }
     catch (e) {
         if (e instanceof TypeError) {
-            res.status(400).send(
-                {
-                    status: "error",
-                    reason: "Bad request"
-                }
-            );
+            return_400(res);
         }
         else {
-            res.status(500).send(
-                {
-                    status: "error",
-                    reason: "The server is having a bad day. Please send encouraging words."
-                }
-            );
+            return_500(res);
         }
     }
 });
