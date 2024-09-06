@@ -21,7 +21,7 @@ const return_500 = function (res) {
  * @param res {express.Response} The response object to send error with.
  * @param reason_for {String} A string representing the reason for the 400 response.
  */
-const return_400 = function (res, reason_for) {
+const return_400 = function (res, reason_for = "Bad Request") {
     res.status(400).send(
         {
             status: "error",
