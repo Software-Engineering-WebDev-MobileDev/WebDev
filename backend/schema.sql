@@ -3,9 +3,9 @@ CREATE TABLE tblIngredients (
     Description VARCHAR(50),
     Category VARCHAR(50),
     Measurement VARCHAR(50),
-    MaximumAmount FLOAT(24),
-    ReorderAmount FLOAT(24),
-    MinimumAmount FLOAT(24)
+    MaximumAmount DECIMAL(6,2),
+    ReorderAmount DECIMAL(6,2),
+    MinimumAmount DECIMAL(6,2)
 );
 
 CREATE TABLE tblUsers (
@@ -30,6 +30,12 @@ CREATE TABLE tblEmailTypes (
     Active BIT
 );
 
+CREATE TABLE tblPhoneTypes (
+    TypeID VARCHAR(50) PRIMARY KEY,
+    Description VARCHAR(50),
+    Active BIT
+);
+
 CREATE TABLE tblEmail (
     EmailID VARCHAR(50) PRIMARY KEY,
     EmailAddress VARCHAR(320),
@@ -38,12 +44,6 @@ CREATE TABLE tblEmail (
     Valid BIT,
     FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID),
     FOREIGN KEY (TypeID) REFERENCES tblEmailTypes(TypeID)  -- new foreign key reference to tblEmailTypes
-);
-
-CREATE TABLE tblPhoneTypes (
-    TypeID VARCHAR(50) PRIMARY KEY,
-    Description VARCHAR(50),
-    Active BIT
 );
 
 CREATE TABLE tblPhoneNumbers (
