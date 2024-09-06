@@ -38,11 +38,16 @@ if (process.env.NODE_ENV.trim() === 'development') {
             database
                 .executeQuery(data)
                 .then(() => {
-                    console.log('Table created');
+                    console.log('Tables created');
                 })
                 .catch((err) => {
                     // Table may already exist
-                    console.error(`Error creating table: ${err}`);
+                    if (err.message.match(/There is already an object named '\w+' in the database./)) {
+                        console.log("Tables exist already. If this is not intended, you may wish to drop all tables.")
+                    }
+                    else {
+                        console.error(`Error creating table: ${err}`);
+                    }
                 });
         }
     });
