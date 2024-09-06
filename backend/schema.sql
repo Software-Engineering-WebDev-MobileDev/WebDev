@@ -61,7 +61,7 @@ CREATE TABLE tblRecipes (
     RecipeID VARCHAR(50) PRIMARY KEY,
     RecipeName VARCHAR(100),
     Instructions TEXT,
-    ScalingFactor FLOAT
+    ScalingFactor FLOAT(24)
 );
 
 CREATE TABLE tblRecipeComponents (
