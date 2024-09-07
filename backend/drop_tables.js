@@ -7,5 +7,23 @@ database.executeQuery(
 ).then(() => {
     console.log("Tables dropped");
 }).catch((e) => {
-    console.log(`Error dropping tables ${e}`)
-})
+    console.log(`Error dropping tables ${e}\nTrying again...`);
+    database.executeQuery(
+        "DROP TABLE tblSessions;\n" +
+        "DROP TABLE tblEmail;\n" +
+        "DROP TABLE tblPhoneNumbers;\n" +
+        "DROP TABLE tblRecipeIngredients;\n" +
+        "DROP TABLE tblInventory;\n" +
+        "DROP TABLE tblTasks;" +
+        "DROP TABLE tblRecipeComponents;\n" +
+        "DROP TABLE tblRecipes;\n" +
+        "DROP TABLE tblUsers;\n" +
+        "DROP TABLE tblEmailTypes;\n" +
+        "DROP TABLE tblPhoneTypes;\n" +
+        "DROP TABLE tblIngredients;"
+    ).then(() => {
+        console.log("Database tables successfully dropped.");
+    }).catch((e2) => {
+        console.log("Dropping tables failed. The backend server should not be running and the DB server should be.");
+    })
+});
