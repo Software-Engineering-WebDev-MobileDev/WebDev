@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Nothing for now
 
+## [0.0.7] - 2024-09-07
+
+## Added
+- Comments indicating not currently useful but later potentially useful functions
+- Added comments starting with !!! to easily return to potentially useful functions
+
+## Removed
+- Code framework for audio playing
+- Various deprecated and commented out blocks of code
+- All audio files
+
 ## [0.0.6] - 2024-09-03
 
 ## Added
