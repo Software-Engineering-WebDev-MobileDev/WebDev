@@ -125,22 +125,22 @@ base_uri/api/logout
 
 ```js 
 await fetch("base_uri/api/logout", 
-	{
-		method: "POST",
+    {
+        method: "POST",
         headers: {
             session_id: "<session_id>"
         },
-	}
-	).then(
-		(response) => {response.json();}
-	).catch(() => {});
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
 ```
 
 Response:
 
 ```json
 {
-	"status": "success"
+    "status": "success"
 }
 ```
 
@@ -230,13 +230,13 @@ Response:
 (paginated)
 ```json
 {
-	"page": 1,
-	"items": [
-		{
-			"name": "butter",
-			"count": 200
-			}
-	]
+    "page": 1,
+    "items": [
+        {
+            "name": "butter",
+            "count": 200
+            }
+    ]
 }
 ```
 
@@ -260,11 +260,11 @@ Response:
 
 ```json
 {
-	"name": "butter",
-	"count": 200,
-	"expiration_date": "1724797536",
-	"supplier_info": "data",
-	"order_info": "how do I order this?"
+    "name": "butter",
+    "count": 200,
+    "expiration_date": "1724797536",
+    "supplier_info": "data",
+    "order_info": "how do I order this?"
 }
 ```
 
@@ -289,12 +289,12 @@ Response:
 
 ```json
 [
-	{
-		"name": "name",
-		"time": "1724797536",
-		"notes": "butter expiration"
-	},
-	...
+    {
+        "name": "name",
+        "time": "1724797536",
+        "notes": "butter expiration"
+    },
+    ...
 ]
 ```
 -->
