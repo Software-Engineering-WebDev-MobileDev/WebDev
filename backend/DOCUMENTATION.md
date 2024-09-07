@@ -10,6 +10,12 @@ Routes
 
 (header)
 
+employee_id (str): The employee ID
+
+first_name (str): User's first name
+
+last_name (str): User's last name
+
 username (str): username
 
 password (str): password
@@ -27,9 +33,11 @@ await fetch("base_uri/api/create_account",
     {
         method: "POST",
         headers: {
-            username: "user",
-            password: "password",
-            role: "user"    // Either user or employee currently
+            employee_id: test_employee_id,
+            first_name: test_first_name,
+            last_name: test_last_name,
+            username: test_username,
+            password: test_password,
         },
     })
     .then((result) => {
@@ -44,8 +52,11 @@ await fetch("base_uri/api/create_account",
 
 Response:
 
-```
-JWT?
+```json
+{
+    "status": "success",
+    "session_id": "<session_id>"
+}
 ```
 
 ## Login (POST)
@@ -89,8 +100,11 @@ await fetch("base_uri/api/login",
 
 Response:
 
-```
-JWT?
+```json
+{
+    "status": "success",
+    "session_id": "<session_id>"
+}
 ```
 
 ## Logout (POST)
@@ -101,7 +115,7 @@ JWT?
 
 (body)
 
-JWT?
+session_id (str): the session id to logout.
 
 Query:
 
@@ -114,7 +128,7 @@ await fetch("base_uri/api/logout",
 	{
 		method: "POST",
         headers: {
-            jwt: "?"
+            session_id: "<session_id>"
         },
 	}
 	).then(
