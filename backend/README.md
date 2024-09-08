@@ -12,6 +12,7 @@ npm install
 
 The backend server can be run with the following:
 
+(in the backend directory)
 ```shell 
 node index.js
 ```
@@ -45,3 +46,14 @@ docker-compose build
 docker-compose up -d
 ```
 </details>
+
+## Tests
+
+Within [package.json](./package.json), there is a script for running tests appropriately called "test". In WebStorm, you can open this file and click the green run button in the gutter. 
+
+Otherwise, you may run the tests (from the backend directory) with 
+```shell 
+npm run test
+```
+
+Note that for all testing, the development database must be running. For API tests, the backend server must also be running to be tested. 
