@@ -4,6 +4,8 @@
 
 const sql = require('mssql');
 
+const MAX_SESSION_DAYS = 7;
+
 /**
  * A class for interfacing with Microsoft SQL databases
  */
@@ -61,11 +63,41 @@ class Database {
         return await request.query(query);
     }
 
-    async sessionToEmployeeID(session_id) {
+    /**
+     * Update a session token's activity timestamp
+     * @param session_id {String} the session string sent to the API; doesn't need to be sanitized.
+     * @returns {Promise<boolean>} true on success, false on failure (old/invalid token)
+     */
+    async sessionActivityUpdate(session_id) {
+        // Regex SQL injection validation
         if (!session_id.match(/[0-9A-Za-z]{32}/)) {
             return false;
         }
 
+        // Bump the date
+        return await this.executeQuery(
+            `UPDATE tblSessions Set LastActivityDateTime = GETDATE() WHERE SessionID = '${session_id}' and LastActivityDateTime >= DATEADD(DAY, -${MAX_SESSION_DAYS}, GETDATE())`
+        ).then((value) => {
+            return value.rowsAffected[0] === 1;
+        }).catch((e) => {
+            console.log(e);
+            return false;
+        })
+    }
+
+    /**
+     * Get an employee ID from a session token.
+     * @param session_id {String} the session string sent to the API; doesn't need to be sanitized.
+     * @returns {Promise<string|boolean>} employee id string or false if the token is invalid.
+     */
+    async sessionToEmployeeID(session_id) {
+        // Validate token and update last activity
+        if (!(await this.sessionActivityUpdate(session_id))) {
+            // Invalid/expired token
+            return false;
+        }
+
+        // Get the employee id (if valid)
         return await this.executeQuery(
             `SELECT EmployeeID FROM tblSessions WHERE SessionID = '${session_id}'`
         ).then((value) => {
