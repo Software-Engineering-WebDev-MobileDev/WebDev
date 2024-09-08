@@ -1,3 +1,7 @@
+// This should **only** be run in the development environment!
+const dotenv = require('dotenv');
+process.env.NODE_ENV = "development";
+
 const config = require("./config");
 const Database = require('./database');
 const database = new Database(config);
