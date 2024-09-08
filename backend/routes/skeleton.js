@@ -1,6 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const {return_500, return_400} = require('./codes')
+const {return_500, return_400, return_498} = require('./codes')
 
 // Database setup:
 const config = require('../config.js');
