@@ -2,7 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const crypto = require('crypto');
 const { v4 } = require('uuid');
-const {return_500, return_400} = require('./codes')
+const {return_500, return_400, return_498} = require('./codes')
 
 // Database setup:
 const config = require('../config.js');
@@ -174,7 +174,8 @@ app.post('/login', (req, res) => {
                 }
             }).catch((e) => {
                 if (e.message === "Invalid username or password") {
-                    res.status(401).send({
+                    res.status(401).send(
+                        {
                         status: "error",
                         reason: e.message
                     });
@@ -209,7 +210,7 @@ app.post('/logout', (req, res) => {
     let session_id;  // Token field in the request header
 
     try {
-        session_id = req.header('session_id')
+        session_id = req.header('session_id');
 
         if (!session_id.match(/[0-9A-Za-z]{32}/)) {
             return_400(res, "session_id is not valid");
@@ -222,7 +223,7 @@ app.post('/logout', (req, res) => {
                     {
                         status: "success"
                     }
-                )
+                );
             }).catch((e) => {
                 console.log(e);
                 return_500(res);
@@ -230,6 +231,7 @@ app.post('/logout', (req, res) => {
         }
     }
     catch (e) {
+        console.log(e);
         if (e instanceof TypeError) {
             res.status(401).send(
                 {
@@ -237,6 +239,38 @@ app.post('/logout', (req, res) => {
                     reason: "Missing token."
                 }
             );
+        }
+        else {
+            return_500(res);
+        }
+    }
+});
+
+app.post("/token_bump", (req, res) => {
+    try {
+        const session_id = req.header('session_id');
+
+        // Bump the session (if valid)
+        database.sessionActivityUpdate(session_id).then((result) => {
+            // Valid and bumped token
+            if (result) {
+                res.status(200).send(
+                    {
+                    status: "success"
+                });
+            }
+            // Invalid or expired token
+            else {
+                return_498(res);
+            }
+        }).catch((e) => {
+            console.log(e);
+            return_500(res);
+        });
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
         }
         else {
             return_500(res);

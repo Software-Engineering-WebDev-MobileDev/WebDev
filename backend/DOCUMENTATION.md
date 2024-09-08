@@ -4,7 +4,7 @@ Routes
 
 ## Create Account (POST)
 
-`/api/login`
+`/api/create_account`
 
 ### Arguments:
 
@@ -141,6 +141,52 @@ Response:
 ```json
 {
     "status": "success"
+}
+```
+
+## Token Bump (POST)
+
+`/api/token_bump`
+
+### Arguments:
+
+(body)
+
+session_id (str): the session id to update and check
+
+Query:
+
+```
+base_uri/api/token_bump
+```
+
+```js 
+await fetch("base_uri/api/token_bump", 
+    {
+        method: "POST",
+        headers: {
+            session_id: "<session_id>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+    "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+    "status": "error",
+    "reason": "Invalid or expired token"
 }
 ```
 
