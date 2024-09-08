@@ -35,7 +35,7 @@ class Database {
                 console.log('Database already connected');
             }
         } catch (error) {
-            console.error(`Error connecting to database: ${JSON.stringify(error)}`);
+            console.error(`Error connecting to database: ${JSON.stringify(error)}, ${error.message}`);
         }
     }
 
@@ -59,6 +59,25 @@ class Database {
         await this.connect();
         const request = this.poolconnection.request();
         return await request.query(query);
+    }
+
+    async sessionToEmployeeID(session_id) {
+        if (!session_id.match(/[0-9A-Za-z]{32}/)) {
+            return false;
+        }
+
+        return await this.executeQuery(
+            `SELECT EmployeeID FROM tblSessions WHERE SessionID = '${session_id}'`
+        ).then((value) => {
+            if (value.rowsAffected[0] === 1) {
+                return value.recordset[0]["EmployeeID"];
+            } else {
+                return false;
+            }
+        }).catch((e) => {
+            console.log(e);
+            return false;
+        });
     }
 }
 
