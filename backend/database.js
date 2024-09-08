@@ -4,8 +4,6 @@
 
 const sql = require('mssql');
 
-const MAX_SESSION_DAYS = 7;
-
 /**
  * A class for interfacing with Microsoft SQL databases
  */
@@ -13,6 +11,7 @@ class Database {
     config = {};
     poolconnection = null;
     connected = false;
+    MAX_SESSION_DAYS = 7;
 
     /**
      * Create a new instance of a database connection based on the provided configuration.
@@ -76,7 +75,7 @@ class Database {
 
         // Bump the date
         return await this.executeQuery(
-            `UPDATE tblSessions Set LastActivityDateTime = GETDATE() WHERE SessionID = '${session_id}' and LastActivityDateTime >= DATEADD(DAY, -${MAX_SESSION_DAYS}, GETDATE())`
+            `UPDATE tblSessions Set LastActivityDateTime = GETDATE() WHERE SessionID = '${session_id}' and LastActivityDateTime >= DATEADD(DAY, -${this.MAX_SESSION_DAYS}, GETDATE())`
         ).then((value) => {
             return value.rowsAffected[0] === 1;
         }).catch((e) => {
