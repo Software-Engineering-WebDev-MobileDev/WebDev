@@ -58,9 +58,9 @@ CREATE TABLE tblPhoneNumbers (
 );
 
 CREATE TABLE tblRecipes (
-    RecipeID VARCHAR(50) PRIMARY KEY,
-    RecipeName VARCHAR(100),
-    Instructions TEXT,
+    RecipeID      VARCHAR(50) PRIMARY KEY,
+    RecipeName    VARCHAR(100),
+    Instructions  VARCHAR(MAX),
     ScalingFactor FLOAT(24)
 );
 
@@ -98,7 +98,7 @@ CREATE TABLE tblInventory (
 CREATE TABLE tblTasks (
     TaskID VARCHAR(50) PRIMARY KEY,
     EmployeeID VARCHAR(50),
-    TaskDescription TEXT,
+    TaskDescription VARCHAR(MAX),
     Status VARCHAR(20),      -- Task status (could be "Pending", "Completed", etc.)
     DueDate DATETIME,
     AssignmentDate DATETIME, -- When the task was assigned
