@@ -212,7 +212,7 @@ app.post('/logout', (req, res) => {
     try {
         session_id = req.header('session_id');
 
-        if (!session_id.match(/[0-9A-Za-z]{32}/)) {
+        if (!session_id.match(/^[0-9A-Za-z]{32}$/)) {
             return_400(res, "session_id is not valid");
         }
         else {

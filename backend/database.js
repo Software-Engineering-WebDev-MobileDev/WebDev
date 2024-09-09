@@ -69,7 +69,7 @@ class Database {
      */
     async sessionActivityUpdate(session_id) {
         // Regex SQL injection validation
-        if (!session_id.match(/[0-9A-Za-z]{32}/)) {
+        if (!session_id.match(/^\w{0,32}$/)) {
             return false;
         }
 
