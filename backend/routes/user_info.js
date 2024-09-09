@@ -29,7 +29,7 @@ app.get("/user_email", (req, res) => {
                     res.status(200).send(
                         {
                             status: "success",
-                            emails: result.recordsets
+                            emails: result.recordsets[0]
                         }
                     );
                 }).catch((e) => {
@@ -73,7 +73,7 @@ app.get("/users_email", (req, res) => {
                         res.status(200).send(
                             {
                                 status: "success",
-                                emails: result.recordsets
+                                emails: result.recordsets[0]
                             }
                         );
                     }).catch((e) => {
@@ -116,18 +116,24 @@ app.post('/add_user_email', (req, res) => {
         }
         else {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
-                database.executeQuery(
-                    `INSERT INTO tblEmail (EmailID, EmailAddress, EmployeeID, TypeID, Valid) VALUES ('${email_id}', '${email_address}', '${employee_id}', '${type}', 1)`
-                ).then(() => {
-                    res.status(200).send(
-                        {
-                            status: "success"
-                        }
-                    );
-                }).catch((e) => {
-                    console.log(e);
-                    return_500(res);
-                })
+                if (employee_id) {
+                    database.executeQuery(
+                        `INSERT INTO tblEmail (EmailID, EmailAddress, EmployeeID, TypeID, Valid)
+                         VALUES ('${email_id}', '${email_address}', '${employee_id}', '${type}', 1)`
+                    ).then(() => {
+                        res.status(201).send(
+                            {
+                                status: "success"
+                            }
+                        );
+                    }).catch((e) => {
+                        console.log(e);
+                        return_500(res);
+                    });
+                }
+                else {
+                    return_498(res);
+                }
             }).catch((e) => {
                 console.log(e);
                 return_500(res);
@@ -156,7 +162,7 @@ app.get('/user_phone', (req, res) => {
                     res.status(200).send(
                         {
                             status: "success",
-                            emails: result.recordsets
+                            phone_numbers: result.recordsets[0]
                         }
                     );
                 }).catch((e) => {
@@ -199,7 +205,7 @@ app.get('/users_phone', (req, res) => {
                         res.status(200).send(
                             {
                                 status: "success",
-                                emails: result.recordsets
+                                phone_numbers: result.recordsets[0]
                             }
                         );
                     }).catch((e) => {
@@ -248,7 +254,7 @@ app.post('/add_user_phone', (req, res) => {
                     database.executeQuery(
                         `INSERT INTO tblPhoneNumbers (PhoneNumberID, AreaCode, Number, TypeID, Valid, EmployeeID) VALUES ('${phone_number_id}', '${area_code}', '${number}', '${phone_type}', 1, '${employee_id}')`
                     ).then(() => {
-                        res.status(200).send(
+                        res.status(201).send(
                             {
                                 status: "success"
                             }
