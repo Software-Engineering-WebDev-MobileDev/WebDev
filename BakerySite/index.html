@@ -56,29 +56,6 @@
         .emsg { color: #c12020; font-weight: bold; }
     </style>    
 
-    <style>
-        #audioButton {
-            background-color: transparent;
-            background-size: contain; 
-            background-repeat: no-repeat;
-            background-position: center; 
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            position: relative; 
-        }
-
-        #soundImage, #noSoundImage{
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 100px; 
-            height: 100px; 
-        
-        }
-    </style>
-
     <!-- Central Card -->
     <div class="d-flex align-items-center justify-content-center">
         <!--Login Form-->
@@ -437,12 +414,6 @@
         </div>
     </div>
 
-    <audio id="audio" loop></audio>
-    <button id="audioButton" onclick="toggleAudio()" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
-        <img src="images/noSound.png" id="noSoundImage" />
-        <img src="images/sound.png" id="soundImage" style="display:none;" />
-    </button>
-
     <!--Egg Modal (popup)-->
     <div class="modal fade" id="eggModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -514,15 +485,6 @@
                         const latitude = latLonResult.lat;
                         const longitude = latLonResult.lon;
 
-                        /* dateTimeZip(latitude, longitude, strZip) //Displays the current Date and Time at the User's Zip Code
-                            .then(dateTime => {
-                                console.log('Date:', dateTime.date);
-                                console.log('Time:', dateTime.time);
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            }); */
-
                         $.get('https://api.openweathermap.org/data/2.5/weather', {lat:latLonResult.lat,lon:latLonResult.lon,appid:strOpenWeatherID,units:'imperial'},function(weatherResult){
                             //debugging statement to verify the weather returned from OpenWeather
                             //console.log(weatherResult);
@@ -540,11 +502,6 @@
             
         }
 
-        /*
-                $('#btnHamburger').on('click', function() {
-                    $('#divNavButtons').slideToggle();
-                })
-        */
         $('#btnAbout').on('click',function(){
             $('#divNavButtons').slideToggle();
             //Slide Login or Register card before sliding About card down
@@ -793,16 +750,13 @@
 
         })
 
+        // !!! USE THIS FOR LATER, HAS FUNCTIONALITY FOR STORING RECORDED DATA IN A TABLE
         function recordEggHarvest(intEggs) {
             let sessionID = sessionStorage.getItem('SessionID');
             //let observationDate = getDate();
             //let observationTime = getTime();
             var currentDate = new Date();
             currentDate = currentDate.toISOString()
-            //Debugging statements
-            //console.log(sessionID)
-            //console.log(currentDate);
-            //console.log(intEggs)
 
             $.post('https://simplecoop.swollenhippo.com/eggs.php', {SessionID:sessionID, observationDateTime:currentDate, eggs:intEggs}, function(result) {
                 result = JSON.parse(result);
@@ -838,19 +792,6 @@
                 })
             }
         })
-
-        /*
-            function: UpdateEggInfo
-            parameters: none
-            purpose: This function updates the lifetime eggs harvested and egg graph.
-        */
-        /* function updateEggInfo() {
-            console.log("here")
-            let strSessionID = sessionStorage.getItem('SessionID');
-            $.getJSON('https://simplecoop.swollenhippo.com/eggs.php', {SessionID:strSessionID, days:'7'}, function(result){
-                console.log(result);
-            })
-        } */
 
         $(document).ready(function() {
             // Check if SessionID exists in localStorage
@@ -903,14 +844,6 @@
         $('#btnRefresh').on('click', function(){
             UpdateDivEnvironment();
         })
-
-        /* function getEnvironmentData(){
-            $.get('http://localNode.com/check-weather/', function(data) {
-            //pretending to get a JSON file
-            $('#currentTemp').text(data.temperature);
-                $('#currentHumidity').text(data.humidity);
-            });
-        } */
 
         $('#btnLogout').on('click', function(){
             let strSessionID = sessionStorage.getItem('SessionID');
@@ -1030,38 +963,6 @@
             }
         }
 
-        var audio = document.getElementById("audio");
-        var audioButton = document.getElementById("audioButton");
-        var soundImage = document.getElementById("soundImage");
-        var noSoundImage = document.getElementById("noSoundImage");
-
-        var songs = ["images/song1.mp3", "images/song2.mp3"]; 
-        var currentSongIndex = 0;
-
-        // Load initial song
-        audio.src = songs[currentSongIndex];
-
-        // Function to toggle audio playback and update button images
-        function toggleAudio() {
-            if (audio.paused) {
-                audio.play();
-                soundImage.style.display = "block";
-                noSoundImage.style.display = "none";
-            } else {
-                audio.pause();
-                soundImage.style.display = "none";
-                noSoundImage.style.display = "block";
-            }
-        }
-
-        // Event listener to switch to the next song when the current one ends
-        audio.addEventListener("ended", function() {
-            currentSongIndex = (currentSongIndex + 1) % songs.length;
-            audio.src = songs[currentSongIndex];
-            audio.play();
-        });
-
-
         function checkCapsLock(event) {
             const capsLockOn = event.getModifierState && event.getModifierState('CapsLock');
             const passwordInput = document.getElementById('txtLoginPassword');
@@ -1107,6 +1008,7 @@ window.onclick = function (event) {
 }
 
         
+// !!! REPLACE LATER WITH DIFFERENT SETTINGS
 
 function saveSettings() {
         // Get values from input fields
@@ -1130,6 +1032,9 @@ function saveSettings() {
             });
 
             /*
+           !!! KEEP THESE, THEY WERE USED TO SAVE SETTINGS PREVIOUSLY AND UNTIL I FIGURE OUT A SECONDARY METHOD THIS NEEDS TO REMAIN
+
+
         var postSettings = {
             SessionID: sessionStorage.getItem('SessionID'),
             setting: "Door_Open_Time",
@@ -1442,6 +1347,7 @@ function saveSettings() {
         });
     }
 
+    // !!! LATER USEFUL FOR ANY TABLES NEEDED
 
     function fillTable() {
         let strSessionID = sessionStorage.getItem('SessionID');
@@ -1543,25 +1449,9 @@ function saveSettings() {
         });
     });
 }
-    /* $(document).ready(function() {
-        updateEggInfo();
-    }); */
-
-        //var currentDate = getDate();
-        //var currentTime = getTime();
-                
-        //console.log(currentDate);
-        //console.log(currentTime);
-
         function setUserLocation(location) {
         sessionStorage.setItem('userLoc', location);
         }
-
-
-
-
-
-
 
     </script>
 </body>
