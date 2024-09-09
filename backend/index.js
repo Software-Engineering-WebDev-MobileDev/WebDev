@@ -38,6 +38,22 @@ if (process.env.NODE_ENV.trim() === 'development') {
             database
                 .executeQuery(data)
                 .then(() => {
+                    // Insert some email types
+                    database.executeQuery(
+                        "INSERT INTO tblEmailTypes (TypeID, Description, Active) VALUES " +
+                        "('personal', 'Personal Email', 1), " +
+                        "('work', 'Work Email', 1), " +
+                        "('other', 'Other Email', 1)"
+                    ).then(() => {});
+                    // Insert some phone types
+                    database.executeQuery(
+                        "INSERT INTO tblPhoneTypes (TypeID, Description, Active) VALUES " +
+                        "('mobile', 'Mobile Phone', 1), " +
+                        "('home', 'Home Phone', 1), " +
+                        "('work', 'Work Phone', 1), " +
+                        "('fax', 'Fax', 1)"
+                    ).then(() => {});
+
                     console.log('Tables created');
                 })
                 .catch((err) => {
