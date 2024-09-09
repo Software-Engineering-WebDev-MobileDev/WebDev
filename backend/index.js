@@ -16,6 +16,7 @@ const fs = require('node:fs');
 const loginRouter = require('./routes/login')
 const productRequirementRouter = require('./routes/product_requirements')
 const inventoryRouter = require('./routes/inventory')
+const userInfoRouter = require('./routes/user_info');
 
 // App
 const app = express();
@@ -80,7 +81,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api',
     loginRouter,
     productRequirementRouter,
-    inventoryRouter
+    inventoryRouter,
+    userInfoRouter
 );
 
 // Serve the static frontend
