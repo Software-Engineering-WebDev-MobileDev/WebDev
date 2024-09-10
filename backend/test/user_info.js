@@ -78,9 +78,9 @@ describe("Test user info retrieval", function () {
             // Make sure that the status is correct
             const response_json = await response.json();
             test
-                .object(json_response) // Ensure it's an object
+                .object(response_json) // Ensure it's an object
                 .hasProperty('status') // Check if 'status' exists
-                .string(json_response.status).is('success'); // Check if 'status' is 'success'
+                .string(response_json.status).is('success'); // Check if 'status' is 'success'
         }
     });
 
@@ -220,9 +220,9 @@ describe("Test user info retrieval", function () {
             // Make sure that the status is correct
             const response_json = await response.json();
             test
-                .object(json_response) // Ensure it's an object
+                .object(response_json) // Ensure it's an object
                 .hasProperty('status') // Check if 'status' exists
-                .string(json_response.status).is('success'); // Check if 'status' is 'success'
+                .string(response_json.status).is('success'); // Check if 'status' is 'success'
         }
     });
 
