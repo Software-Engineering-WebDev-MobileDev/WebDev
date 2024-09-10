@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 const express = require('express');
 const logger = require('morgan');
 const path = require('path');
+const sharp = require('sharp');
 
 // Database setup/config
 const config = require('./config.js');
@@ -75,7 +76,62 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+//app.use(express.static(path.join(__dirname, 'public')));
+
+// Optimized asset serving
+const cacheDir = path.join(__dirname, 'cache');
+if (!fs.existsSync(cacheDir)){
+    fs.mkdirSync(cacheDir, { recursive: true });
+}
+
+const optimize_images = (req, res, next) => {
+    const imageFormats = ['.jpg', '.jpeg', '.png', '.webp', '.jfif']; // Supported image formats
+    const ext = path.extname(req.url).toLowerCase();
+
+    if (imageFormats.includes(ext)) {
+        const originalImagePath = path.join(__dirname, '../BakerySite', req.url);
+        const cachedImagePath = path.join(cacheDir, req.url); // Cache path mirrors original
+
+        // Ensure the directory structure for the cache exists
+        const cachedImageDir = path.dirname(cachedImagePath);
+        if (!fs.existsSync(cachedImageDir)) {
+            fs.mkdirSync(cachedImageDir, { recursive: true });
+        }
+
+        // Check if the optimized image already exists in cache
+        fs.access(cachedImagePath, fs.constants.F_OK, (err) => {
+            if (!err) {
+                // Serve cached optimized image
+                return res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
+            }
+
+            // If not cached, check if the original image exists
+            fs.access(originalImagePath, fs.constants.F_OK, (err) => {
+                if (err) {
+                    return next(); // If image doesn't exist, move to next middleware
+                }
+
+                // Optimize the image and save it to the cache
+                const transformer = sharp(originalImagePath).webp({
+                    quality: 80
+                });
+
+                transformer.toFile(cachedImagePath, (err, info) => {
+                    if (err) {
+                        return next(err); // Error handling
+                    }
+
+                    // Serve the newly cached optimized image
+                    res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
+                });
+            });
+        });
+    } else {
+        next(); // If not an image, move to next middleware
+    }
+};
+
+app.use(optimize_images);
 
 // Routes usage
 app.use('/api',
