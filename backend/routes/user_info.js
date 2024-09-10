@@ -267,6 +267,68 @@ app.post('/add_user_phone', (req, res) => {
                 else {
                     return_498(res);
                 }
+            }).catch((e) => {
+                console.log(e);
+                return_500(res);
+            });
+        }
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
+        }
+        else {
+            return_500(res);
+        }
+    }
+});
+
+app.get('/user_list', (req, res) => {
+    try {
+        // Pagination, default of one page of 20 users
+        const page = Number(req.header["page"]) ? Number(req.header["page"]) : 1;
+        const page_size = Number(req.header["page_size"]) ? Number(req.header["page_size"]) : 20;
+        const session_id = req.header("session_id");
+
+        if (page_size > 30) {
+            return_400(res, "Invalid page size. Page size must be <= 30");
+        }
+        else {
+            // Get the users and return the requested count and page
+            database.sessionToEmployeeID(session_id).then((employee_id) => {
+                if (employee_id) {
+                    database.executeQuery(
+                        `SELECT EmployeeID, FirstName, LastName, Username
+                         FROM tblUsers`
+                    ).then((result_rows) => {
+                        // Make sure that there are results
+                        if (result_rows.rowsAffected > 0) {
+                            // Paginate and return the results
+                            let user_list = result_rows.recordsets[0];
+                            res.status(200).send(
+                                {
+                                    status: "success",
+                                    page: page,
+                                    page_count: Math.ceil(user_list.length / page_size),
+                                    content: user_list.slice(page * page_size - page_size, page * page_size)
+                                }
+                            );
+                        // Otherwise, we know that there are no users in the database
+                        } else {
+                            res.status(503).send(
+                                {
+                                    status: "error",
+                                    reason: "No users in the database. Try creating some users first"
+                                }
+                                );
+                        }
+                    }).catch((e) => {
+                        console.log(e);
+                        return_500(res);
+                    })
+                } else {
+                    return_498(res);
+                }
             });
         }
     }

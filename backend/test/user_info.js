@@ -318,4 +318,75 @@ describe("Test user info retrieval", function () {
             );
         }
     });
+
+    it("Check that the test employee is in the user list", async function () {
+        // Login to get a fresh token
+        const response = await fetch(`${base_uri}/login`, {
+            method: 'POST',
+            headers: {
+                username: test_username,
+                password: test_password,
+            },
+        });
+        // Grab the token
+        const json_response = await response.json();
+        session_id = json_response["session_id"];
+
+        // Make sure that the login was successful
+        assert.strictEqual(response.status, 201, 'Expected HTTP status 201 for user login');
+        test
+            .object(json_response) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(json_response.status).is('success'); // Check if 'status' is 'success'
+
+        // Test first with defaults
+        let result_user_list = await fetch(`${base_uri}/user_list`, {
+            method: 'GET',
+            headers: {
+                session_id: session_id
+            },
+        });
+        result_user_list = await result_user_list.json();
+
+        // Make sure that the retrieval is successful
+        test
+            .object(result_user_list) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(result_user_list.status).is('success'); // Check if 'status' is 'success'
+
+        assert.strictEqual(result_user_list.page, 1, "Response page invalid");
+        assert.strictEqual(result_user_list.content.length <= 20, true, "Response too long");
+        assert.equal(
+            JSON.stringify(result_user_list["content"].find(
+                e => e["EmployeeID"] === test_employee_id && e["FirstName"] === test_first_name && e["LastName"] === test_last_name && e["Username"] === test_username
+            )),
+            JSON.stringify({
+                EmployeeID: "01234567890",
+                FirstName: "Richard",
+                LastName: "Stallman",
+                Username: "freethesoftware"
+            }),
+            //"Expected employee not found"
+        );
+
+        // Then test with provided pagination parameters
+        result_user_list = await fetch(`${base_uri}/user_list`, {
+            method: 'GET',
+            headers: {
+                session_id: session_id,
+                page: "1",
+                page_size: "12"
+            },
+        });
+        result_user_list = await result_user_list.json();
+
+        // Make sure that the retrieval is successful
+        test
+            .object(result_user_list) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(result_user_list.status).is('success'); // Check if 'status' is 'success'
+
+        assert.strictEqual(result_user_list.page, 1, "Response page invalid");
+        assert.strictEqual(result_user_list.content.length <= 12, true, "Response too long");
+    });
 });

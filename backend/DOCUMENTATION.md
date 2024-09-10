@@ -612,6 +612,95 @@ Error (498):
 }
 ```
 
+## Get list of users (GET)
+
+`/api/user_list`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+page (Number, int): the page number to start with, default 1
+
+page_size (Number, int): the number of users per page of the response, default 20
+
+Query:
+
+```
+base_uri/api/user_list
+```
+
+```js 
+await fetch(`base_uri/api/add_user_phone`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+or
+
+```js 
+await fetch(`base_uri/api/add_user_phone`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            page: String(page),
+            page_size: String(page_size)
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "page": 1,
+  "page_count": 1,
+  "content": [
+    {
+      "EmployeeID": "01234567890",
+      "FirstName": "Richard",
+      "LastName": "Stallman",
+      "Username": "freethesoftware"
+    },
+    {
+      "EmployeeID": "T1000",
+      "FirstName": "Robert",
+      "LastName": "Patrick",
+      "Username": "whereisjsohnconnor"
+    },
+    {
+      "EmployeeID": "T800",
+      "FirstName": "Arnold",
+      "LastName": "Schwarzenegger",
+      "Username": "protectjohnconnor"
+    }
+  ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
 ## Product requirements (GET)
 
 `/api/product_requirements`
