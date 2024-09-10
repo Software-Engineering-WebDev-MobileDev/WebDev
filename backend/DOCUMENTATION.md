@@ -8,7 +8,7 @@ Routes
 
 ### Arguments:
 
-(header)
+(headers)
 
 employee_id (str): The employee ID
 
@@ -54,8 +54,8 @@ Response:
 
 ```json
 {
-    "status": "success",
-    "session_id": "<session_id>"
+  "status": "success",
+  "session_id": "<session_id>"
 }
 ```
 
@@ -65,7 +65,7 @@ Response:
 
 ### Arguments:
 
-(header)
+(headers)
 
 username (str): username
 
@@ -102,8 +102,8 @@ Response:
 
 ```json
 {
-    "status": "success",
-    "session_id": "<session_id>"
+  "status": "success",
+  "session_id": "<session_id>"
 }
 ```
 
@@ -113,7 +113,7 @@ Response:
 
 ### Arguments:
 
-(body)
+(headers)
 
 session_id (str): the session id to logout.
 
@@ -140,7 +140,7 @@ Response:
 
 ```json
 {
-    "status": "success"
+  "status": "success"
 }
 ```
 
@@ -150,7 +150,7 @@ Response:
 
 ### Arguments:
 
-(body)
+(headers)
 
 session_id (str): the session id to update and check
 
@@ -177,7 +177,162 @@ Response:
 
 ```json
 {
-    "status": "success"
+  "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## User's own email addresses (GET)
+
+`/api/user_email`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+Query:
+
+```
+base_uri/api/user_email
+```
+
+```js 
+await fetch(`base_uri/api/user_email`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "emails": [
+    {
+      "EmailID": "035db203029f46b484f84f4214822e3a",
+      "EmailAddress": "free_software2@gnu.com",
+      "EmployeeID": "01234567890",
+      "TypeID": "work",
+      "Valid": true
+    },
+    {
+      "EmailID": "064ce683900a4c5980898814ec863663",
+      "EmailAddress": "free_software+3@gnu.org",
+      "EmployeeID": "01234567890",
+      "TypeID": "personal",
+      "Valid": true
+    },
+    {
+      "EmailID": "0e244abfb2264353983efc5fa0a01dd7",
+      "EmailAddress": "free_software9@gnu.com",
+      "EmployeeID": "01234567890",
+      "TypeID": "other",
+      "Valid": true
+    },
+    {
+      "EmailID": "1a6b3ad16f13499e8bdf4ce66cdf8f62",
+      "EmailAddress": "free_software4@gnu.com",
+      "EmployeeID": "01234567890",
+      "TypeID": "work",
+      "Valid": false
+    }
+  ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Other user's email addresses (GET)
+
+`/api/users_email`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+employee_id (str): the employee id of the user to fetch
+
+Query:
+
+```
+base_uri/api/users_email
+```
+
+```js 
+await fetch(`base_uri/api/users_email`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            employee_id: employee_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "emails": [
+    {
+      "EmailID": "035db203029f46b484f84f4214822e3a",
+      "EmailAddress": "free_software2@gnu.com",
+      "EmployeeID": "01234567890",
+      "TypeID": "work",
+      "Valid": true
+    },
+    {
+      "EmailID": "064ce683900a4c5980898814ec863663",
+      "EmailAddress": "free_software+3@gnu.org",
+      "EmployeeID": "01234567890",
+      "TypeID": "personal",
+      "Valid": true
+    },
+    {
+      "EmailID": "0e244abfb2264353983efc5fa0a01dd7",
+      "EmailAddress": "free_software9@gnu.com",
+      "EmployeeID": "01234567890",
+      "TypeID": "other",
+      "Valid": true
+    },
+    {
+      "EmailID": "1a6b3ad16f13499e8bdf4ce66cdf8f62",
+      "EmailAddress": "free_software4@gnu.com",
+      "EmployeeID": "01234567890",
+      "TypeID": "work",
+      "Valid": false
+    }
+  ]
 }
 ```
 
@@ -187,6 +342,273 @@ Error (498):
 {
     "status": "error",
     "reason": "Invalid or expired token"
+}
+```
+
+## Add to user's email addresses (POST)
+
+`/api/add_user_email`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+email_address (str): the email address to add for the user
+
+type (str): the type of the email to add for the user
+
+Query:
+
+```
+base_uri/api/add_user_email
+```
+
+```js 
+await fetch(`base_uri/api/add_user_email`,
+    {
+        method: 'POST',
+        headers: {
+            session_id: session_id,
+            email_address: email_address,
+            type: "<personal|work|other>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## User's own phone numbers (GET)
+
+`/api/user_phone`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+Query:
+
+```
+base_uri/api/user_email
+```
+
+```js 
+await fetch(`base_uri/api/user_phone`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "phone_numbers": [
+    {
+      "PhoneNumberID": "0c57108b25a7436ea0d16e5b03dac157",
+      "AreaCode": "456",
+      "Number": "7890123",
+      "TypeID": "mobile",
+      "Valid": true,
+      "EmployeeID": "01234567890"
+    },
+    {
+      "PhoneNumberID": "1e7b4b54968d40cfb7e9c5850601e999",
+      "AreaCode": "890",
+      "Number": "1234567",
+      "TypeID": "home",
+      "Valid": true,
+      "EmployeeID": "01234567890"
+    },
+    {
+      "PhoneNumberID": "2147a6b0a5a14b179a78a0f462865a92",
+      "AreaCode": "567",
+      "Number": "8901234",
+      "TypeID": "work",
+      "Valid": true,
+      "EmployeeID": "01234567890"
+    },
+    {
+      "PhoneNumberID": "4ff557787c2b4801b27316a586138167",
+      "AreaCode": "789",
+      "Number": "0123456",
+      "TypeID": "work",
+      "Valid": false,
+      "EmployeeID": "fax"
+    }
+  ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Other user's phone numbers (GET)
+
+`/api/users_phone`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+employee_id (str): the employee id of the user to fetch
+
+Query:
+
+```
+base_uri/api/users_phone
+```
+
+```js 
+await fetch(`base_uri/api/users_phone`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            employee_id: employee_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "phone_numbers": [
+    {
+      "PhoneNumberID": "0c57108b25a7436ea0d16e5b03dac157",
+      "AreaCode": "456",
+      "Number": "7890123",
+      "TypeID": "mobile",
+      "Valid": true,
+      "EmployeeID": "01234567890"
+    },
+    {
+      "PhoneNumberID": "1e7b4b54968d40cfb7e9c5850601e999",
+      "AreaCode": "890",
+      "Number": "1234567",
+      "TypeID": "home",
+      "Valid": true,
+      "EmployeeID": "01234567890"
+    },
+    {
+      "PhoneNumberID": "2147a6b0a5a14b179a78a0f462865a92",
+      "AreaCode": "567",
+      "Number": "8901234",
+      "TypeID": "work",
+      "Valid": true,
+      "EmployeeID": "01234567890"
+    },
+    {
+      "PhoneNumberID": "4ff557787c2b4801b27316a586138167",
+      "AreaCode": "789",
+      "Number": "0123456",
+      "TypeID": "fax",
+      "Valid": false,
+      "EmployeeID": "01234567890"
+    }
+  ]
+}
+```
+
+Error (498):
+
+```json 
+{
+    "status": "error",
+    "reason": "Invalid or expired token"
+}
+```
+
+## Add to user's phone numbers (POST)
+
+`/api/add_user_phone`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+phone_number (str): the number to add for the user
+
+phone_type (str): the type of the phone number to add for the user
+
+Query:
+
+```
+base_uri/api/add_user_phone
+```
+
+```js 
+await fetch(`base_uri/api/add_user_phone`,
+    {
+        method: 'POST',
+        headers: {
+            session_id: session_id,
+            phone_number: phone_number,
+            type: "<mobile|home|work|fax>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
 }
 ```
 
