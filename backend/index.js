@@ -7,6 +7,7 @@ const express = require('express');
 const logger = require('morgan');
 const path = require('path');
 const sharp = require('sharp');
+const { minify } = require('html-minifier-terser');
 
 // Database setup/config
 const config = require('./config.js');
@@ -84,6 +85,7 @@ if (!fs.existsSync(cacheDir)){
     fs.mkdirSync(cacheDir, { recursive: true });
 }
 
+// Optimized image asset serving
 const optimize_images = (req, res, next) => {
     const imageFormats = ['.jpg', '.jpeg', '.png', '.webp', '.jfif']; // Supported image formats
     const ext = path.extname(req.url).toLowerCase();
@@ -131,7 +133,61 @@ const optimize_images = (req, res, next) => {
     }
 };
 
+const optimize_html = (req, res, next) => {
+    const ext = path.extname(req.url).toLowerCase();
+
+    if (ext === '.html' || req.url.endsWith("/")) {
+        const original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
+        const cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
+
+        // Ensure the directory structure for the cache exists
+        const cached_html_dir = path.dirname(cached_html_path);
+        if (!fs.existsSync(cached_html_dir)) {
+            fs.mkdirSync(cached_html_dir, { recursive: true });
+        }
+
+        // Check if the optimized html already exists in cache
+        fs.access(cached_html_path, fs.constants.F_OK, (err) => {
+            if (!err) {
+                // Serve cached optimized image
+                return res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
+            }
+
+            // If not cached, check if the original image exists
+            fs.access(original_html_path, fs.constants.F_OK, async (err) => {
+                if (err) {
+                    return next(); // If the HTML doesn't exist, move to next middleware
+                }
+
+                let original_html_data = fs.readFileSync(original_html_path, 'utf-8');
+
+                console.log(original_html_data)
+
+                let optimized_html = await minify(
+                        original_html_data,
+                        {
+                            caseSensitive: true,
+                            collapseWhitespace: true,
+                            conservativeCollapse: true,
+                            continueOnParseError: true,
+                            minifyCSS: true,
+                            minifyJS: true,
+                            removeComments: true,
+                            removeEmptyElements: true
+                        });
+
+                fs.writeFileSync(cached_html_path, optimized_html, 'utf-8');
+                res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
+            });
+        });
+    }
+    else {
+        next();
+    }
+};
+
 app.use(optimize_images);
+app.use(optimize_html);
 
 // Routes usage
 app.use('/api',
