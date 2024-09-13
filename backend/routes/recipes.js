@@ -41,6 +41,11 @@ app.get("/recipe/:recipeID", async (req, res) => {
 
 app.post('/add_recipe', async (req, res) => {
     const recipeID = v4();
+    //validate the request
+    if (!req.body.RecipeName || !req.body.Instructions || !req.body.ScalingFactor) {
+        return_400(res, "Bad request");
+        return;
+    }
     const query = `INSERT INTO tblRecipes (RecipeID, RecipeName, Instructions, ScalingFactor) VALUES ('${recipeID}', '${req.body.RecipeName}', '${req.body.Instructions}', '${req.body.ScalingFactor}')`;
     database.executeQuery(query).then((result) => {
         res.status(200).send({
