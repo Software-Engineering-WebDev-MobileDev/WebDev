@@ -71,9 +71,6 @@ CREATE TABLE tblIngredients (
     IngredientDescription VARCHAR(50) NOT NULL, -- Tie this to the recipes. 
     CategoryID VARCHAR(50),
     Measurement VARCHAR(50),
-    MaximumAmount DECIMAL(10,2),
-    ReorderAmount DECIMAL(10,2),
-    MinimumAmount DECIMAL(10,2)
     FOREIGN KEY (CategoryID) REFERENCES tblCategories(CategoryID) ON DELETE SET NULL
 );
 
@@ -85,9 +82,10 @@ CREATE TABLE tblInventory (
     Cost DECIMAL(10,2) CHECK (Cost >= 0), -- Ensure non-negative cost
     CreateDateTime DATETIME NOT NULL,
     ExpireDateTime DATETIME,
-    PONumber VARCHAR(50),
-    RecipeID VARCHAR(50),
     IngredientID VARCHAR(50),
+    ReorderAmount DECIMAL(10,2), 
+    MinimumQuantity DECIMAL(10,2),
+    MaximumQuantity DECIMAL(10,2),
     FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID),
     FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID),
     FOREIGN KEY (IngredientID) REFERENCES tblIngredients(IngredientID)
@@ -101,6 +99,7 @@ CREATE TABLE tblInventoryAudit (
     ChangeReason VARCHAR(255),  -- Reason for the inventory change (e.g., restock, recipe use)
     EmployeeID VARCHAR(50) NOT NULL,  -- Employee responsible for the change
     ChangeDate DATETIME NOT NULL DEFAULT GETDATE(),  -- Date and time of the change
+    PONumber VARCHAR(50),   
     FOREIGN KEY (IngredientID) REFERENCES tblIngredients(IngredientID) ON DELETE CASCADE,
     FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE CASCADE
 );
@@ -115,7 +114,6 @@ CREATE TABLE tblRecipes (  -- need something that ties to ingredients
     TotalTime INT CHECK (TotalTime >= 0),         -- Total time (prep_time + cook_time) -- Maybe take out. 
     Servings INT NOT NULL CHECK (Servings > 0),                    -- Positive servings count
     Instructions VARCHAR(MAX),               -- Step-by-step instructions
-    DefaultScaleFactor DECIMAL(5,2) NOT NULL DEFAULT 1.0 CHECK (DefaultScaleFactor > 0), -- Default scaling factor
     CreatedAt DATETIME NOT NULL,                      -- Creation timestamp
     UpdatedAt DATETIME,                       -- Last updated timestamp
     FOREIGN KEY (CategoryID) REFERENCES tblCategories(CategoryID)
@@ -147,6 +145,15 @@ CREATE TABLE tblRecipeIngredients (
     FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID) ON DELETE CASCADE,
     FOREIGN KEY (IngredientID) REFERENCES tblIngredients(IngredientID) ON DELETE CASCADE,
     FOREIGN KEY (ModifierID) REFERENCES tblIngredientModifiers(ModifierID) ON DELETE SET NULL
+);
+
+-- Create tblRecipeIngredientModifiers table
+CREATE TABLE tblRecipeIngredientModifiers (
+    RecipeIngredientModifierID VARCHAR(50) PRIMARY KEY,
+    RecipeIngredientID VARCHAR(50) NOT NULL,
+    ModifierID VARCHAR(50) NOT NULL,
+    FOREIGN KEY (RecipeIngredientID) REFERENCES tblRecipeIngredients(RecipeIngredientID),
+    FOREIGN KEY (ModifierID) REFERENCES tblIngredientModifiers(ModifierID)
 );
 
 /*
