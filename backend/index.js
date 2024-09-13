@@ -17,6 +17,7 @@ const loginRouter = require('./routes/login')
 const productRequirementRouter = require('./routes/product_requirements')
 const inventoryRouter = require('./routes/inventory')
 const userInfoRouter = require('./routes/user_info');
+const recipeRouter = require('./routes/recipes');
 
 // App
 const app = express();
@@ -82,7 +83,8 @@ app.use('/api',
     loginRouter,
     productRequirementRouter,
     inventoryRouter,
-    userInfoRouter
+    userInfoRouter,
+    recipeRouter
 );
 
 // Serve the static frontend
