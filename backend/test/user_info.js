@@ -177,6 +177,44 @@ describe("Test user info retrieval", function () {
         }
     });
 
+    it("Delete user's email", async function () {
+        // Login to get a fresh token
+        const response = await fetch(`${base_uri}/login`, {
+            method: 'POST',
+            headers: {
+                username: test_username,
+                password: test_password,
+            },
+        });
+        // Grab the token
+        const json_response = await response.json();
+        session_id = json_response["session_id"];
+
+        // Make sure that the login was successful
+        assert.strictEqual(response.status, 201, 'Expected HTTP status 201 for user login');
+        test
+            .object(json_response) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(json_response.status).is('success'); // Check if 'status' is 'success'
+
+        // Delete the user's email address
+        let result_email = await fetch(`${base_uri}/user_email`, {
+            method: 'DELETE',
+            headers: {
+                session_id: session_id,
+                email_address: test_emails[1]
+            },
+        });
+
+        // Make sure that the deletion is successful
+        assert.strictEqual(result_email.status, 200, 'Expected HTTP status 200 for email deletion');
+        result_email = await result_email.json();
+        test
+            .object(result_email) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(result_email.status).is('success'); // Check if 'status' is 'success'
+    });
+
     it("Add user phone numbers", async function () {
         // Login to get a fresh token
         const response = await fetch(`${base_uri}/login`, {
@@ -292,7 +330,7 @@ describe("Test user info retrieval", function () {
             .hasProperty('status') // Check if 'status' exists
             .string(json_response.status).is('success'); // Check if 'status' is 'success'
 
-        // Get the user's email addresses
+        // Get the user's phone numbers
         let result_phone_numbers = await fetch(`${base_uri}/users_phone`, {
             method: 'GET',
             headers: {
@@ -317,6 +355,44 @@ describe("Test user info retrieval", function () {
                 `Phone object's number not found in response! (${JSON.stringify(phone_entry)})`
             );
         }
+    });
+
+    it("Delete user's phone", async function () {
+        // Login to get a fresh token
+        const response = await fetch(`${base_uri}/login`, {
+            method: 'POST',
+            headers: {
+                username: test_username,
+                password: test_password,
+            },
+        });
+        // Grab the token
+        const json_response = await response.json();
+        session_id = json_response["session_id"];
+
+        // Make sure that the login was successful
+        assert.strictEqual(response.status, 201, 'Expected HTTP status 201 for user login');
+        test
+            .object(json_response) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(json_response.status).is('success'); // Check if 'status' is 'success'
+
+        // Delete the user's email address
+        let result_phone = await fetch(`${base_uri}/user_phone`, {
+            method: 'DELETE',
+            headers: {
+                session_id: session_id,
+                phone_number: test_phone_inputs[1]
+            },
+        });
+
+        // Make sure that the deletion is successful
+        assert.strictEqual(result_phone.status, 200, 'Expected HTTP status 200 for phone number deletion');
+        result_phone = await result_phone.json();
+        test
+            .object(result_phone) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(result_phone.status).is('success'); // Check if 'status' is 'success'
     });
 
     it("Check that the test employee is in the user list", async function () {

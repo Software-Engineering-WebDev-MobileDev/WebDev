@@ -266,6 +266,64 @@ Error (498):
 }
 ```
 
+## Delete user's email address (DELETE)
+
+`/api/user_email`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+email_address (str): the email address to delete for the user
+
+Query:
+
+```
+base_uri/api/user_email
+```
+
+```js 
+await fetch(`base_uri/api/user_email`,
+    {
+        method: 'DELETE',
+        headers: {
+            session_id: session_id,
+            email_address: "<email_address_to_delete>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Error (409):
+
+```json 
+{
+  "status": "error",
+  "reason": "Email address does not exist for the user"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
 ## Other user's email addresses (GET)
 
 `/api/users_email`
@@ -465,6 +523,64 @@ Response:
       "EmployeeID": "fax"
     }
   ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Delete user's phone number (DELETE)
+
+`/api/user_phone`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+phone_number (str): the number to delete for the user
+
+Query:
+
+```
+base_uri/api/user_email
+```
+
+```js 
+await fetch(`base_uri/api/user_phone`,
+    {
+        method: 'DELETE',
+        headers: {
+            session_id: session_id,
+            phone_number: "<phone_number_to_delete>",
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Error (409):
+
+```json 
+{
+  "status": "error",
+  "reason": "Phone number does not exist for the user"
 }
 ```
 

@@ -77,7 +77,6 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-//app.use(express.static(path.join(__dirname, 'public')));
 
 // Optimized asset serving
 const cacheDir = path.join(__dirname, 'cache');
@@ -133,6 +132,7 @@ const optimize_images = (req, res, next) => {
     }
 };
 
+// Optimized HTML asset serving
 const optimize_html = (req, res, next) => {
     const ext = path.extname(req.url).toLowerCase();
 
