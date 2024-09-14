@@ -1,6 +1,50 @@
 # CSC 4610 Project API
 
-Routes
+## Routes
+
+Account Related:
+
+[Create Account (POST)](#create-account-post)
+
+[Login (POST)](#login-post)
+
+[Logout (POST)](#logout-post)
+
+[Token Bump (POST)](#token-bump-post)
+
+Account Information Related: 
+
+[User's own email addresses (GET)](#users-own-email-addresses-get)
+
+[Delete user's own email address (DELETE)](#delete-users-email-address-delete)
+
+[Get another user's email addresses (GET)](#get-another-users-email-addresses-get)
+
+[Add to user's email addresses (POST)](#add-to-users-email-addresses-post)
+
+[User's own phone numbers (GET)](#users-own-phone-numbers-get)
+
+[Add to user's phone numbers (POST)](#add-to-users-phone-numbers-post)
+
+[Delete user's phone number (DELETE)](#delete-users-phone-number-delete)
+
+[Another user's phone numbers (GET)](#another-users-phone-numbers-get)
+
+User management:
+
+[Get a list of users (GET)](#get-a-list-of-users-get)
+
+Ingredients:
+
+[Get ingredients (GET)](#get-ingredients-get)
+
+[Get ingredients short (GET)](#get-ingredients-short-get)
+
+[Get ingredient by id (GET)](#get-ingredient-by-id-get)
+
+[Add an ingredient (POST)](#add-an-ingredient-post)
+
+<!--[Update an ingredient (PUT)](#update-an-ingredient-put)-->
 
 ## Create Account (POST)
 
@@ -324,7 +368,7 @@ Error (498):
 }
 ```
 
-## Another user's email addresses (GET)
+## Get another user's email addresses (GET)
 
 `/api/users_email`
 
