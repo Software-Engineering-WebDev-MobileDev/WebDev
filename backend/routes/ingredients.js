@@ -54,7 +54,8 @@ app.get("/ingredients", (req, res) => {
             console.log(e);
             return_500(res);
         })
-    } catch (e) {
+    }
+    catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query parameters");
         }
@@ -102,7 +103,8 @@ app.get("/ingredients_short", (req, res) => {
             console.log(e);
             return_500(res);
         })
-    } catch (e) {
+    }
+    catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query parameters");
         }
@@ -157,7 +159,8 @@ app.get("/ingredient", (req, res) => {
                 return_500(res);
             });
         }
-    } catch (e) {
+    }
+    catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query parameters");
         }
@@ -256,7 +259,8 @@ app.post("/ingredient", (req, res) => {
                 return_500(res);
             });
         }
-    } catch (e) {
+    }
+    catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query parameters");
         }
@@ -314,7 +318,8 @@ app.delete('/ingredient', (req, res) => {
                 return_500(res);
             })
         }
-    } catch (e) {
+    }
+    catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query parameters");
         }
@@ -349,7 +354,8 @@ app.put('/ingredient', (req, res) => {
                 reason: "Not implemented yet for MVP"
             }
         )
-    } catch (e) {
+    }
+    catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query parameters");
         }

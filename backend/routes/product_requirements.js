@@ -36,7 +36,8 @@ app.get("/product_requirements", (req, res) => {
                 ]
             }
         );
-    } catch (e) {
+    }
+    catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query string");
         }

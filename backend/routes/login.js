@@ -1,7 +1,7 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const crypto = require('crypto');
-const { v4 } = require('uuid');
+const {v4} = require('uuid');
 const {return_500, return_400, return_498} = require('./codes')
 
 // Database setup:
@@ -68,14 +68,16 @@ app.post('/create_account', (req, res) => {
 
             // Insert the user into the DB
             database.executeQuery(
-                `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password) VALUES ('${employee_id}', '${first_name}', '${last_name}', '${username}', '${password_hash}')`
+                `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password)
+                 VALUES ('${employee_id}', '${first_name}', '${last_name}', '${username}', '${password_hash}')`
             ).then(() => {
                 // Generate a session ID
                 const session_id = gen_session_id()
 
                 // Add the new session to the sessions table
                 database.executeQuery(
-                    `INSERT INTO tblSessions (SessionID, EmployeeID, CreateDateTime, LastActivityDateTime) VALUES ('${session_id}', '${employee_id}', GETDATE(), GETDATE())`
+                    `INSERT INTO tblSessions (SessionID, EmployeeID, CreateDateTime, LastActivityDateTime)
+                     VALUES ('${session_id}', '${employee_id}', GETDATE(), GETDATE())`
                 ).then(() => {
                     // Return the new session ID
                     res.status(201).send(
@@ -148,7 +150,10 @@ app.post('/login', (req, res) => {
                     .digest('hex');    // Grab the hex digest for the DB
 
             database.executeQuery(
-                `SELECT EmployeeID FROM tblUsers WHERE Username = '${username}' and Password = '${password_hash}';`
+                `SELECT EmployeeID
+                 FROM tblUsers
+                 WHERE Username = '${username}'
+                   AND Password = '${password_hash}';`
             ).then((result) => {
                 if (result.rowsAffected[0] === 1) {
                     const employee_id = result.recordset[0]["EmployeeID"];
@@ -156,7 +161,8 @@ app.post('/login', (req, res) => {
 
                     // Add the new session to the sessions table
                     database.executeQuery(
-                        `INSERT INTO tblSessions (SessionID, EmployeeID, CreateDateTime, LastActivityDateTime) VALUES ('${session_id}', '${employee_id}', GETDATE(), GETDATE())`
+                        `INSERT INTO tblSessions (SessionID, EmployeeID, CreateDateTime, LastActivityDateTime)
+                         VALUES ('${session_id}', '${employee_id}', GETDATE(), GETDATE())`
                     ).then(() => {
                         // Return the new session ID
                         res.status(201).send(
@@ -176,9 +182,9 @@ app.post('/login', (req, res) => {
                 if (e.message === "Invalid username or password") {
                     res.status(401).send(
                         {
-                        status: "error",
-                        reason: e.message
-                    });
+                            status: "error",
+                            reason: e.message
+                        });
                 }
                 else {
                     return_500(res);
@@ -217,7 +223,9 @@ app.post('/logout', (req, res) => {
         }
         else {
             database.executeQuery(
-                `DELETE FROM tblSessions WHERE SessionID = '${session_id}'`
+                `DELETE
+                 FROM tblSessions
+                 WHERE SessionID = '${session_id}'`
             ).then(() => {
                 res.status(200).send(
                     {
@@ -256,8 +264,8 @@ app.post("/token_bump", (req, res) => {
             if (result) {
                 res.status(200).send(
                     {
-                    status: "success"
-                });
+                        status: "success"
+                    });
             }
             // Invalid or expired token
             else {

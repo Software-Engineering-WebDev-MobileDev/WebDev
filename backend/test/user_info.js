@@ -67,7 +67,7 @@ describe("Test user info retrieval", function () {
                         type: "work"
                     },
                 })
-            )
+            );
         }
 
         // Make sure that everything came back right

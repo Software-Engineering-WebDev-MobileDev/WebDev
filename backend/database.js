@@ -32,10 +32,12 @@ class Database {
                 this.poolconnection = await sql.connect(this.config);
                 this.connected = true;
                 console.log('Database connection successful');
-            } else {
+            }
+            else {
                 console.log('Database already connected');
             }
-        } catch (error) {
+        }
+        catch (error) {
             console.error(`Error connecting to database: ${JSON.stringify(error)}, ${error.message}`);
         }
     }
@@ -47,7 +49,8 @@ class Database {
         try {
             this.poolconnection.close();
             console.log('Database connection closed');
-        } catch (error) {
+        }
+        catch (error) {
             console.error(`Error closing database connection: ${error}`);
         }
     }
@@ -90,7 +93,7 @@ class Database {
      * @returns {Promise<string|boolean>} employee id string or false if the token is invalid.
      */
     async sessionToEmployeeID(session_id) {
-        // Validate token and update last activity
+        // Validate the token and update the last activity date
         if (!(await this.sessionActivityUpdate(session_id))) {
             // Invalid/expired token
             return false;
@@ -102,7 +105,8 @@ class Database {
         ).then((value) => {
             if (value.rowsAffected[0] === 1) {
                 return value.recordset[0]["EmployeeID"];
-            } else {
+            }
+            else {
                 return false;
             }
         }).catch((e) => {

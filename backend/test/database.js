@@ -1,6 +1,6 @@
 const test = require('unit.js');
 const assert = require('assert');
-const { v4 } = require('uuid');
+const {v4} = require('uuid');
 const dotenv = require('dotenv');
 
 // Database setup:
@@ -18,18 +18,20 @@ describe("Ensure that tokens can be converted to employee ids", function () {
         await database.executeQuery(
             `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password) VALUES ('${employee_id}', 'John', 'Smith', 'j_smith', 'password')`
         )
-        .then(() => {})
-        .catch((e) => {
-            if (e.message.startsWith("Violation of PRIMARY KEY constraint")) {
-                console.log("Tables exist already. If this is not intended, you may wish to recreate tables tblUsers and tblSessions.")
-            }
-            else {
-                throw e;
-            }
-        });
+            .then(() => {
+            })
+            .catch((e) => {
+                if (e.message.startsWith("Violation of PRIMARY KEY constraint")) {
+                    console.log("Tables exist already. If this is not intended, you may wish to recreate tables tblUsers and tblSessions.")
+                }
+                else {
+                    throw e;
+                }
+            });
         await database.executeQuery(
             `INSERT INTO tblSessions (SessionID, EmployeeID, CreateDateTime, LastActivityDateTime) VALUES ('${session_id}', '${employee_id}', GETDATE(), GETDATE())`
-        ).then(() => {});
+        ).then(() => {
+        });
 
         const response = await database.sessionToEmployeeID(session_id);
 
@@ -49,19 +51,21 @@ describe("Only increment valid sessions", function () {
         await database.executeQuery(
             `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password) VALUES ('${employee_id}', 'John', 'Smith', 'j_smith', 'password')`
         )
-        .then(() => {})
-        .catch((e) => {
-            if (e.message.startsWith("Violation of PRIMARY KEY constraint")) {
-                console.log("Tables exist already. If this is not intended, you may wish to recreate tables tblUsers and tblSessions.")
-            }
-            else {
-                throw e;
-            }
-        });
+            .then(() => {
+            })
+            .catch((e) => {
+                if (e.message.startsWith("Violation of PRIMARY KEY constraint")) {
+                    console.log("Tables exist already. If this is not intended, you may wish to recreate tables tblUsers and tblSessions.")
+                }
+                else {
+                    throw e;
+                }
+            });
         // Add an expired session to the table
         await database.executeQuery(
             `INSERT INTO tblSessions (SessionID, EmployeeID, CreateDateTime, LastActivityDateTime) VALUES ('${session_id}', '${employee_id}', GETDATE(), DATEADD(DAY, -${database.MAX_SESSION_DAYS + 1}, GETDATE()))`
-        ).then(() => {});
+        ).then(() => {
+        });
 
         const response = await database.sessionToEmployeeID(session_id);
 
@@ -77,7 +81,8 @@ describe("Only increment valid sessions", function () {
         await database.executeQuery(
             `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password) VALUES ('${employee_id}', 'Johnny', 'Smith', 'j_smith', 'password')`
         )
-            .then(() => {})
+            .then(() => {
+            })
             .catch((e) => {
                 if (e.message.startsWith("Violation of PRIMARY KEY constraint")) {
                     console.log("Tables exist already. If this is not intended, you may wish to recreate tables tblUsers and tblSessions.")
@@ -89,7 +94,8 @@ describe("Only increment valid sessions", function () {
         // Add a valid session to the table
         await database.executeQuery(
             `INSERT INTO tblSessions (SessionID, EmployeeID, CreateDateTime, LastActivityDateTime) VALUES ('${session_id}', '${employee_id}', DATEADD(DAY, -1, GETDATE()), DATEADD(DAY, -1, GETDATE()))`
-        ).then(() => {});
+        ).then(() => {
+        });
 
         // Make sure that it was deemed valid
         const response = await database.sessionToEmployeeID(session_id);

@@ -2,11 +2,11 @@ const test = require('unit.js');
 const assert = require('assert');
 
 const base_uri = "http://localhost:3000/api",
-      test_employee_id = "123456789",
-      test_first_name = "Linus",
-      test_last_name = "Torvalds",
-      test_username = "microsoftbad",
-      test_password = "Password123";
+    test_employee_id = "123456789",
+    test_first_name = "Linus",
+    test_last_name = "Torvalds",
+    test_username = "microsoftbad",
+    test_password = "Password123";
 let session_id;
 
 describe("Create an account, login, bump the token, and logout", function () {

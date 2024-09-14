@@ -14,78 +14,78 @@ const app = express.Router();
 app.use(bodyParser.json());
 
 app.get("/route", (req, res) => {
-   try {
-       /* Parse query params
-        *
-        * Query string example:
-        * const product = req.query["product"];
-        *
-        * Body example:
-        * const product = req.body["product"];
-        *
-        * From here, you must validate the input. If a parameter is undefined, and you have not set defaults, then a
-        * TypeError will be thrown and caught below.
-        *
-        *
-        *
-        * Next, you will want to perform a query to the database. For your convenience, a database class is provided as
-        * an abstraction on top of mssql. It is imported and initialized at the top of this file.
-        * It may be used as follows:
-        *
-        * database.executeQuery(
-        *   `<your-query`
-        * ).then((result) => {
-        *   // Do something with the result
-        * }).catch((e) => {
-        *   if (e instanceof RequestError) {
-        *       console.log(e);
-        *       console.log("If this is thrown in the dev environment, you likely wrote a bad SQL query.");
-        *       return_500(res);
-        *   }
-        *   else {
-        *       console.log(e);
-        *       return_500(res);
-        *   }
-        * });
-        *
-        * For authenticated routes, you will want to validate the user's session token using the provided method
-        * in the database class:
-        *
-        * const session_id = req.header('session_id');
-        * database.sessionToEmployeeID(session_id).then((employee_id) => {
-        *     if (employee_id) {
-        *         // Do something authenticated
-        *     }
-        *     else {
-        *         return_498(res);
-        *     }
-        * }).catch((e) => {
-        *     console.log(e);
-        *     return_500(res);
-        * })
-        *
-        *
-        *
-        *
-        * Returning a response:
-        * `res` is the response object you will use to respond to a query and can be used as follows:
-        *
-        * res.status("<HTTP-code>").send(
-        *   {
-        *       status: "success",
-        *       // Rest of the JSON body...
-        *   }
-        * );
-        */
-   }
-   catch (e) {
-       if (e instanceof TypeError) {
-           return_400(res, "Invalid query parameters");
-       }
-       else {
-           return_500(res);
-       }
-   }
+    try {
+        /* Parse query params
+         *
+         * Query string example:
+         * const product = req.query["product"];
+         *
+         * Body example:
+         * const product = req.body["product"];
+         *
+         * From here, you must validate the input. If a parameter is undefined, and you have not set defaults, then a
+         * TypeError will be thrown and caught below.
+         *
+         *
+         *
+         * Next, you will want to perform a query to the database. For your convenience, a database class is provided as
+         * an abstraction on top of mssql. It is imported and initialized at the top of this file.
+         * It may be used as follows:
+         *
+         * database.executeQuery(
+         *   `<your-query`
+         * ).then((result) => {
+         *   // Do something with the result
+         * }).catch((e) => {
+         *   if (e instanceof RequestError) {
+         *       console.log(e);
+         *       console.log("If this is thrown in the dev environment, you likely wrote a bad SQL query.");
+         *       return_500(res);
+         *   }
+         *   else {
+         *       console.log(e);
+         *       return_500(res);
+         *   }
+         * });
+         *
+         * For authenticated routes, you will want to validate the user's session token using the provided method
+         * in the database class:
+         *
+         * const session_id = req.header('session_id');
+         * database.sessionToEmployeeID(session_id).then((employee_id) => {
+         *     if (employee_id) {
+         *         // Do something authenticated
+         *     }
+         *     else {
+         *         return_498(res);
+         *     }
+         * }).catch((e) => {
+         *     console.log(e);
+         *     return_500(res);
+         * });
+         *
+         *
+         *
+         *
+         * Returning a response:
+         * `res` is the response object you will use to respond to a query and can be used as follows:
+         *
+         * res.status(<HTTP-code>).send(
+         *   {
+         *       status: "success",
+         *       // Rest of the JSON body...
+         *   }
+         * );
+         */
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
+        }
+        else {
+            return_500(res);
+        }
+    }
 });
 
 module.exports = app;
