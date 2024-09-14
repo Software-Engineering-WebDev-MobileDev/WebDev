@@ -48,6 +48,23 @@ app.get("/route", (req, res) => {
         *   }
         * });
         *
+        * For authenticated routes, you will want to validate the user's session token using the provided method
+        * in the database class:
+        *
+        * const session_id = req.header('session_id');
+        * database.sessionToEmployeeID(session_id).then((employee_id) => {
+        *     if (employee_id) {
+        *         // Do something authenticated
+        *     }
+        *     else {
+        *         return_498(res);
+        *     }
+        * }).catch((e) => {
+        *     console.log(e);
+        *     return_500(res);
+        * })
+        *
+        *
         *
         *
         * Returning a response:
