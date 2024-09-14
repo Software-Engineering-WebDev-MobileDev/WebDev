@@ -7,7 +7,6 @@ const isNumber = (v) => typeof v === "number" || (typeof v === "string" && Numbe
 // Database setup:
 const config = require('../config.js');
 const Database = require('../database');
-const {response} = require("express");
 const database = new Database(config);
 
 // Used for API routes
