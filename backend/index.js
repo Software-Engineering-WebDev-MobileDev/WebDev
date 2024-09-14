@@ -15,10 +15,11 @@ const Database = require('./database');
 const fs = require('node:fs');
 
 // Routes
-const loginRouter = require('./routes/login')
-const productRequirementRouter = require('./routes/product_requirements')
-const inventoryRouter = require('./routes/inventory')
+const loginRouter = require('./routes/login');
+const productRequirementRouter = require('./routes/product_requirements');
+const inventoryRouter = require('./routes/inventory');
 const userInfoRouter = require('./routes/user_info');
+const ingredientRouter = require('./routes/ingredients');
 
 // App
 const app = express();
@@ -99,7 +100,7 @@ const optimize_images = (req, res, next) => {
             fs.mkdirSync(cachedImageDir, { recursive: true });
         }
 
-        // Check if the optimized image already exists in cache
+        // Check if the optimized image already exists in the cache
         fs.access(cachedImagePath, fs.constants.F_OK, (err) => {
             if (!err) {
                 // Serve cached optimized image
@@ -109,7 +110,7 @@ const optimize_images = (req, res, next) => {
             // If not cached, check if the original image exists
             fs.access(originalImagePath, fs.constants.F_OK, (err) => {
                 if (err) {
-                    return next(); // If image doesn't exist, move to next middleware
+                    return next(); // If the image doesn't exist, move to next middleware
                 }
 
                 // Optimize the image and save it to the cache
@@ -121,6 +122,7 @@ const optimize_images = (req, res, next) => {
                     if (err) {
                         return next(err); // Error handling
                     }
+                    console.log(info);
 
                     // Serve the newly cached optimized image
                     res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
@@ -194,7 +196,8 @@ app.use('/api',
     loginRouter,
     productRequirementRouter,
     inventoryRouter,
-    userInfoRouter
+    userInfoRouter,
+    ingredientRouter
 );
 
 // Serve the static frontend
