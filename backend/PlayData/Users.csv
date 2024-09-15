@@ -1,0 +1,4 @@
+EmployeeID,FirstName,LastName,Username,Password,RoleID,EmploymentStatus,StartDate,EndDate
+123e4567-e89b-12d3-a456-426614174003,John,Doe,jdoe,hashed_password,123e4567-e89b-12d3-a456-426614174000,1,2023-01-01,
+123e4567-e89b-12d3-a456-426614174004,Jane,Smith,jsmith,hashed_password,123e4567-e89b-12d3-a456-426614174001,1,2023-02-01,
+123e4567-e89b-12d3-a456-426614174005,Michael,Johnson,mjohnson,hashed_password,123e4567-e89b-12d3-a456-426614174002,1,2023-03-01,

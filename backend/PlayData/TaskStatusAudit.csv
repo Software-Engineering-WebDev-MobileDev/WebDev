@@ -1,0 +1,2 @@
+StatusAuditID,TaskID,OldStatus,NewStatus,StatusChangedByEmployeeID,StatusChangeDate
+123e4567-e89b-12d3-a456-426614174053,123e4567-e89b-12d3-a456-426614174049,Pending,In Progress,123e4567-e89b-12d3-a456-426614174003,2023-09-16
