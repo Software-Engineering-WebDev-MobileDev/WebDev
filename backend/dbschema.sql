@@ -61,7 +61,7 @@ CREATE TABLE tblSessions (
     EmployeeID VARCHAR(50) NOT NULL,  -- Reference to the employee who signed in
     CreateDateTime DATETIME NOT NULL,  -- Date and time the session was created
     LastActivityDateTime DATETIME NOT NULL,  -- Date and time of the last activity in the session
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE CASCADE  -- Cascading delete on employee removal
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID)
 );
 
 -- Recipe and Inventory Tables --
@@ -75,12 +75,10 @@ CREATE TABLE tblCategories (
 -- Stores scaling factors for recipes (e.g., doubling, tripling)
 CREATE TABLE tblScalingFactors (
     ScalingFactorID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the scaling factor
-    -- RecipeID VARCHAR(50) NOT NULL, -- Reference to the recipe
     ScaleFactor DECIMAL(5,2) NOT NULL, -- Scaling factor (e.g., 2 for doubling)
     Description VARCHAR(255), -- Description or reason for the scaling factor
     CreatedAt DATETIME NOT NULL, -- Timestamp of the scaling factor entry
     UpdatedAt DATETIME, -- Timestamp of the last update
-    -- FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID)
 );
 
 -- Stores information about recipes
@@ -174,7 +172,7 @@ CREATE TABLE tblTasks (
     CompletionDate DATETIME, -- Date the task was completed
     AssignedEmployeeID VARCHAR(50), -- Employee assigned to the task
     FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID) ON DELETE CASCADE,
-    FOREIGN KEY (AssignedEmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE SET NULL
+    FOREIGN KEY (AssignedEmployeeID) REFERENCES tblUsers(EmployeeID)
 );
 
 -- Stores comments related to tasks
@@ -184,8 +182,8 @@ CREATE TABLE tblTaskComments (
     EmployeeID VARCHAR(50) NOT NULL, -- Reference to the employee who made the comment
     CommentText VARCHAR(MAX) NOT NULL, -- Text of the comment
     CommentDate DATETIME NOT NULL DEFAULT GETDATE(), -- Date and time the comment was made
-    FOREIGN KEY (TaskID) REFERENCES tblTasks(TaskID) ON DELETE CASCADE,
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE SET NULL
+    FOREIGN KEY (TaskID) REFERENCES tblTasks(TaskID),
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID)
 );
 
 -- Stores history of task assignments
@@ -195,9 +193,9 @@ CREATE TABLE tblTaskAssignmentHistory (
     AssignedByEmployeeID VARCHAR(50), -- Employee who assigned the task
     AssignedToEmployeeID VARCHAR(50), -- Employee who received the task
     AssignmentDate DATETIME NOT NULL DEFAULT GETDATE(), -- Date and time of the assignment
-    FOREIGN KEY (TaskID) REFERENCES tblTasks(TaskID) ON DELETE CASCADE,
-    FOREIGN KEY (AssignedByEmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE SET NULL,
-    FOREIGN KEY (AssignedToEmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE SET NULL
+    FOREIGN KEY (TaskID) REFERENCES tblTasks(TaskID),
+    FOREIGN KEY (AssignedByEmployeeID) REFERENCES tblUsers(EmployeeID),
+    FOREIGN KEY (AssignedToEmployeeID) REFERENCES tblUsers(EmployeeID)
 );
 
 -- Stores history of task status changes
@@ -208,8 +206,8 @@ CREATE TABLE tblTaskStatusAudit (
     NewStatus VARCHAR(20) NOT NULL, -- New task status
     StatusChangedByEmployeeID VARCHAR(50), -- Employee who changed the status
     StatusChangeDate DATETIME NOT NULL DEFAULT GETDATE(), -- Date and time of the status change
-    FOREIGN KEY (TaskID) REFERENCES tblTasks(TaskID) ON DELETE CASCADE,
-    FOREIGN KEY (StatusChangedByEmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE SET NULL
+    FOREIGN KEY (TaskID) REFERENCES tblTasks(TaskID),
+    FOREIGN KEY (StatusChangedByEmployeeID) REFERENCES tblUsers(EmployeeID)
 );
 
 
