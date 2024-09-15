@@ -17,7 +17,13 @@ CREATE TABLE tblUsers (
     StartDate DATE NOT NULL,  -- Date when the employee started working
     EndDate DATE,  -- Date when the employee left (NULL if still active)
     FOREIGN KEY (RoleID) REFERENCES tblUserRoles(RoleID),  -- Foreign key to UserRoles table
-    CHECK (EmploymentStatus IN (0, 1))  -- Constraint ensuring valid employment status (0 or 1)
+);
+
+-- Email Types Table: Stores types of emails (e.g., personal, work)
+CREATE TABLE tblEmailTypes (
+    EmailTypeID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each email type (UUID format)
+    EmailTypeDescription VARCHAR(50) NOT NULL,  -- Description of the email type (e.g., 'personal', 'work')
+    Active BIT NOT NULL DEFAULT 1  -- Indicator if the email type is active
 );
 
 -- Email Table: Stores email addresses for each employee
@@ -29,14 +35,13 @@ CREATE TABLE tblEmail (
     Valid BIT NOT NULL DEFAULT 1,  -- Indicator if the email is valid (1 = valid, 0 = invalid)
     FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE CASCADE,  -- Cascading delete on employee removal
     FOREIGN KEY (EmailTypeID) REFERENCES tblEmailTypes(EmailTypeID),  -- Reference to email types table
-    CHECK (EmailAddress LIKE '%@%')  -- Simple validation for email format, ensuring it contains '@'
 );
 
--- Email Types Table: Stores types of emails (e.g., personal, work)
-CREATE TABLE tblEmailTypes (
-    EmailTypeID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each email type (UUID format)
-    EmailTypeDescription VARCHAR(50) NOT NULL,  -- Description of the email type (e.g., 'personal', 'work')
-    Active BIT NOT NULL DEFAULT 1  -- Indicator if the email type is active
+-- Phone Types Table: Stores types of phone numbers (e.g., mobile, home)
+CREATE TABLE tblPhoneTypes (
+    PhoneTypeID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each phone type
+    PhoneTypeDescription VARCHAR(50) NOT NULL,  -- Description of the phone type (e.g., 'mobile', 'home')
+    Active BIT NOT NULL DEFAULT 1  -- Indicator if the phone type is active
 );
 
 -- Phone Numbers Table: Stores phone numbers for each employee
@@ -48,14 +53,6 @@ CREATE TABLE tblPhoneNumbers (
     EmployeeID VARCHAR(50) NOT NULL,  -- Reference to the employee who owns the phone number
     FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE CASCADE,  -- Cascading delete on employee removal
     FOREIGN KEY (PhoneTypeID) REFERENCES tblPhoneTypes(PhoneTypeID),  -- Reference to phone types table
-    CHECK (PhoneNumber LIKE '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')  -- Ensure phone number is exactly 10 digits
-);
-
--- Phone Types Table: Stores types of phone numbers (e.g., mobile, home)
-CREATE TABLE tblPhoneTypes (
-    PhoneTypeID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each phone type
-    PhoneTypeDescription VARCHAR(50) NOT NULL,  -- Description of the phone type (e.g., 'mobile', 'home')
-    Active BIT NOT NULL DEFAULT 1  -- Indicator if the phone type is active
 );
 
 -- Sessions Table: Logs user session information (sign-ins and activity)
@@ -75,45 +72,15 @@ CREATE TABLE tblCategories (
     CategoryName VARCHAR(50) NOT NULL  -- Name of the category
 );
 
--- Ingredients Table: Stores ingredients used in recipes
-CREATE TABLE tblIngredients (
-    IngredientID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each ingredient
-    IngredientDescription VARCHAR(50) NOT NULL,  -- Description of the ingredient
-    CategoryID VARCHAR(50),  -- Reference to the category the ingredient belongs to
-    Measurement VARCHAR(50),  -- Unit of measurement for the ingredient (e.g., grams)
-    FOREIGN KEY (CategoryID) REFERENCES tblCategories(CategoryID) ON DELETE SET NULL  -- Set NULL if category is deleted
-);
-
--- Inventory Table: Tracks stock levels of ingredients in inventory
-CREATE TABLE tblInventory (
-    EntryID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each inventory entry (UUID format)
-    Quantity DECIMAL(10,2) NOT NULL CHECK (Quantity <> 0),  -- Quantity (non-zero, can be positive or negative)
-    EmployeeID VARCHAR(50) NOT NULL,  -- Reference to the employee managing the inventory
-    Notes VARCHAR(255),  -- Optional notes about the inventory entry
-    Cost DECIMAL(10,2) CHECK (Cost >= 0),  -- Cost of the item, must be non-negative
-    CreateDateTime DATETIME NOT NULL,  -- Date and time the entry was created
-    ExpireDateTime DATETIME,  -- Optional expiration date for perishable items
-    IngredientID VARCHAR(50),  -- Reference to the ingredient in the entry
-    ReorderAmount DECIMAL(10,2),  -- Suggested reorder amount for the ingredient
-    MinimumQuantity DECIMAL(10,2),  -- Minimum stock level to maintain
-    MaximumQuantity DECIMAL(10,2),  -- Maximum stock level allowed
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID),  -- Reference to employee table
-    FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID),  -- Reference to recipes table
-    FOREIGN KEY (IngredientID) REFERENCES tblIngredients(IngredientID)  -- Reference to ingredients table
-);
-
--- Inventory Audit Table: Logs changes to inventory levels for auditing
-CREATE TABLE tblInventoryAudit (
-    InventoryAuditID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each audit entry (UUID format)
-    IngredientID VARCHAR(50) NOT NULL,  -- Reference to the ingredient being audited
-    OldQuantity DECIMAL(10,2) NOT NULL CHECK (OldQuantity >= 0),  -- Previous quantity before the change
-    NewQuantity DECIMAL(10,2) NOT NULL CHECK (NewQuantity >= 0),  -- New quantity after the change
-    ChangeReason VARCHAR(255),  -- Reason for the change (e.g., restock, usage)
-    EmployeeID VARCHAR(50) NOT NULL,  -- Employee who made the change
-    ChangeDate DATETIME NOT NULL DEFAULT GETDATE(),  -- Date and time of the change
-    PONumber VARCHAR(50),  -- Optional purchase order number related to the change
-    FOREIGN KEY (IngredientID) REFERENCES tblIngredients(IngredientID) ON DELETE CASCADE,  -- Cascading delete on ingredient removal
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID) ON DELETE CASCADE  -- Cascading delete on employee removal
+-- Stores scaling factors for recipes (e.g., doubling, tripling)
+CREATE TABLE tblScalingFactors (
+    ScalingFactorID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the scaling factor
+    -- RecipeID VARCHAR(50) NOT NULL, -- Reference to the recipe
+    ScaleFactor DECIMAL(5,2) NOT NULL, -- Scaling factor (e.g., 2 for doubling)
+    Description VARCHAR(255), -- Description or reason for the scaling factor
+    CreatedAt DATETIME NOT NULL, -- Timestamp of the scaling factor entry
+    UpdatedAt DATETIME, -- Timestamp of the last update
+    -- FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID)
 );
 
 -- Stores information about recipes
@@ -122,25 +89,29 @@ CREATE TABLE tblRecipes (
     RecipeName VARCHAR(100) NOT NULL, -- Name of the recipe
     Description VARCHAR(MAX), -- Detailed description of the recipe
     CategoryID VARCHAR(50), -- Reference to the category the recipe belongs to
-    PrepTime INT CHECK (PrepTime >= 0), -- Preparation time in minutes
-    CookTime INT CHECK (CookTime >= 0), -- Cooking time in minutes
-    TotalTime INT CHECK (TotalTime >= 0), -- Total time for the recipe (prep_time + cook_time)
-    Servings INT NOT NULL CHECK (Servings > 0), -- Number of servings
+    PrepTime INT, -- Preparation time in minutes
+    CookTime INT, -- Cooking time in minutes
+    TotalTime INT, -- Total time for the recipe (prep_time + cook_time)
+    Servings INT NOT NULL, -- Number of servings
     Instructions VARCHAR(MAX), -- Step-by-step cooking instructions
     CreatedAt DATETIME NOT NULL, -- Timestamp when the recipe was created
     UpdatedAt DATETIME, -- Timestamp of the last update
     FOREIGN KEY (CategoryID) REFERENCES tblCategories(CategoryID) -- Foreign key linking to recipe category table
 );
 
--- Stores scaling factors for recipes (e.g., doubling, tripling)
-CREATE TABLE tblScalingFactors (
-    ScalingFactorID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the scaling factor
+-- Defines the ingredients used in a recipe, including quantities and modifiers
+CREATE TABLE tblRecipeIngredients (
+    RecipeIngredientID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the recipe ingredient
     RecipeID VARCHAR(50) NOT NULL, -- Reference to the recipe
-    ScaleFactor DECIMAL(5,2) NOT NULL CHECK (ScaleFactor > 0), -- Scaling factor (e.g., 2 for doubling)
-    Description VARCHAR(255), -- Description or reason for the scaling factor
-    CreatedAt DATETIME NOT NULL, -- Timestamp of the scaling factor entry
-    UpdatedAt DATETIME, -- Timestamp of the last update
-    FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID)
+    IngredientDescription VARCHAR(50) NOT NULL, -- Reference to the ingredient
+    Quantity DECIMAL(10,2) NOT NULL, -- Quantity of the ingredient
+    UnitOfMeasure VARCHAR(50) NOT NULL, -- Unit of measurement
+    QuantityInStock Decimal(10,2) NOT NULL,
+    ReorderFlag BIT NOT NULL DEFAULT 0,
+    ModifierID VARCHAR(50), -- Reference to an ingredient modifier (optional)
+    ScalingFactorID VARCHAR(50),
+    FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID) ON DELETE CASCADE,
+    FOREIGN KEY (ScalingFactorID) REFERENCES tblScalingFactors(ScalingFactorID) ON DELETE SET NULL
 );
 
 -- Stores modifiers for ingredients (e.g., "room temperature", "nearly frozen")
@@ -148,19 +119,6 @@ CREATE TABLE tblIngredientModifiers (
     ModifierID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the modifier
     ModifierDescription VARCHAR(255) NOT NULL, -- Description of the modifier
     CreatedAt DATETIME NOT NULL DEFAULT GETDATE() -- Timestamp of when the modifier was created
-);
-
--- Defines the ingredients used in a recipe, including quantities and modifiers
-CREATE TABLE tblRecipeIngredients (
-    RecipeIngredientID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the recipe ingredient
-    RecipeID VARCHAR(50) NOT NULL, -- Reference to the recipe
-    IngredientID VARCHAR(50) NOT NULL, -- Reference to the ingredient
-    Quantity DECIMAL(10,2) NOT NULL CHECK (Quantity > 0), -- Quantity of the ingredient
-    UnitOfMeasure VARCHAR(50) NOT NULL, -- Unit of measurement
-    ModifierID VARCHAR(50), -- Reference to an ingredient modifier (optional)
-    FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID) ON DELETE CASCADE,
-    FOREIGN KEY (IngredientID) REFERENCES tblIngredients(IngredientID) ON DELETE CASCADE,
-    FOREIGN KEY (ModifierID) REFERENCES tblIngredientModifiers(ModifierID) ON DELETE SET NULL
 );
 
 -- Associates ingredient modifiers with recipe ingredients
@@ -172,13 +130,44 @@ CREATE TABLE tblRecipeIngredientModifiers (
     FOREIGN KEY (ModifierID) REFERENCES tblIngredientModifiers(ModifierID)
 );
 
+-- Inventory Table: Tracks stock levels of ingredients in inventory
+CREATE TABLE tblInventory (
+    EntryID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each inventory entry (UUID format)
+    IngredientDescription VARCHAR(50) NOT NULL,
+    Quantity DECIMAL(10,2) NOT NULL,  -- Quantity (non-zero, can be positive or negative)
+    EmployeeID VARCHAR(50) NOT NULL,  -- Reference to the employee managing the inventory
+    Notes VARCHAR(255),  -- Optional notes about the inventory entry
+    Cost DECIMAL(10,2),  -- Cost of the item, must be non-negative
+    CreateDateTime DATETIME NOT NULL,  -- Date and time the entry was created
+    ExpireDateTime DATETIME,  -- Optional expiration date for perishable items
+    ReorderAmount DECIMAL(10,2),  -- Suggested reorder amount for the ingredient
+    MinimumQuantity DECIMAL(10,2),  -- Minimum stock level to maintain
+    MaximumQuantity DECIMAL(10,2),  -- Maximum stock level allowed
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID),  -- Reference to employee table
+    FOREIGN KEY (IngredientDescription) REFERENCES tblRecipeIngredients(IngredientDescription) ON DELETE SET NULL
+);
+
+-- Inventory Audit Table: Logs changes to inventory levels for auditing
+CREATE TABLE tblInventoryAudit (
+    InventoryAuditID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each audit entry (UUID format)
+    InventoryEntryID VARCHAR(50) NOT NULL,  -- Reference to the ingredient being audited
+    OldQuantity DECIMAL(10,2) NOT NULL,  -- Previous quantity before the change
+    NewQuantity DECIMAL(10,2) NOT NULL,  -- New quantity after the change
+    ChangeReason VARCHAR(255),  -- Reason for the change (e.g., restock, usage)
+    EmployeeID VARCHAR(50) NOT NULL,  -- Employee who made the change
+    ChangeDate DATETIME NOT NULL DEFAULT GETDATE(),  -- Date and time of the change
+    PONumber VARCHAR(50),  -- Optional purchase order number related to the change
+    FOREIGN KEY (InventoryEntryID) REFERENCES tblInventory(EntryID),  -- Cascading delete on ingredient removal
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID)  -- Cascading delete on employee removal
+);
+
 -- Task Management Tables --
 
 -- Stores tasks related to baking recipes
 CREATE TABLE tblTasks (
     TaskID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the task
     RecipeID VARCHAR(50) NOT NULL, -- Reference to the recipe to be baked
-    AmountToBake DECIMAL(10,2) NOT NULL CHECK (AmountToBake > 0), -- Amount to bake
+    AmountToBake DECIMAL(10,2) NOT NULL, -- Amount to bake
     Status VARCHAR(20) NOT NULL DEFAULT 'Pending', -- Task status (e.g., 'Pending', 'Completed')
     DueDate DATETIME, -- Due date for the task
     AssignmentDate DATETIME NOT NULL DEFAULT GETDATE(), -- Date the task was assigned
