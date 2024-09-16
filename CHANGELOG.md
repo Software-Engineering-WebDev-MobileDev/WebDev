@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Nothing for now
 
+## [0.0.8] - 2024-09-16
+
+## Added
+- New function for saving email in the login window between sessions
+- Split the javascript code into numerous separate files
+- Referencing to the javascript code in the html
+
+## Changed
+- Converted all css links into actual files within /css 
+- Converted all js links into actual files within /js
+
+
 ## [0.0.7] - 2024-09-07
 
 ## Added
