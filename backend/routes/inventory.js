@@ -1,5 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
+const {return_500, return_400, return_498} = require('./codes')
 
 // Database setup:
 const config = require('../config.js');
@@ -29,20 +30,10 @@ app.get("/inventory", (req, res) => {
     }
     catch (e) {
         if (e instanceof TypeError) {
-            res.status(400).send(
-                {
-                    status: "error",
-                    reason: "Bad request"
-                }
-            );
+            return_400(res, "Bad request");
         }
         else {
-            res.status(500).send(
-                {
-                    status: "error",
-                    reason: "The server is having a bad day. Please send encouraging words."
-                }
-            );
+            return_500(res);
         }
     }
 });
@@ -62,20 +53,10 @@ app.get("/inventory_item", (req, res) => {
     }
     catch (e) {
         if (e instanceof TypeError) {
-            res.status(400).send(
-                {
-                    status: "error",
-                    reason: "Bad request"
-                }
-            );
+            return_400(res, "Invalid query string");
         }
         else {
-            res.status(500).send(
-                {
-                    status: "error",
-                    reason: "The server is having a bad day. Please send encouraging words."
-                }
-            );
+            return_500(res);
         }
     }
 });

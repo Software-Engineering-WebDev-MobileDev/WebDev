@@ -1,20 +1,30 @@
 /**
  * From https://learn.microsoft.com/en-us/azure/azure-sql/database/azure-sql-javascript-mssql-quickstart?view=azuresql&tabs=passwordless%2Cservice-connector%2Cportal
- * @type {any}
  */
 
 const sql = require('mssql');
 
+/**
+ * A class for interfacing with Microsoft SQL databases
+ */
 class Database {
     config = {};
     poolconnection = null;
     connected = false;
+    MAX_SESSION_DAYS = 7;
 
+    /**
+     * Create a new instance of a database connection based on the provided configuration.
+     * @param config The configuration object to use, defining the connection parameters.
+     */
     constructor(config) {
         this.config = config;
         console.log(`Database: config: ${JSON.stringify(config)}`);
     };
 
+    /**
+     * Establish the connection to the database.
+     */
     async connect() {
         try {
             console.log(`Database connecting...${this.connected}`);
@@ -22,91 +32,87 @@ class Database {
                 this.poolconnection = await sql.connect(this.config);
                 this.connected = true;
                 console.log('Database connection successful');
-            } else {
+            }
+            else {
                 console.log('Database already connected');
             }
-        } catch (error) {
-            console.error(`Error connecting to database: ${JSON.stringify(error)}`);
+        }
+        catch (error) {
+            console.error(`Error connecting to database: ${JSON.stringify(error)}, ${error.message}`);
         }
     }
 
+    /**
+     * Disconnect from the database
+     */
     async disconnect() {
         try {
             this.poolconnection.close();
             console.log('Database connection closed');
-        } catch (error) {
+        }
+        catch (error) {
             console.error(`Error closing database connection: ${error}`);
         }
     }
 
+    /**
+     * Execute a query against the database.
+     * @param query {String} The query to execute. MUST BE SANITIZED!
+     */
     async executeQuery(query) {
         await this.connect();
         const request = this.poolconnection.request();
-        const result = await request.query(query);
-
-        return result.rowsAffected[0];
+        return await request.query(query);
     }
 
-    async create(data) {
-        await this.connect();
-        const request = this.poolconnection.request();
+    /**
+     * Update a session token's activity timestamp
+     * @param session_id {String} the session string sent to the API; doesn't need to be sanitized.
+     * @returns {Promise<boolean>} true on success, false on failure (old/invalid token)
+     */
+    async sessionActivityUpdate(session_id) {
+        // Regex SQL injection validation
+        if (!session_id.match(/^\w{0,32}$/)) {
+            return false;
+        }
 
-        request.input('firstName', sql.NVarChar(255), data.firstName);
-        request.input('lastName', sql.NVarChar(255), data.lastName);
-
-        const result = await request.query(
-            `INSERT INTO Person (firstName, lastName) VALUES (@firstName, @lastName)`
-        );
-
-        return result.rowsAffected[0];
+        // Bump the date
+        return await this.executeQuery(
+            `UPDATE tblSessions Set LastActivityDateTime = GETDATE() WHERE SessionID = '${session_id}' and LastActivityDateTime >= DATEADD(DAY, -${this.MAX_SESSION_DAYS}, GETDATE())`
+        ).then((value) => {
+            return value.rowsAffected[0] === 1;
+        }).catch((e) => {
+            console.log(e);
+            return false;
+        })
     }
 
-    async readAll() {
-        await this.connect();
-        const request = this.poolconnection.request();
-        const result = await request.query(`SELECT * FROM Person`);
+    /**
+     * Get an employee ID from a session token.
+     * @param session_id {String} the session string sent to the API; doesn't need to be sanitized.
+     * @returns {Promise<string|boolean>} employee id string or false if the token is invalid.
+     */
+    async sessionToEmployeeID(session_id) {
+        // Validate the token and update the last activity date
+        if (!(await this.sessionActivityUpdate(session_id))) {
+            // Invalid/expired token
+            return false;
+        }
 
-        return result.recordsets[0];
-    }
-
-    async read(id) {
-        await this.connect();
-
-        const request = this.poolconnection.request();
-        const result = await request
-            .input('id', sql.Int, +id)
-            .query(`SELECT * FROM Person WHERE id = @id`);
-
-        return result.recordset[0];
-    }
-
-    async update(id, data) {
-        await this.connect();
-
-        const request = this.poolconnection.request();
-
-        request.input('id', sql.Int, +id);
-        request.input('firstName', sql.NVarChar(255), data.firstName);
-        request.input('lastName', sql.NVarChar(255), data.lastName);
-
-        const result = await request.query(
-            `UPDATE Person SET firstName=@firstName, lastName=@lastName WHERE id = @id`
-        );
-
-        return result.rowsAffected[0];
-    }
-
-    async delete(id) {
-        await this.connect();
-
-        const idAsNumber = Number(id);
-
-        const request = this.poolconnection.request();
-        const result = await request
-            .input('id', sql.Int, idAsNumber)
-            .query(`DELETE FROM Person WHERE id = @id`);
-
-        return result.rowsAffected[0];
+        // Get the employee id (if valid)
+        return await this.executeQuery(
+            `SELECT EmployeeID FROM tblSessions WHERE SessionID = '${session_id}'`
+        ).then((value) => {
+            if (value.rowsAffected[0] === 1) {
+                return value.recordset[0]["EmployeeID"];
+            }
+            else {
+                return false;
+            }
+        }).catch((e) => {
+            console.log(e);
+            return false;
+        });
     }
 }
 

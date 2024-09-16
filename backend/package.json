@@ -4,9 +4,10 @@
   "description": "The backend",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "set NODE_ENV=development && mocha test",
     "dev": "set NODE_ENV=development && node index.js",
-    "dev_posix": "NODE_ENV=development node index.js"
+    "dev_posix": "NODE_ENV=development node index.js",
+    "drop_tables": "node drop_tables.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +23,16 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
+    "html-minifier-terser": "^7.2.0",
     "morgan": "^1.10.0",
-    "mssql": "^11.0.1"
+    "mssql": "^11.0.1",
+    "sharp": "^0.33.5",
+    "uuid": "^10.0.0",
+    "uuidv4": "^6.2.13"
+  },
+  "devDependencies": {
+    "mocha": "^10.7.3",
+    "node-fetch": "^3.3.2",
+    "unit.js": "^2.1.1"
   }
 }

@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-dotenv.config({ path: `.env.${process.env.NODE_ENV}`.trim(), debug: true, encoding: 'UTF-8' });
+dotenv.config({path: `.env.${process.env.NODE_ENV}`.trim(), debug: true, encoding: 'UTF-8'});
 
 const server = process.env.AZURE_SQL_SERVER;
 const database = process.env.AZURE_SQL_DATABASE;
@@ -22,7 +22,8 @@ if (type) {
             encrypt: true
         }
     };
-} else {
+}
+else {
     config = {
         server,
         port,

@@ -6,13 +6,20 @@ const cookieParser = require('cookie-parser');
 const express = require('express');
 const logger = require('morgan');
 const path = require('path');
+const sharp = require('sharp');
+const { minify } = require('html-minifier-terser');
+
+// Database setup/config
 const config = require('./config.js');
 const Database = require('./database');
+const fs = require('node:fs');
 
 // Routes
-const loginRouter = require('./routes/login')
-const productRequirementRouter = require('./routes/product_requirements')
-const inventoryRouter = require('./routes/inventory')
+const loginRouter = require('./routes/login');
+const productRequirementRouter = require('./routes/product_requirements');
+const inventoryRouter = require('./routes/inventory');
+const userInfoRouter = require('./routes/user_info');
+const ingredientRouter = require('./routes/ingredients');
 
 // App
 const app = express();
@@ -26,139 +33,44 @@ app.use(compression());     // For bandwidth saving on the more intensive action
 // Run this to create the tables in the database
 if (process.env.NODE_ENV.trim() === 'development') {
     const database = new Database(config);
-    database
-        .executeQuery(
-            `CREATE TABLE Users (
-                    id INT PRIMARY KEY IDENTITY(1,1),
-                    username VARCHAR(255) NOT NULL UNIQUE,
-                    password VARCHAR(255) NOT NULL,
-                    role VARCHAR(50)
-                );`
-        )
-        .then(() => {
-            console.log('Table created');
-        })
-        .catch((err) => {
-            // Table may already exist
-            console.error(`Error creating table: ${err}`);
-        });
-    database
-        .executeQuery(
-            `CREATE TABLE Ingredients (
-                    ingredient_id INT PRIMARY KEY IDENTITY(1,1),
-                    name NVARCHAR(100) NOT NULL,
-                    unit NVARCHAR(50) NOT NULL,
-                    calories_per_unit DECIMAL(10, 2) NOT NULL
-                );`
-        )
-        .then(() => {
-            console.log('Table created');
-        })
-        .catch((err) => {
-            // Table may already exist
-            console.error(`Error creating table: ${err}`);
-        });
-    database
-        .executeQuery(
-            `CREATE TABLE Inventory (
-                    inventory_id INT PRIMARY KEY IDENTITY(1,1),
-                    ingredient_id INT NOT NULL,
-                    quantity DECIMAL(18, 2) NOT NULL,
-                    last_updated DATETIME DEFAULT GETDATE(),
-                    FOREIGN KEY (ingredient_id) REFERENCES Ingredients(ingredient_id)
-                );`
-        )
-        .then(() => {
-            console.log('Table created');
-        })
-        .catch((err) => {
-            // Table may already exist
-            console.error(`Error creating table: ${err}`);
-        });
-    database
-        .executeQuery(
-            `CREATE TABLE Recipes (
-                    recipe_id INT PRIMARY KEY IDENTITY(1,1),
-                    recipe_name NVARCHAR(100) NOT NULL,
-                    instructions NVARCHAR(MAX) NOT NULL,
-                    prep_time INT NOT NULL,
-                    baking_time INT NOT NULL
-                );`
-        )
-        .then(() => {
-            console.log('Table created');
-        })
-        .catch((err) => {
-            // Table may already exist
-            console.error(`Error creating table: ${err}`);
-        });
-    database
-        .executeQuery(
-            `CREATE TABLE Recipe_ingredients (
-                    recipe_ingredient_id INT PRIMARY KEY IDENTITY(1,1),
-                    recipe_id INT NOT NULL,
-                    ingredient_id INT NOT NULL,
-                    quantity_required DECIMAL(18, 2) NOT NULL,
-                    unit VARCHAR(50) NOT NULL,
-                    FOREIGN KEY (recipe_id) REFERENCES Recipes(recipe_id),
-                    FOREIGN KEY (ingredient_id) REFERENCES Ingredients(ingredient_id)
-                );`
-        )
-        .then(() => {
-            console.log('Table created');
-        })
-        .catch((err) => {
-            // Table may already exist
-            console.error(`Error creating table: ${err}`);
-        });
-    database
-        .executeQuery(
-            `CREATE TABLE Employees (
-                    EmployeeID INT PRIMARY KEY IDENTITY(1,1),
-                    Name VARCHAR(100) NOT NULL,
-                    Username VARCHAR(50) UNIQUE,
-                    Password VARCHAR(100)
-                );`
-        )
-        .then(() => {
-            console.log('Table created');
-        })
-        .catch((err) => {
-            // Table may already exist
-            console.error(`Error creating table: ${err}`);
-        });
-    database
-        .executeQuery(
-            `CREATE TABLE Shifts (
-                    ShiftID INT PRIMARY KEY IDENTITY(1,1),
-                    StartTime DATETIME,
-                    EndTime DATETIME
-                );`
-        )
-        .then(() => {
-            console.log('Table created');
-        })
-        .catch((err) => {
-            // Table may already exist
-            console.error(`Error creating table: ${err}`);
-        });
-    database
-        .executeQuery(
-            `CREATE TABLE Tasks (
-                    TaskID INT PRIMARY KEY IDENTITY(1,1),
-                    Description VARCHAR(255) NOT NULL,
-                    Status VARCHAR(20), -- (e.g., "Pending", "In Progress", "Completed")
-                    ShiftID INT FOREIGN KEY REFERENCES Shifts(ShiftID),
-                    EmployeeID INT FOREIGN KEY REFERENCES Employees(EmployeeID)
-                );`
-        )
-        .then(() => {
-            console.log('Table created');
-        })
-        .catch((err) => {
-            // Table may already exist
-            console.error(`Error creating table: ${err}`);
-        });
+    fs.readFile('./schema.sql', 'utf-8', (err, data) => {
+        if (err) {
+            console.log(err);
+            process.exit(1);
+        }
+        else {
+            database
+                .executeQuery(data)
+                .then(() => {
+                    // Insert some email types
+                    database.executeQuery(
+                        "INSERT INTO tblEmailTypes (TypeID, Description, Active) VALUES " +
+                        "('personal', 'Personal Email', 1), " +
+                        "('work', 'Work Email', 1), " +
+                        "('other', 'Other Email', 1)"
+                    ).then(() => {});
+                    // Insert some phone types
+                    database.executeQuery(
+                        "INSERT INTO tblPhoneTypes (TypeID, Description, Active) VALUES " +
+                        "('mobile', 'Mobile Phone', 1), " +
+                        "('home', 'Home Phone', 1), " +
+                        "('work', 'Work Phone', 1), " +
+                        "('fax', 'Fax', 1)"
+                    ).then(() => {});
+
+                    console.log('Tables created');
+                })
+                .catch((err) => {
+                    // Table may already exist
+                    if (err.message.match(/There is already an object named '\w+' in the database./)) {
+                        console.log("Tables exist already. If this is not intended, you may wish to drop all tables.")
+                    }
+                    else {
+                        console.error(`Error creating table: ${err}`);
+                    }
+                });
+        }
+    });
 }
 
 // Express setup
@@ -166,13 +78,126 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Optimized asset serving
+const cacheDir = path.join(__dirname, 'cache');
+if (!fs.existsSync(cacheDir)){
+    fs.mkdirSync(cacheDir, { recursive: true });
+}
+
+// Optimized image asset serving
+const optimize_images = (req, res, next) => {
+    const imageFormats = ['.jpg', '.jpeg', '.png', '.webp', '.jfif']; // Supported image formats
+    const ext = path.extname(req.url).toLowerCase();
+
+    if (imageFormats.includes(ext)) {
+        const originalImagePath = path.join(__dirname, '../BakerySite', req.url);
+        const cachedImagePath = path.join(cacheDir, req.url); // Cache path mirrors original
+
+        // Ensure the directory structure for the cache exists
+        const cachedImageDir = path.dirname(cachedImagePath);
+        if (!fs.existsSync(cachedImageDir)) {
+            fs.mkdirSync(cachedImageDir, { recursive: true });
+        }
+
+        // Check if the optimized image already exists in the cache
+        fs.access(cachedImagePath, fs.constants.F_OK, (err) => {
+            if (!err) {
+                // Serve cached optimized image
+                return res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
+            }
+
+            // If not cached, check if the original image exists
+            fs.access(originalImagePath, fs.constants.F_OK, (err) => {
+                if (err) {
+                    return next(); // If the image doesn't exist, move to next middleware
+                }
+
+                // Optimize the image and save it to the cache
+                const transformer = sharp(originalImagePath).webp({
+                    quality: 80
+                });
+
+                transformer.toFile(cachedImagePath, (err, info) => {
+                    if (err) {
+                        return next(err); // Error handling
+                    }
+                    console.log(info);
+
+                    // Serve the newly cached optimized image
+                    res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
+                });
+            });
+        });
+    } else {
+        next(); // If not an image, move to next middleware
+    }
+};
+
+// Optimized HTML asset serving
+const optimize_html = (req, res, next) => {
+    const ext = path.extname(req.url).toLowerCase();
+
+    if (ext === '.html' || req.url.endsWith("/")) {
+        const original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
+        const cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
+
+        // Ensure the directory structure for the cache exists
+        const cached_html_dir = path.dirname(cached_html_path);
+        if (!fs.existsSync(cached_html_dir)) {
+            fs.mkdirSync(cached_html_dir, { recursive: true });
+        }
+
+        // Check if the optimized html already exists in cache
+        fs.access(cached_html_path, fs.constants.F_OK, (err) => {
+            if (!err) {
+                // Serve cached optimized image
+                return res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
+            }
+
+            // If not cached, check if the original image exists
+            fs.access(original_html_path, fs.constants.F_OK, async (err) => {
+                if (err) {
+                    return next(); // If the HTML doesn't exist, move to next middleware
+                }
+
+                let original_html_data = fs.readFileSync(original_html_path, 'utf-8');
+
+                console.log(original_html_data)
+
+                let optimized_html = await minify(
+                        original_html_data,
+                        {
+                            caseSensitive: true,
+                            collapseWhitespace: true,
+                            conservativeCollapse: true,
+                            continueOnParseError: true,
+                            minifyCSS: true,
+                            minifyJS: true,
+                            removeComments: true,
+                            removeEmptyElements: true
+                        });
+
+                fs.writeFileSync(cached_html_path, optimized_html, 'utf-8');
+                res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
+            });
+        });
+    }
+    else {
+        next();
+    }
+};
+
+app.use(optimize_images);
+app.use(optimize_html);
 
 // Routes usage
 app.use('/api',
     loginRouter,
     productRequirementRouter,
-    inventoryRouter
+    inventoryRouter,
+    userInfoRouter,
+    ingredientRouter
 );
 
 // Serve the static frontend
