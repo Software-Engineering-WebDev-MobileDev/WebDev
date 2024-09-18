@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.2",
+    "clean-css": "^5.3.3",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -27,6 +28,7 @@
     "morgan": "^1.10.0",
     "mssql": "^11.0.1",
     "sharp": "^0.33.5",
+    "terser": "^5.33.0",
     "uuid": "^10.0.0",
     "uuidv4": "^6.2.13"
   },
