@@ -1,5 +1,9 @@
+/* Various Font Colorations */
 .orange1-text {
     color: #e99002;
+}
+.charcoal-text {
+    color: #2C2C2C;
 }
 .dbrown-text {
     color: #5c280a;
@@ -17,6 +21,97 @@
     color: #f6ebd8;
 }
 
+/* Login Form Style */
+
+#divLogin {
+    background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
+    border-radius: 0.25rem; 
+    padding: 1.5rem; 
+}
+.form-control {
+    background-color: #fff; /* Ensure input fields remain fully opaque */
+}
+
+/* Login Button Style */
+#btnLogin {
+    background-color: #f5c976; /* Set the background color */
+    color: #2C2C2C; /* Set the text color */
+    border: none; /* Remove the border */
+    padding: 12px 20px; /*  Add some padding */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline from text */
+    display: inline-block; /* Make sure the button behaves as an inline element */
+    font-size: 16px; /* Set font size */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer when hovered */
+}
+
+#btnLogin:hover {
+    background-color: #e5b567; /* Change color on hover */
+}
+
+/* Navigation Bar Style */
+.navbar-custom {
+    background-color: #f5c976; /* Set the background color */
+}
+
+/* Hamburger Navigation Button Style */
+#btnHamburger {
+    background-color: #f5c976; /* Button background color */
+    border: none; /* Remove border if needed */
+    color: #2C2C2C; /* Text color (icon color) */
+}
+
+#btnHamburger:hover {
+    background-color: #e0a64a; /* Background color on hover */
+}
+
+/* Register Form Style */
+
+#divRegister {
+    background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
+    border-radius: 0.25rem; 
+    padding: 1.5rem; 
+}
+.form-control {
+    background-color: #fff; /* Ensure input fields remain fully opaque */
+}
+
+/* Register Button Style */
+#btnRegister {
+    background-color: #f5c976; /* Set the background color */
+    color: #2C2C2C; /* Set the text color */
+    border: none; /* Remove the border */
+    padding: 12px 20px; /*  Add some padding */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline from text */
+    display: inline-block; /* Make sure the button behaves as an inline element */
+    font-size: 16px; /* Set font size */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer when hovered */
+}
+
+#btnRegister:hover {
+    background-color: #e5b567; /* Change color on hover */
+}
+
+/* Clear Button Style */
+#btnClear {
+    background-color: #D32F2F; /* Set the background color */
+    color: #f6ebd8; /* Set the text color */
+    border: none; /* Remove the border */
+    padding: 12px 20px; /*  Add some padding */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline from text */
+    display: inline-block; /* Make sure the button behaves as an inline element */
+    font-size: 16px; /* Set font size */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer when hovered */
+}
+
+#btnClear:hover {
+    background-color: #B22222; /* Change color on hover */
+}
 
 /* Orange Default #e99002 */
 /* Dark Brown #5c280a */
