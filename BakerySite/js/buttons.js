@@ -58,10 +58,10 @@ $('#btnLogin').on('click',function(){
                 sessionStorage.setItem('SessionID',result.SessionID);
                 localStorage.setItem('SessionID', result.SessionID);
 
+                $("#btnDashboard").show()
                 $('#btnLogout').show();
                 $("#btnAccount").show()
-                $("#btnDashboard").show()
-                $("#btnInventory").show()
+                $("#btnIngredient").show()
                 $("#btnRecipe").show()
                 $("#btnTask").show()
                 //$('#divNavbar').slideUp();
@@ -240,8 +240,8 @@ $('#btnLogout').on('click', function(){
     setUserLocation('login');
 });
 
-$('#btnInventory').on('click', function(){
-    window.location.href = 'inventory.html';
+$('#btnIngredient').on('click', function(){
+    window.location.href = 'ingredient.html';
 })
 
 $('#btnAccount').on('click', function(){

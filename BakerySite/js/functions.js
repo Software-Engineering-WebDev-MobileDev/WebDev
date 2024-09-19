@@ -99,3 +99,21 @@ function save_data_to_localstorage(input_id) {
     txtLoginUsername.value = localStorage["txtLoginUsername"];
     }
 }
+
+/*
+function: displayIngredients
+parameters: none
+purpose: display ingredients as cards
+*/
+function displayIngredients() {
+    const container = document.getElementById('ingredientContainer');
+    ingredients.forEach(ingredient => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = ingredient.name;
+        card.addEventListener('click', () => {
+            window.location.href = `ingredient.html?id=${ingredient.id}`;
+        });
+        container.appendChild(card);
+    });
+}

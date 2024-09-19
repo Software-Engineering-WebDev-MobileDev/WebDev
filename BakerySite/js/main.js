@@ -5,12 +5,13 @@ $(document).ready(function() {
     var sessionID = localStorage.getItem('SessionID');
     if (sessionID) {
         sessionStorage.setItem('SessionID', sessionID);
+        
         $('#divLogin').hide();
         $('#divDashboard').slideDown();
         $("#btnLogout").show()
         $("#btnAccount").show()
         $("#btnDashboard").show()
-        $("#btnInventory").show()
+        $("#btnIngredient").show()
         $("#btnRecipe").show()
         $("#btnTask").show()
         UpdateDivEnvironment();
