@@ -308,7 +308,15 @@ app.use('/api',
 );
 
 // Serve the static frontend
-app.use('/', express.static('../BakerySite'));
+if (process.env.NODE_ENV.trim() !== 'development') {
+    app.use('/', express.static('../BakerySite'));
+}
+else {
+    app.use('/', express.static('../BakerySite', {
+        etag: false,
+        maxAge: 0
+    }));
+}
 
 // Docker healthcheck
 app.get('/health', (req, res) => {
