@@ -338,8 +338,7 @@ app.post('/add_user_phone', (req, res) => {
                 if (employee_id) {
                     database.executeQuery(
                         `INSERT INTO tblPhoneNumbers (PhoneNumberID, AreaCode, Number, TypeID, Valid, EmployeeID)
-                         VALUES ('${phone_number_id}', '${area_code}', '${number}', '${phone_type}', 1, '${employee_id}
-                                 ')`
+                         VALUES ('${phone_number_id}', '${area_code}', '${number}', '${phone_type}', 1, '${employee_id}')`
                     ).then(() => {
                         res.status(201).send(
                             {
