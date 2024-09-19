@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BakerySite</title>
+    <title>Rolling Scones</title>
 
     <style>
         /* Chrome, Safari, Edge, Opera */
@@ -19,27 +19,28 @@
         }
     </style>
 
-    <link rel="icon" type="image/png" href="images/BreadIcon.png"/> <!--favicon next to website title-->
+    <link href="images/BreadIcon.png" rel="icon" type="image/png"/><!--favicon next to website title-->
     <link href="css/bootstrap.min.css" rel="stylesheet"/>
     <link href="css/animate.min.css" rel="stylesheet"/>
     <link href="css/bootstrap-icons.css" rel="stylesheet"/>
     <link href="css/dataTables.css" rel="stylesheet"/>
     <link href="css/font.all.css" rel="stylesheet"/>
-
+    <link href="css/style.css" rel="stylesheet">
+   
 </head>
 <body background="images/BreadBack.jfif" style="background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
     <!--Navbar at the top of the page-->
-    <nav id="divNavbar" class="navbar navbar-expand-lg bg-primary">
+    <nav id="divNavbar" class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid col-6">
-            <a class="navbar-brand text-light fs-1" href="#">
+            <a class="navbar-brand charcoal-text fs-1" href="index.html">
                 <img src="images/BreadIcon.png" alt="BakerySite logo" width="50" height="50">
-                BakerySite
+                <strong>Rolling Scones</strong>
             </a>
         </div>
-      <!--<a id="btnAbout" class="text-light fs-3 mx-3" href="#">About</a>-->
+      <!--Navigation Button-->
       <div class="col-6 d-flex justify-content-end">
-        <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle " type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="bi-list text-light fs-1"> </i>
+        <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi-list fs-1"> </i>
         </button>
     
         <ul id="dropDownMenu" class="dropdown-menu dropdown-menu-end">
@@ -51,12 +52,9 @@
             <li><button id="btnTask" class="dropdown-item position-relative" type="button" style="display: none;">Task</button></li>
             <li><button id="btnLogout" class="dropdown-item position-relative" type="button" style="display: none;">Logout</button></li>        
         </ul>
-    
       </div>
-            
     </nav>
 
- 
     <style>
         .err { background: #ffe6ee; border: 1px solid #b1395f; }
         .emsg { color: #c12020; font-weight: bold; }
@@ -67,7 +65,7 @@
         <!--Login Form-->
         <div id="divLogin" class="card col-10 col-md-8 col-lg-6 mt-3">
             <div class="card-header">
-                <h2 class="text-center">Login</h2>
+                <h2 class="text-center brown-text"><strong>Sign In</strong></h2>
             </div>
             <div class="card-body">
                 <form>
@@ -84,9 +82,9 @@
                         Caps Lock is on
                     </div>
                     </div>
-                    <button id="btnLogin" type="button" class="btn btn-primary col-12 mt-4">Login</button>
+                    <button id="btnLogin" type="button" class="btn btn-primary col-12 mt-4"><strong>Login</strong></button>
                     <div class="text-center mt-4">
-                        <a href="#" onclick="return false;" id="btnToggle">Don't have an account? Register here!</a>
+                        <a href="#" onclick="return false;" id="btnToggle" class="brown-text">Don't have an account? Register here!</a>
                     </div>
                 </form>
             </div>
@@ -99,17 +97,6 @@
             </div>
             <div class="card-body">
                 <form>
-                    <h3 class="mb-3">Personal information</h3>
-                    <div class="form-floating mb-3" > <!--username-->
-                        <input id="txtRegisterUsername" class="form-control" placeholder="Username" onfocusout="check(document.getElementById('txtRegisterUsername'), document.getElementById('errRegisterUsername') )" required minlength="1" maxlength="99">
-                        <label for="txtRegisterUsername" class="form-label text-black" aria-label="Username">Username</label>
-                    <div id="errRegisterUsername" class="emsg"></div>
-                    </div>
-                    <div class="form-floating mb-3" required minlength="1"> <!--password-->
-                        <input id="txtRegisterPassword" type="password" class="form-control" placeholder="Password" onfocusout="check(document.getElementById('txtRegisterPassword'), document.getElementById('errRegisterPassword') )" required minlength="1">
-                        <label for="txtRegisterPassword" class="form-label text-black" aria-label="Password">Password</label>
-                    <div id="errRegisterPassword" class="emsg"></div>
-                    </div>
                     <div class="row gx-3">
                         <div class="col">   
                             <div class="form-floating mb-3" required minlength="1">
@@ -126,6 +113,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-floating mb-3" > <!--username-->
+                        <input id="txtRegisterUsername" class="form-control" placeholder="Username" onfocusout="check(document.getElementById('txtRegisterUsername'), document.getElementById('errRegisterUsername') )" required minlength="1" maxlength="99">
+                        <label for="txtRegisterUsername" class="form-label text-black" aria-label="Username">Username</label>
+                    <div id="errRegisterUsername" class="emsg"></div>
+                    </div>
+                    <div class="form-floating mb-3" required minlength="1"> <!--password-->
+                        <input id="txtRegisterPassword" type="password" class="form-control" placeholder="Password" onfocusout="check(document.getElementById('txtRegisterPassword'), document.getElementById('errRegisterPassword') )" required minlength="1">
+                        <label for="txtRegisterPassword" class="form-label text-black" aria-label="Password">Password</label>
+                    <div id="errRegisterPassword" class="emsg"></div>
+                    </div>
                     <div class="form-floating mb-3" required minlength="1">     
                         <input id="txtRegisterEmail" class="form-control" placeholder="Email"  required>
                         <label for="txtRegisterEmail" class="form-label text-black" aria-label="Email">Email</label>
@@ -140,11 +137,11 @@
                             </div>
                         </div>
                     </div>
-                    <button id="btnRegister" type="button" class="btn btn-primary col-12 mt-4">Register</button>
-                    <button type="button" id="btnClear" class="btn btn-danger col-12 mt-4">Clear</button>
+                    <button id="btnRegister" type="button" class="btn btn-primary charcoal-text col-12 mt-4"><strong>Register</strong></button>
+                    <button id="btnClear" type="button" class="btn btn-danger col-12 mt-4"><strong>Clear</strong></button>
                     
                     <div class="text-center mt-4">
-                        <a href="#" onclick="return false;" id="btnReturn"> Return </a>
+                        <a href="index.html" onclick="return false;" id="btnReturn" class="brown-text"> Return </a>
                     </div>
                 </form>
             </div>
@@ -185,7 +182,12 @@
             <div class="card-body">
                 <div class="row row-cols-2 mb-3">
                     <div class="col">
-                        <h3 class="text-center">Eggs</h3>
+                        <h3 class="text-center">Hey, no looking yet. We're workin' here.</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+                    <!--  Dashboard elements  <h3 class="text-center">Eggs</h3>
                         
                         <button type="button" class="btn btn-primary col-12" data-bs-toggle="modal" data-bs-target="#eggModal">Add harvest</button>
                     </div>
@@ -214,7 +216,7 @@
             </button>
         </div>
     </div>
-</div>
+</div>-->
 
 <!-- Settings Modal -->
 <div id="settingsModal" class="modal settings-box" tabindex="-1">

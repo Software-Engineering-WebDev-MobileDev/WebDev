@@ -41,31 +41,6 @@ $("#btnLogEggs").on('click',function(){
     }
 })
 
- // !!! LATER USEFUL FOR ANY TABLES NEEDED
-
- function fillTable() {
-    let strSessionID = sessionStorage.getItem('SessionID');
-    $.getJSON('https://simplecoop.swollenhippo.com/environment.php', {SessionID: strSessionID, days: '999'}, function(result) {
-        if(result.length > 0) {
-            $('#pNoObservations').hide();
-            result.forEach(function(observation) {
-                let strRow = `<tr><td>${observation.ObservationDateTime}</td><td>${observation.Temperature}</td><td>${observation.Humidity}</td></tr`;
-                $('#tblEnvironment, tbody').append(strRow);
-            });
-
-        }
-
-        $('#tblEnvironment').DataTable({
-            "order": [[0, 'dsc']]
-        });
-
-    })
-}  
-
-
-
-
-
 // result = JSON.parse(result);
 function updateEggInfo() {
 let strSessionID = sessionStorage.getItem('SessionID');
