@@ -1,5 +1,5 @@
 $('#btnAbout').on('click',function(){
-    $('#divNavButtons').slideToggle();
+   $('#divNavButtons').slideToggle();
     //Slide Login or Register card before sliding About card down
     var userLoc;
     if ($('#divLogin').is(':visible')) {
@@ -10,8 +10,7 @@ $('#btnAbout').on('click',function(){
         $('#divRegister').slideUp();
     } else if ($('#divDashboard').is(':visible')) {
         userLoc = 'dashboard';
-        $('#divDashboard').slideUp();
-        $('#divEnvironment').slideUp();                
+        $('#divDashboard').slideUp();              
     }   else {
         userLoc = sessionStorage.getItem('userLoc');
         }
@@ -27,7 +26,6 @@ $('#btnReturnLogin').on('click',function(){
     switch (userLoc) {
         case 'dashboard':
             $('#divDashboard').slideDown();
-            $('#divEnvironment').slideDown();   
             break;
         case 'registration':
             $('#divRegistration').slideDown;
@@ -64,11 +62,8 @@ $('#btnLogin').on('click',function(){
                 //$('#divNavbar').slideUp();
                 $('#divLogin').slideUp(function(){
                     $('#divDashboard').slideDown();
-                    $('#divEnvironment').show();
-                    //fetchEnvironmentData();
                 });
 
-                UpdateDivEnvironment();
                 fillTable();
 
             } else {
@@ -91,12 +86,6 @@ $('#btnRegister').on('click',function(){
     let strEmail = $('#txtRegisterEmail').val();
     let strPhone = $('#numRegisterPhone').val();
     let phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
-    let strCoopID = $('#txtRegisterCoopID').val();
-    let strStreetAddress1 = $('#txtRegisterStreetAddress1').val();
-    let strStreetAddress2 = $('#txtRegisterStreetAddress2').val();
-    let strCity = $('#txtRegisterCity').val();
-    let strState = $('#txtRegisterState').val();
-    let strZip = $('#txtRegisterZip').val();
 
     let blnError = false; //This is set to true if the user entered something incorrect
     let strErrorMsg = ""; //Error messages are concatenated to this string
@@ -131,29 +120,6 @@ $('#btnRegister').on('click',function(){
         strErrorMsg += "Phone number is not valid, please use the format xxx-xxx-xxxx.  "
     }
 
-    if (strCoopID < 1) {
-        blnError = true;
-        strErrorMsg += "Coop ID cannot be blank. ";
-    }
-    
-    if (strStreetAddress1 < 1) {
-        blnError = true;
-        strErrorMsg += "Street address 1 cannot be blank. ";
-    }
-    //Street address 2 is not necessary
-    if (strCity < 1) {
-        blnError = true;
-        strErrorMsg += "City cannot be blank. ";
-    }
-    if (strState < 1) {
-        blnError = true;
-        strErrorMsg += "State cannot be blank. ";
-    }
-    if (strZip < 1) {
-        blnError = true;
-        strErrorMsg += "Zip code cannot be blank. ";
-    }
-
     if (blnError) { //if there was incorrect input
         Swal.fire({
             title: "Oops!",
@@ -176,16 +142,14 @@ $('#btnRegister').on('click',function(){
                 });
 
                 //record user's address
-                $.post('https://simplecoop.swollenhippo.com/useraddress.php', {Email: strEmail, Street1: strStreetAddress1, Street2: strStreetAddress2, City: strCity, State: strState, ZIP: strZip}, function(result){
+                $.post('https://simplecoop.swollenhippo.com/useraddress.php', {Email: strEmail}, function(result){
                     console.log(result);
-                    UpdateDivEnvironment();
                 });
 
                 //show dashboard
                 //$('#divNavbar').slideUp();
                 $('#divRegister').slideUp(function(){
                     $('#divDashboard').slideDown();
-                    $('#divEnvironment').show("slide", { direction: "right" }, 1000)
                 });
 
                 fillTable();
@@ -237,12 +201,6 @@ $('#btnClear').on('click',function(){
     $('#txtRegisterLastName').val( '')
     $('#txtRegisterEmail').val( '')
     $('#numRegisterPhone').val( '')
-    $('#txtRegisterCoopID').val( '')
-    $('#txtRegisterStreetAddress1').val( '')
-    $('#txtRegisterStreetAddress2').val( '')
-    $('#txtRegisterCity').val( '')
-    $('#txtRegisterState').val( '')
-    $('#txtRegisterZip').val( '')
 
 })
 
@@ -260,7 +218,7 @@ $('#txtEggs').keypress(function(event) {
 });
 
 $('#btnRefresh').on('click', function(){
-    UpdateDivEnvironment();
+
 })
 
 $('#btnLogout').on('click', function(){

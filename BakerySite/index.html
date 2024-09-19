@@ -134,106 +134,7 @@
                                 <div id="errRegisterPhone" class="emsg"></div>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="form-floating mb-3" required minlength="1">
-                                <input id="txtRegisterCoopID" class="form-control" placeholder="Coop ID" onfocusout="check(document.getElementById('txtRegisterCoopID'), document.getElementById('errRegisterCoopID') )" required minlength="1">
-                                <label for="txtRegisterCoopID" class="form-label text-black" aria-label="Coop ID">Coop Registration ID</label>
-                                <div id="errRegisterCoopID" class="emsg"></div>
-                            </div>
-                        </div>
                     </div>
-                    <hr>
-                    <h3 class="mb-3">Address</h3>
-                    <div class="form-floating mb-3" required minlength="1">
-                        <input id="txtRegisterStreetAddress1" class="form-control" placeholder="Street Address 1" onfocusout="check(document.getElementById('txtRegisterStreetAddress1'), document.getElementById('errRegisterStreetAddress1') )" required minlength="1">
-                        <label for="txtRegisterStreetAddress1" class="form-label text-black" aria-label="Street Address 1">Street Address 1</label>
-                        <div id="errRegisterStreetAddress1" class="emsg"></div>
-                    </div>
-                    <div class="form-floating mb-3" required minlength="1">
-                        <input id="txtRegisterStreetAddress2" class="form-control" placeholder="Street Address 2" onfocusout="check(document.getElementById('txtRegisterStreetAddress2'), document.getElementById('errRegisterStreetAddress2') )" required minlength="1">
-                        <label for="txtRegisterStreetAddress2" class="form-label text-black" aria-label="Street Address 2">Street Address 2</label>
-                        <div id="errRegisterStreetAddress2" class="emsg"></div>
-                    </div>
-                    <div class="row gx-3">
-                        <div class="col">
-                            <div class="form-floating mb-3" required minlength="1">
-                                <input id="txtRegisterCity" class="form-control" placeholder="City" onfocusout="check(document.getElementById('txtRegisterCity'), document.getElementById('errRegisterCity') )" required minlength="1">
-                                <label for="txtRegisterCity" class="form-label text-black" aria-label="City">City</label>
-                                <div id="errRegisterCity" class="emsg"></div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div>
-                                <div class="form-floating mb-3">
-                                    <select name="States" id="txtRegisterState" class="form-select" onfocusout="check(document.getElementById('txtRegisterState'), document.getElementById('errRegisterState') )" required><!--don't let them submit while "Select" is selected-->
-                                        <option disabled selected value="" selected>Select</option>
-                                        <option value="Alabama">AL</option>
-                                        <option value="Alaska">AK</option>
-                                        <option value="Arizona">AZ</option>
-                                        <option value="Arkansas">AR</option>
-                                        <option value="California">CA</option>
-                                        <option value="Colorado">CO</option>
-                                        <option value="Connecticut">CT</option>
-                                        <option value="Delaware">DE</option>
-                                        <option value="District of Columbia">DC</option>
-                                        <option value="Florida">FL</option>
-                                        <option value="Georgia">GA</option>
-                                        <option value="Hawaii">HI</option>
-                                        <option value="Idaho">ID</option>
-                                        <option value="Illinois">IL</option>
-                                        <option value="Indiana">IN</option>
-                                        <option value="Iowa">IA</option>
-                                        <option value="Kansas">KS</option>
-                                        <option value="Kentucky">KY</option>
-                                        <option value="Louisiana">LA</option>
-                                        <option value="Maine">ME</option>
-                                        <option value="Maryland">MD</option>
-                                        <option value="Massachusetts">MA</option>
-                                        <option value="Michigan">MI</option>
-                                        <option value="Minnesota">MN</option>
-                                        <option value="Mississippi">MS</option>
-                                        <option value="Missouri">MO</option>
-                                        <option value="Montana">MT</option>
-                                        <option value="Nebraska">NE</option>
-                                        <option value="Nevada">NV</option>
-                                        <option value="New Hampshire">NH</option>
-                                        <option value="New Jersey">NJ</option>
-                                        <option value="New Mexico">NM</option>
-                                        <option value="New York">NY</option>
-                                        <option value="North Carolina">NC</option>
-                                        <option value="North Dakota">ND</option>
-                                        <option value="Ohio">OH</option>
-                                        <option value="Oklahoma">OK</option>
-                                        <option value="Oregon">OR</option>
-                                        <option value="Pennsylvania">PA</option>
-                                        <option value="Rhode Island">RI</option>
-                                        <option value="South Carolina">SC</option>
-                                        <option value="South Dakota">SD</option>
-                                        <option value="Tennessee">TN</option>
-                                        <option value="Texas">TX</option>
-                                        <option value="Utah">UT</option>
-                                        <option value="Vermont">VT</option>
-                                        <option value="Virginia">VA</option>
-                                        <option value="Washington ">WA</option>
-                                        <option value="West Virginia">WV</option>
-                                        <option value="Wisconsin">WI</option>
-                                        <option value="Wyoming">WY</option>
-                                    </select>
-                                    <label for="txtRegisterState" class="text-black" aria-label="State">State</label>
-                                    <div id="errRegisterState" class="emsg"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="col">             
-                            <div class="form-floating mb-3" required length="5">
-                                <input id="txtRegisterZip" class="form-control" placeholder="Zip Code" onfocusout="check(document.getElementById('txtRegisterZip'), document.getElementById('errRegisterZip') )" required minlength="1">
-                                <label for="txtRegisterZip" class="form-label text-black" aria-label="Zip Code">Zip Code</label>
-                                <div id="errRegisterZip" class="emsg"></div>    
-                            </div>
-                        </div>
-                    </div>
-
                     <button id="btnRegister" type="button" class="btn btn-primary col-12 mt-4">Register</button>
                     <button type="button" id="btnClear" class="btn btn-danger col-12 mt-4">Clear</button>
                     
@@ -405,16 +306,6 @@
     </div>
 </div>
 
-    <!--Leftside Leftside Leftside (Google it if you don't get the reference)-->
-    <div id="divEnvironment" class="card col-4 mt-3 mb-3 mx-3" style="display: none;">
-        <div class="card-body text-white font-weight-bold" style=" background-image: url('images/clearSkies.jpg'); background-size: cover;">
-            <h2 class="card-title text-bold" style="background-color: rgba(0, 0, 0, 0.5);">Conditions in <span id="spanLocation"></span></h3>
-            <p style="background-color: rgb(0, 0, 0, 0.5);">Temp: <span id="spanCurrentTemp">--</span></p>
-            <p style="background-color: rgb(0, 0, 0, 0.5);">Humidity: <span id="spanCurrentHumidity">--</span>%</p>
-            <button id="btnRefresh" class="btn btn-secondary col-6 offset-3" type="button">Refresh</button>
-        </div>
-    </div>
-
     <!--Egg Modal (popup)-->
     <div class="modal fade" id="eggModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -439,16 +330,15 @@
 
     <!--START OF JAVASCRIPT-->
 
-    <script src="/js/api.js"></script>
+    <script src="/js/jsource/jquery.js"></script>
+    <script src="/js/jsource/chart.js"></script>
+    <script src="/js/jsource/dataTables.js"></script>
+    <script src="/js/jsource/jsbootstrap.js"></script>
+    <script src="/js/jsource/sweetalert.js"></script>  
     <script src="/js/buttons.js"></script>
-    <script src="/js/chart.js"></script>
-    <script src="/js/dateTime.js"></script>
-    <script src="/js/dataTables.js"></script>
-    <script src="/js/emailstorage.js"></script>
-    <script src="/js/jquery.js"></script>
-    <script src="/js/jsbootstrap.js"></script>
+    <script src="/js/functions.js"></script>
+    <script src="/js/main.js"></script>
     <script src="/js/settings.js"></script>
-    <script src="/js/sweetalert.js"></script>  
     <script src="/js/temp.js"></script>
 </body>
 </html>

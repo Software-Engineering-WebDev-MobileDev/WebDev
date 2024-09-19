@@ -1,3 +1,5 @@
+init_values();
+
 $(document).ready(function() {
     // Check if SessionID exists in localStorage
     var sessionID = localStorage.getItem('SessionID');
@@ -5,9 +7,7 @@ $(document).ready(function() {
         sessionStorage.setItem('SessionID', sessionID);
         $('#divLogin').hide();
         $('#divDashboard').slideDown();
-        $('#divEnvironment').slideDown();
         $("#btnLogout").show()
-        UpdateDivEnvironment();
         updateEggInfo();
         fillTable();
         
@@ -31,18 +31,6 @@ function check(a,b){
   }
 
   return valid;
-}
-
-function checkCapsLock(event) {
-    const capsLockOn = event.getModifierState && event.getModifierState('CapsLock');
-    const passwordInput = document.getElementById('txtLoginPassword');
-    const capsLockWarning = document.getElementById('capsLockWarning');
-
-    if (capsLockOn && passwordInput === document.activeElement) {
-        capsLockWarning.style.display = 'block';
-    } else {
-        capsLockWarning.style.display = 'none';
-    }
 }
 
 // Attach event listener to the password input

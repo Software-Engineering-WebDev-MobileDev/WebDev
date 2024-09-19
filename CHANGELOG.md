@@ -9,6 +9,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Nothing for now
 
+## [0.0.9] - 2024-09-18
+
+## Added
+- style.css (Implementation to come later)
+- jsource folder (to keep our code and code we draw from separate)
+- Added chart, dataTables, jquery, jsbootstrap, and sweetalert to jsource
+- functions.js to hold general functions
+- functions.js to src reference 
+
+## Removed
+- Unnecessary registration information from register form
+- All APIs from api.js 
+- dateTimeZip function
+- References to deprecated registration information
+- DivEnvironment and all references
+- dateTime.js, due to moving all its contents to functions.js
+- emailstorage.js, due to moving all its contents to functions.js
+- api.js, due to deleting all its contents
+
+## Changed
+- Contents previously in dateTime.js are now in functions.js
+- Contents previously in emailstorage.js are now in functions.js
+- Reordered js src to have the source files above our working code
+
+## Fixed
+- Website functionality break
+- Hamburger button icon break
+- Issue where the email was not storing upon logging out
+- Issue where refreshing the page would cause you to log out automatically
+
 ## [0.0.8] - 2024-09-16
 
 ## Added
