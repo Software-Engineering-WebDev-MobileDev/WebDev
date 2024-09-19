@@ -2,6 +2,8 @@
 //docker compose up -d database
 //docker compose stop
 //docker compose pull
+//docker run -p 3000:3000 docker-image
+//docker buildx build -t docker-image .
 
 const bodyParser = require('body-parser');
 const express = require('express');
@@ -22,9 +24,25 @@ const app = express.Router();
 app.use(bodyParser.json());
 
 // API routes (not worrying about session yet)
+
+//get a recipe by ID (also returns the associated ingredients)
 app.get("/recipe/:recipeID", async (req, res) => {
+    if (!req.params.recipeID) {
+        return_400(res, "Bad request");
+        return;
+    }
     const recipeID = req.params.recipeID;
-    const query = `SELECT * FROM tblRecipes WHERE RecipeID = '${recipeID}'`;
+    // const query = `SELECT * FROM tblRecipes WHERE RecipeID = '${recipeID}'`;
+    const query = `
+    SELECT r.*, 
+           ri.RecipeIngredientID, ri.IngredientDescription, ri.Quantity, 
+           ri.UnitOfMeasure, ri.QuantityInStock, ri.ReorderFlag, 
+           ri.ModifierID, ri.ScalingFactorID
+    FROM tblRecipes r
+    LEFT JOIN tblRecipeIngredients ri ON r.RecipeID = ri.RecipeID
+    WHERE r.RecipeID = '${recipeID}';
+  `;
+    
     const sessionid = req.headers['session_id'];
     database.executeQuery(query).then((result) => {
         res.status(200).send({
@@ -39,14 +57,43 @@ app.get("/recipe/:recipeID", async (req, res) => {
     });
 });
 
+//add a recipe
 app.post('/add_recipe', async (req, res) => {
     const recipeID = v4();
+
+    const now = new Date();
+    // Format the date into SQL-friendly format (YYYY-MM-DD HH:MM:SS)
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+    
     //validate the request
-    if (!req.body.RecipeName || !req.body.Instructions || !req.body.ScalingFactor) {
+    if (!req.body.RecipeName || !req.body.Instructions || !req.body.Servings) {
         return_400(res, "Bad request");
         return;
     }
-    const query = `INSERT INTO tblRecipes (RecipeID, RecipeName, Instructions, ScalingFactor) VALUES ('${recipeID}', '${req.body.RecipeName}', '${req.body.Instructions}', '${req.body.ScalingFactor}')`;
+    const query = `INSERT INTO tblRecipes (RecipeID, RecipeName, Instructions, Servings, CreatedAt) VALUES ('${recipeID}', '${req.body.RecipeName}', '${req.body.Instructions}', '${req.body.Servings}', '${formattedDate}')`;
+    database.executeQuery(query).then((result) => {
+        res.status(200).send({
+            status: "success",
+            // users: result.recordset
+        });
+        //log results
+        console.log(result);
+    }).catch((e) => {
+        console.log(e);
+        return_500(res);
+        console.log("formatted date: " + formattedDate);
+    });
+});
+
+//add a recipe ingredient (recipe must already exist)
+app.post('/add_recipe_ingredient', async (req, res) => {
+    const recipeIngredientID = v4();
+    //validate the request
+    if (!req.body.RecipeID || !req.body.IngredientDescription || !req.body.Quantity || !req.body.UnitOfMeasure || !req.body.QuantityInStock || !req.body.ReorderFlag) {
+        return_400(res, "Bad request");
+        return;
+    }
+    const query = `INSERT INTO tblRecipeIngredients (RecipeIngredientID, RecipeID, IngredientDescription, Quantity, UnitOfMeasure, QuantityInStock, ReorderFlag) VALUES ('${recipeIngredientID}', '${req.body.RecipeID}', '${req.body.IngredientDescription}', '${req.body.Quantity}', '${req.body.UnitOfMeasure}', '${req.body.QuantityInStock}', '${req.body.ReorderFlag}')`;
     database.executeQuery(query).then((result) => {
         res.status(200).send({
             status: "success",
@@ -60,6 +107,7 @@ app.post('/add_recipe', async (req, res) => {
     });
 });
 
+//returns all recipes
 app.get("/recipes", async (req, res) => {
     const query = `SELECT * FROM tblRecipes`;
     const sessionid = req.headers['session_id'];
