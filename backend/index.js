@@ -40,7 +40,7 @@ const minified_css = new CleanCSS({
 // Run this to create the tables in the database
 if (process.env.NODE_ENV.trim() === 'development') {
     const database = new Database(config);
-    fs.readFile('./schema.sql', 'utf-8', (err, data) => {
+    fs.readFile('./dbschema.sql', 'utf-8', (err, data) => {
         if (err) {
             console.log(err);
             process.exit(1);
@@ -51,18 +51,27 @@ if (process.env.NODE_ENV.trim() === 'development') {
                 .then(() => {
                     // Insert some email types
                     database.executeQuery(
-                        "INSERT INTO tblEmailTypes (TypeID, Description, Active) VALUES " +
+                        "INSERT INTO tblEmailTypes (EmailTypeID, EmailTypeDescription, Active) VALUES " +
                         "('personal', 'Personal Email', 1), " +
                         "('work', 'Work Email', 1), " +
                         "('other', 'Other Email', 1)"
                     ).then(() => {});
                     // Insert some phone types
                     database.executeQuery(
-                        "INSERT INTO tblPhoneTypes (TypeID, Description, Active) VALUES " +
+                        "INSERT INTO tblPhoneTypes (PhoneTypeID, PhoneTypeDescription, Active) VALUES " +
                         "('mobile', 'Mobile Phone', 1), " +
                         "('home', 'Home Phone', 1), " +
                         "('work', 'Work Phone', 1), " +
                         "('fax', 'Fax', 1)"
+                    ).then(() => {});
+
+                    // Insert some user roles
+                    database.executeQuery(
+                        "INSERT INTO tblUserRoles (RoleID, RoleName, RoleDescription) VALUES " +
+                        `('0', 'owner', 'All possible permission, but there should only really be one of these')` +
+                        `('1', 'admin', 'All possible permission'), ` +
+                        `('2', 'manager', 'Manages others. Also able to create, modify, update, and delete recipes.'), ` +
+                        `('3', 'employee', 'Roller of the Scones. Able to get from most APIs and create, update, and delete from those which pertain to themselves.')`
                     ).then(() => {});
 
                     console.log('Tables created');
@@ -72,7 +81,16 @@ if (process.env.NODE_ENV.trim() === 'development') {
                     if (err.message.match(/There is already an object named '\w+' in the database./)) {
                         console.log("Tables exist already. If this is not intended, you may wish to drop all tables.")
                     }
-                    else {
+                    else if (err.message.endsWith("See previous errors.")) {
+                        console.error(`Error creating table: ${err}`);
+                        if (err["precedingErrors"]) {
+                            err["precedingErrors"].forEach((precedingError) => {
+                                console.error(precedingError.message);
+                            })
+                        }
+                    }
+                    else
+                    {
                         console.error(`Error creating table: ${err}`);
                     }
                 });
