@@ -98,6 +98,7 @@ app.post('/add_recipe_ingredient', async (req, res) => {
     database.executeQuery(query).then((result) => {
         res.status(200).send({
             status: "success",
+            recipeIngredientID: recipeIngredientID
             // users: result.recordset
         });
         //log results
