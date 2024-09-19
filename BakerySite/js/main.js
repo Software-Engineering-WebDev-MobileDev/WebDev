@@ -8,6 +8,12 @@ $(document).ready(function() {
         $('#divLogin').hide();
         $('#divDashboard').slideDown();
         $("#btnLogout").show()
+        $("#btnAccount").show()
+        $("#btnDashboard").show()
+        $("#btnInventory").show()
+        $("#btnRecipe").show()
+        $("#btnTask").show()
+        UpdateDivEnvironment();
         updateEggInfo();
         fillTable();
         
