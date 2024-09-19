@@ -68,7 +68,7 @@ if (process.env.NODE_ENV.trim() === 'development') {
                     // Insert some user roles
                     database.executeQuery(
                         "INSERT INTO tblUserRoles (RoleID, RoleName, RoleDescription) VALUES " +
-                        `('0', 'owner', 'All possible permission, but there should only really be one of these')` +
+                        `('0', 'owner', 'All possible permission, but there should only really be one of these'), ` +
                         `('1', 'admin', 'All possible permission'), ` +
                         `('2', 'manager', 'Manages others. Also able to create, modify, update, and delete recipes.'), ` +
                         `('3', 'employee', 'Roller of the Scones. Able to get from most APIs and create, update, and delete from those which pertain to themselves.')`
