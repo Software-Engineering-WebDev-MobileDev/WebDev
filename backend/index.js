@@ -104,93 +104,98 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Optimized asset serving
-const cacheDir = path.join(__dirname, 'cache');
-if (!fs.existsSync(cacheDir)){
-    fs.mkdirSync(cacheDir, { recursive: true });
-}
+// Production only.
+// Don't optimize asset serving for dev environment
+if (process.env.NODE_ENV.trim() !== 'development') {
 
-// Optimized image asset serving
-const optimize_images = (req, res, next) => {
-    const imageFormats = ['.jpg', '.jpeg', '.png', '.webp', '.jfif']; // Supported image formats
-    const ext = path.extname(req.url).toLowerCase();
+    // Optimized asset serving
+    const cacheDir = path.join(__dirname, 'cache');
+    if (!fs.existsSync(cacheDir)) {
+        fs.mkdirSync(cacheDir, {recursive: true});
+    }
 
-    if (imageFormats.includes(ext)) {
-        const originalImagePath = path.join(__dirname, '../BakerySite', req.url);
-        const cachedImagePath = path.join(cacheDir, req.url); // Cache path mirrors original
+    // Optimized image asset serving
+    const optimize_images = (req, res, next) => {
+        const imageFormats = ['.jpg', '.jpeg', '.png', '.webp', '.jfif']; // Supported image formats
+        const ext = path.extname(req.url).toLowerCase();
 
-        // Ensure the directory structure for the cache exists
-        const cachedImageDir = path.dirname(cachedImagePath);
-        if (!fs.existsSync(cachedImageDir)) {
-            fs.mkdirSync(cachedImageDir, { recursive: true });
-        }
+        if (imageFormats.includes(ext)) {
+            const originalImagePath = path.join(__dirname, '../BakerySite', req.url);
+            const cachedImagePath = path.join(cacheDir, req.url); // Cache path mirrors original
 
-        // Check if the optimized image already exists in the cache
-        fs.access(cachedImagePath, fs.constants.F_OK, (err) => {
-            if (!err) {
-                // Serve cached optimized image
-                return res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
+            // Ensure the directory structure for the cache exists
+            const cachedImageDir = path.dirname(cachedImagePath);
+            if (!fs.existsSync(cachedImageDir)) {
+                fs.mkdirSync(cachedImageDir, {recursive: true});
             }
 
-            // If not cached, check if the original image exists
-            fs.access(originalImagePath, fs.constants.F_OK, (err) => {
-                if (err) {
-                    return next(); // If the image doesn't exist, move to next middleware
+            // Check if the optimized image already exists in the cache
+            fs.access(cachedImagePath, fs.constants.F_OK, (err) => {
+                if (!err) {
+                    // Serve cached optimized image
+                    return res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
                 }
 
-                // Optimize the image and save it to the cache
-                const transformer = sharp(originalImagePath).webp({
-                    quality: 80
-                });
-
-                transformer.toFile(cachedImagePath, (err, info) => {
+                // If not cached, check if the original image exists
+                fs.access(originalImagePath, fs.constants.F_OK, (err) => {
                     if (err) {
-                        return next(err); // Error handling
+                        return next(); // If the image doesn't exist, move to next middleware
                     }
-                    // console.log(info);
 
-                    // Serve the newly cached optimized image
-                    res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
+                    // Optimize the image and save it to the cache
+                    const transformer = sharp(originalImagePath).webp({
+                        quality: 80
+                    });
+
+                    transformer.toFile(cachedImagePath, (err, info) => {
+                        if (err) {
+                            return next(err); // Error handling
+                        }
+                        // console.log(info);
+
+                        // Serve the newly cached optimized image
+                        res.sendFile(cachedImagePath, {headers: {"Content-Type": "image/webp"}});
+                    });
                 });
             });
-        });
-    } else {
-        next(); // If not an image, move to next middleware
-    }
-};
-
-// Optimized HTML asset serving
-const optimize_html_css_js = (req, res, next) => {
-    const ext = path.extname(req.url).toLowerCase();
-
-    if (ext === '.html' || req.url.endsWith("/")) {
-        const original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
-        const cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
-
-        // Ensure the directory structure for the cache exists
-        const cached_html_dir = path.dirname(cached_html_path);
-        if (!fs.existsSync(cached_html_dir)) {
-            fs.mkdirSync(cached_html_dir, { recursive: true });
         }
+        else {
+            next(); // If not an image, move to next middleware
+        }
+    };
 
-        // Check if the optimized html already exists in cache
-        fs.access(cached_html_path, fs.constants.F_OK, (err) => {
-            if (!err) {
-                // Serve cached optimized HTML
-                return res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
+    // Optimized HTML asset serving
+    const optimize_html_css_js = (req, res, next) => {
+        const ext = path.extname(req.url).toLowerCase();
+
+        if (ext === '.html' || req.url.endsWith("/")) {
+            const original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
+            const cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
+
+            // Ensure the directory structure for the cache exists
+            const cached_html_dir = path.dirname(cached_html_path);
+            if (!fs.existsSync(cached_html_dir)) {
+                fs.mkdirSync(cached_html_dir, {recursive: true});
             }
 
-            // If not cached, check if the original HTML exists
-            fs.access(original_html_path, fs.constants.F_OK, async (err) => {
-                if (err) {
-                    return next(); // If the HTML doesn't exist, move to next middleware
+            // Check if the optimized html already exists in cache
+            fs.access(cached_html_path, fs.constants.F_OK, (err) => {
+                if (!err) {
+                    // Serve cached optimized HTML
+                    return res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
                 }
 
-                let original_html_data = fs.readFileSync(original_html_path, 'utf-8');
+                // If not cached, check if the original HTML exists
+                fs.access(original_html_path, fs.constants.F_OK, async (err) => {
+                    if (err) {
+                        return next(); // If the HTML doesn't exist, move to next middleware
+                    }
 
-                // console.log(original_html_data)
+                    let original_html_data = fs.readFileSync(original_html_path, 'utf-8');
 
-                let optimized_html = await minify(
+                    // console.log(original_html_data)
+
+                    let optimized_html = await minify(
                         original_html_data,
                         {
                             caseSensitive: true,
@@ -203,93 +208,95 @@ const optimize_html_css_js = (req, res, next) => {
                             removeEmptyElements: true
                         });
 
-                fs.writeFileSync(cached_html_path, optimized_html, 'utf-8');
-                return res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
+                    fs.writeFileSync(cached_html_path, optimized_html, 'utf-8');
+                    return res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
+                });
             });
-        });
-    }
-    else if (ext === ".js" && !req.url.includes("min")) {
-        const original_js_path = path.join(__dirname, '../BakerySite', req.url);
-        const cached_js_path = path.join(cacheDir, req.url); // Cache path mirrors original
-
-        // Ensure the directory structure for the cache exists
-        const cached_js_dir = path.dirname(cached_js_path);
-        if (!fs.existsSync(cached_js_dir)) {
-            fs.mkdirSync(cached_js_dir, { recursive: true });
         }
+        else if (ext === ".js" && !req.url.includes("min")) {
+            const original_js_path = path.join(__dirname, '../BakerySite', req.url);
+            const cached_js_path = path.join(cacheDir, req.url); // Cache path mirrors original
 
-        // Check if the optimized JS already exists in cache
-        fs.access(cached_js_path, fs.constants.F_OK, (err) => {
-            if (!err) {
-                // Serve cached optimized JS
-                return res.sendFile(cached_js_path, {headers: {"Content-Type": "application/javascript; charset=UTF-8"}});
+            // Ensure the directory structure for the cache exists
+            const cached_js_dir = path.dirname(cached_js_path);
+            if (!fs.existsSync(cached_js_dir)) {
+                fs.mkdirSync(cached_js_dir, {recursive: true});
             }
 
-            // If not cached, check if the original JS exists
-            fs.access(original_js_path, fs.constants.F_OK, async (err) => {
-                if (err) {
-                    return next(); // If the JS doesn't exist, move to next middleware
+            // Check if the optimized JS already exists in cache
+            fs.access(cached_js_path, fs.constants.F_OK, (err) => {
+                if (!err) {
+                    // Serve cached optimized JS
+                    return res.sendFile(cached_js_path, {headers: {"Content-Type": "application/javascript; charset=UTF-8"}});
                 }
 
-                let original_js_data = fs.readFileSync(original_js_path, 'utf-8');
+                // If not cached, check if the original JS exists
+                fs.access(original_js_path, fs.constants.F_OK, async (err) => {
+                    if (err) {
+                        return next(); // If the JS doesn't exist, move to next middleware
+                    }
 
-                // console.log(original_js_data);
+                    let original_js_data = fs.readFileSync(original_js_path, 'utf-8');
 
-                let optimized_js = await Terser.minify(original_js_data);
+                    // console.log(original_js_data);
 
-                if (optimized_js.error) return next(optimized_js.error);
+                    let optimized_js = await Terser.minify(original_js_data);
 
-                fs.writeFileSync(cached_js_path, optimized_js.code, 'utf-8');
-                return res.sendFile(cached_js_path, {headers: {"Content-Type": "application/javascript; charset=UTF-8"}});
+                    if (optimized_js.error) return next(optimized_js.error);
+
+                    fs.writeFileSync(cached_js_path, optimized_js.code, 'utf-8');
+                    return res.sendFile(cached_js_path, {headers: {"Content-Type": "application/javascript; charset=UTF-8"}});
+                });
             });
-        });
-    }
-    else if (ext === ".css" && !req.url.includes("min")) {
-        const original_css_path = path.join(__dirname, '../BakerySite', req.url);
-        const cached_css_path = path.join(cacheDir, req.url); // Cache path mirrors original
-
-        // Ensure the directory structure for the cache exists
-        const cached_css_dir = path.dirname(cached_css_path);
-        if (!fs.existsSync(cached_css_dir)) {
-            fs.mkdirSync(cached_css_dir, {recursive: true});
         }
+        else if (ext === ".css" && !req.url.includes("min")) {
+            const original_css_path = path.join(__dirname, '../BakerySite', req.url);
+            const cached_css_path = path.join(cacheDir, req.url); // Cache path mirrors original
 
-        // Check if the optimized CSS already exists in cache
-        fs.access(cached_css_path, fs.constants.F_OK, (err) => {
-            if (!err) {
-                // Serve cached optimized image
-                return res.sendFile(cached_css_path, {headers: {"Content-Type": "text/css; charset=UTF-8"}});
+            // Ensure the directory structure for the cache exists
+            const cached_css_dir = path.dirname(cached_css_path);
+            if (!fs.existsSync(cached_css_dir)) {
+                fs.mkdirSync(cached_css_dir, {recursive: true});
             }
 
-            // If not cached, check if the original CSS exists
-            fs.access(original_css_path, fs.constants.F_OK, async (err) => {
-                if (err) {
-                    return next(); // If the CSS doesn't exist, move to next middleware
+            // Check if the optimized CSS already exists in cache
+            fs.access(cached_css_path, fs.constants.F_OK, (err) => {
+                if (!err) {
+                    // Serve cached optimized image
+                    return res.sendFile(cached_css_path, {headers: {"Content-Type": "text/css; charset=UTF-8"}});
                 }
 
-                let original_css_data = fs.readFileSync(original_css_path, 'utf-8');
+                // If not cached, check if the original CSS exists
+                fs.access(original_css_path, fs.constants.F_OK, async (err) => {
+                    if (err) {
+                        return next(); // If the CSS doesn't exist, move to next middleware
+                    }
 
-                // console.log(original_css_data);
+                    let original_css_data = fs.readFileSync(original_css_path, 'utf-8');
 
-                let optimized_css = await minified_css.minify(original_css_data)
+                    // console.log(original_css_data);
 
-                if (optimized_css.errors.length) return next(optimized_css.errors[0]);
+                    let optimized_css = await minified_css.minify(original_css_data)
 
-                fs.writeFileSync(cached_css_path, optimized_css.styles, 'utf-8');
-                return res.sendFile(cached_css_path, {headers: {"Content-Type": "text/css; charset=UTF-8"}});
+                    if (optimized_css.errors.length) return next(optimized_css.errors[0]);
+
+                    fs.writeFileSync(cached_css_path, optimized_css.styles, 'utf-8');
+                    return res.sendFile(cached_css_path, {headers: {"Content-Type": "text/css; charset=UTF-8"}});
+                });
             });
-        });
-    }
-    else {
-        next();
-    }
-};
+        }
+        else {
+            next();
+        }
+    };
 
-app.use(optimize_images);
-app.use(optimize_html_css_js);
+    app.use(optimize_images);
+    app.use(optimize_html_css_js);
 
-// For bandwidth saving on the more intensive actions
-app.use(compression());
+    // For bandwidth saving on the more intensive actions
+    app.use(compression());
+
+}
 
 // Routes usage
 app.use('/api',
