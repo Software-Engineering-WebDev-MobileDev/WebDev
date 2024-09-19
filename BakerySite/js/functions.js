@@ -100,6 +100,17 @@ function save_data_to_localstorage(input_id) {
     }
 }
 
+
+async function fetchIngredients(){
+    try{
+        const response = await fetch('#get-ingredients-get');
+        const ingredients = await response.json();
+        displayIngredients(ingredients);
+    } catch (error) {
+        console.error('Error fetching ingredients:', error);
+    }
+}
+
 /*
 function: displayIngredients
 parameters: none
