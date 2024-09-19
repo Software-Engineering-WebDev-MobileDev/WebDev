@@ -121,6 +121,3 @@ $.get('https://simplecoop.swollenhippo.com/eggs.php', {SessionID: strSessionID, 
     });
 });
 }
-    function setUserLocation(location) {
-    sessionStorage.setItem('userLoc', location);
-    }
