@@ -58,7 +58,12 @@ $('#btnLogin').on('click',function(){
                 sessionStorage.setItem('SessionID',result.SessionID);
                 localStorage.setItem('SessionID', result.SessionID);
 
+                $("#btnDashboard").show()
                 $('#btnLogout').show();
+                $("#btnAccount").show()
+                $("#btnIngredient").show()
+                $("#btnRecipe").show()
+                $("#btnTask").show()
                 //$('#divNavbar').slideUp();
                 $('#divLogin').slideUp(function(){
                     $('#divDashboard').slideDown();
@@ -234,3 +239,23 @@ $('#btnLogout').on('click', function(){
     window.location.reload();
     setUserLocation('login');
 });
+
+$('#btnIngredient').on('click', function(){
+    window.location.href = 'ingredient.html';
+})
+
+$('#btnAccount').on('click', function(){
+    window.location.href = 'account.html';
+})
+
+$('#btnDashboard').on('click', function(){
+    window.location.href = 'dashboard.html';
+})
+
+$('#btnRecipe').on('click', function(){
+    window.location.href = 'recipe.html';
+})
+
+$('#btnTask').on('click', function(){
+    window.location.href = 'task.html';
+})

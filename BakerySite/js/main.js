@@ -5,9 +5,16 @@ $(document).ready(function() {
     var sessionID = localStorage.getItem('SessionID');
     if (sessionID) {
         sessionStorage.setItem('SessionID', sessionID);
+        
         $('#divLogin').hide();
         $('#divDashboard').slideDown();
         $("#btnLogout").show()
+        $("#btnAccount").show()
+        $("#btnDashboard").show()
+        $("#btnIngredient").show()
+        $("#btnRecipe").show()
+        $("#btnTask").show()
+        UpdateDivEnvironment();
         updateEggInfo();
         fillTable();
         
@@ -36,13 +43,11 @@ function check(a,b){
 // Attach event listener to the password input
 document.getElementById('txtLoginPassword').addEventListener('keypress', checkCapsLock);
 
-
 // Get the modal
 var modal = document.getElementById("settingsModal");
 
 // Get the link that opens the modal
 var link = document.getElementById("settingsLink");
-
 
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];

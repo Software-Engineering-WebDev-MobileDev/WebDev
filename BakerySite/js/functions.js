@@ -100,6 +100,35 @@ function save_data_to_localstorage(input_id) {
     }
 }
 
+
+async function fetchIngredients(){
+    try{
+        const response = await fetch('#get-ingredients-get');
+        const ingredients = await response.json();
+        displayIngredients(ingredients);
+    } catch (error) {
+        console.error('Error fetching ingredients:', error);
+    }
+}
+
+/*
+function: displayIngredients
+parameters: none
+purpose: display ingredients as cards
+*/
+function displayIngredients() {
+    const container = document.getElementById('ingredientContainer');
+    ingredients.forEach(ingredient => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.textContent = ingredient.name;
+        card.addEventListener('click', () => {
+            window.location.href = `ingredient.html?id=${ingredient.id}`;
+        });
+        container.appendChild(card);
+    });
+}
+
 // !!! LATER USEFUL FOR ANY TABLES NEEDED
 /*
 function fillTable() {
