@@ -9,9 +9,38 @@
 <body>
     <div class="background">
         <div class="card-container">
-            <div class="card">Card 1</div>
-            <div class="card">Card 2</div>
-            <div class="card">Card 3</div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="text">
+                        <h2>Flour</h2>
+                        <p>Current inventory</p>
+                    </div>
+                </div>
+            </div>            
+            <div class="card">
+                <div class="card-content">
+                    <div class="text">
+                        <h2>Butter</h2>
+                        <p>Current inventory</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="text">
+                        <h2>Sugar</h2>
+                        <p>Current inventory</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-content">
+                    <div class="text">
+                        <h2>Flour</h2>
+                        <p>Current inventory</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 <body>
@@ -30,32 +59,30 @@
     <script src="/js/settings.js"></script>
     <script src="/js/temp.js"></script>
     <script>
-        displayIngredients();
+        fetchIngredients();
     </script>
     <script>
-        // Mock backend data (same as in script.js)
-        const ingredients = [
-            { id: 1, name: 'Tomato', details: 'Rich in vitamins A and C.' },
-            { id: 2, name: 'Basil', details: 'Aromatic herb used in many dishes.' },
-            { id: 3, name: 'Garlic', details: 'Known for its strong flavor and health benefits.' }
-        ];
-
-        // Function to get ingredient details by ID
-        function getIngredientById(id) {
-            return ingredients.find(ingredient => ingredient.id === parseInt(id));
+        async function fetchIngredients() {
+            try {
+                const response = await fetch('#get-ingredients-short-get'); // Replace with your actual API endpoint
+                const ingredients = await response.json();
+                createCards(ingredients);
+            } catch (error) {
+                console.error('Error fetching ingredients:', error);
+            }
         }
-
-        // Get the ingredient ID from the URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const ingredientId = urlParams.get('id');
-
-        // Display the ingredient details
-        const ingredient = getIngredientById(ingredientId);
-        if (ingredient) {
-            const detailsContainer = document.getElementById('ingredientDetails');
-            detailsContainer.innerHTML = `<h1>${ingredient.name}</h1><p>${ingredient.details}</p>`;
-        } else {
-            document.getElementById('ingredientDetails').textContent = 'Ingredient not found.';
+        
+        function createCards(data) {
+            const container = document.getElementById('cardContainer');
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.textContent = item.name;
+                card.addEventListener('click', () => {
+                    window.location.href = `ingredient.html?id=${item.id}`;
+                });
+                container.appendChild(card);
+            });
         }
     </script>
 </body>
