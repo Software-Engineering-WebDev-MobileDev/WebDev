@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Indev1] - 2024-09-19
 
+## [0.1.1] - 2024-09-19
+
+## Added
+- Numerous new html pages
+- Links to these new pages through the hamburger dropdown
+- Hard coded ingredient html page
+- Added css style to cooperate with ingredient page
+- Display for the ingredients
+- Icon and background color styles
+- New source for icons
+
 ## [0.1.0] - 2024-09-18
 
 ## Added
