@@ -64,7 +64,38 @@ CREATE TABLE tblSessions (
     FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID)
 );
 
--- Recipe and Inventory Tables --
+-- Inventory Tables --
+
+-- Inventory Table: Tracks stock levels of ingredients in inventory
+CREATE TABLE tblInventory (
+    InventoryID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each inventory entry (UUID format)
+    IngredientDescription VARCHAR(50) NOT NULL,
+    Quantity DECIMAL(10,2) NOT NULL,  -- Quantity (non-zero, can be positive or negative)
+    EmployeeID VARCHAR(50) NOT NULL,  -- Reference to the employee managing the inventory
+    Notes VARCHAR(255),  -- Optional notes about the inventory entry
+    Cost DECIMAL(10,2),  -- Cost of the item, must be non-negative
+    CreateDateTime DATETIME NOT NULL,  -- Date and time the entry was created
+    ReorderAmount DECIMAL(10,2),  -- Suggested reorder amount for the ingredient
+    MinimumQuantity DECIMAL(10,2),  -- Minimum stock level to maintain
+    MaximumQuantity DECIMAL(10,2),  -- Maximum stock level allowed
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID),  -- Reference to employee table
+);
+
+-- Inventory Audit Table: Logs changes to inventory levels for auditing
+CREATE TABLE tblInventoryAudit (
+    InventoryAuditID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each audit entry (UUID format)
+    InventoryEntryID VARCHAR(50) NOT NULL,  -- Reference to the ingredient being audited
+    OldQuantity DECIMAL(10,2) NOT NULL,  -- Previous quantity before the change
+    NewQuantity DECIMAL(10,2) NOT NULL,  -- New quantity after the change
+    ChangeReason VARCHAR(255),  -- Reason for the change (e.g., restock, usage)
+    EmployeeID VARCHAR(50) NOT NULL,  -- Employee who made the change
+    ChangeDate DATETIME NOT NULL DEFAULT GETDATE(),  -- Date and time of the change
+    PONumber VARCHAR(50),  -- Optional purchase order number related to the change
+    FOREIGN KEY (InventoryEntryID) REFERENCES tblInventory(InventoryID),  -- Cascading delete on ingredient removal
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID)  -- Cascading delete on employee removal
+);
+
+-- Recipe Tables --
 
 -- Categories Table: Stores different categories for ingredients (e.g., bread, pastry)
 CREATE TABLE tblCategories (
@@ -101,15 +132,15 @@ CREATE TABLE tblRecipes (
 CREATE TABLE tblRecipeIngredients (
     RecipeIngredientID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the recipe ingredient
     RecipeID VARCHAR(50) NOT NULL, -- Reference to the recipe
-    IngredientDescription VARCHAR(50) NOT NULL, -- Reference to the ingredient
+    InventoryID VARCHAR(50) NOT NULL
     Quantity DECIMAL(10,2) NOT NULL, -- Quantity of the ingredient
     UnitOfMeasure VARCHAR(50) NOT NULL, -- Unit of measurement
     QuantityInStock Decimal(10,2) NOT NULL,
-    ReorderFlag BIT NOT NULL DEFAULT 0,
     ModifierID VARCHAR(50), -- Reference to an ingredient modifier (optional)
     ScalingFactorID VARCHAR(50),
     FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID) ON DELETE CASCADE,
-    FOREIGN KEY (ScalingFactorID) REFERENCES tblScalingFactors(ScalingFactorID) ON DELETE SET NULL
+    FOREIGN KEY (ScalingFactorID) REFERENCES tblScalingFactors(ScalingFactorID) ON DELETE SET NULL,
+    FOREIGN KEY (InventoryID) REFERENCES tblInventory(InventoryID) ON DELETE SET NULL
 );
 
 -- Stores modifiers for ingredients (e.g., "room temperature", "nearly frozen")
@@ -126,37 +157,6 @@ CREATE TABLE tblRecipeIngredientModifiers (
     ModifierID VARCHAR(50) NOT NULL, -- Reference to the ingredient modifier
     FOREIGN KEY (RecipeIngredientID) REFERENCES tblRecipeIngredients(RecipeIngredientID),
     FOREIGN KEY (ModifierID) REFERENCES tblIngredientModifiers(ModifierID)
-);
-
--- Inventory Table: Tracks stock levels of ingredients in inventory
-CREATE TABLE tblInventory (
-    EntryID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each inventory entry (UUID format)
-    IngredientDescription VARCHAR(50) NOT NULL,
-    Quantity DECIMAL(10,2) NOT NULL,  -- Quantity (non-zero, can be positive or negative)
-    EmployeeID VARCHAR(50) NOT NULL,  -- Reference to the employee managing the inventory
-    Notes VARCHAR(255),  -- Optional notes about the inventory entry
-    Cost DECIMAL(10,2),  -- Cost of the item, must be non-negative
-    CreateDateTime DATETIME NOT NULL,  -- Date and time the entry was created
-    ExpireDateTime DATETIME,  -- Optional expiration date for perishable items
-    ReorderAmount DECIMAL(10,2),  -- Suggested reorder amount for the ingredient
-    MinimumQuantity DECIMAL(10,2),  -- Minimum stock level to maintain
-    MaximumQuantity DECIMAL(10,2),  -- Maximum stock level allowed
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID),  -- Reference to employee table
-    FOREIGN KEY (IngredientDescription) REFERENCES tblRecipeIngredients(IngredientDescription) ON DELETE SET NULL
-);
-
--- Inventory Audit Table: Logs changes to inventory levels for auditing
-CREATE TABLE tblInventoryAudit (
-    InventoryAuditID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each audit entry (UUID format)
-    InventoryEntryID VARCHAR(50) NOT NULL,  -- Reference to the ingredient being audited
-    OldQuantity DECIMAL(10,2) NOT NULL,  -- Previous quantity before the change
-    NewQuantity DECIMAL(10,2) NOT NULL,  -- New quantity after the change
-    ChangeReason VARCHAR(255),  -- Reason for the change (e.g., restock, usage)
-    EmployeeID VARCHAR(50) NOT NULL,  -- Employee who made the change
-    ChangeDate DATETIME NOT NULL DEFAULT GETDATE(),  -- Date and time of the change
-    PONumber VARCHAR(50),  -- Optional purchase order number related to the change
-    FOREIGN KEY (InventoryEntryID) REFERENCES tblInventory(EntryID),  -- Cascading delete on ingredient removal
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID)  -- Cascading delete on employee removal
 );
 
 -- Task Management Tables --
