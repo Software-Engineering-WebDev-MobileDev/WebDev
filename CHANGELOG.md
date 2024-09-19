@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Nothing for now
 
+## [0.0.9] - 2024-09-18
+
+## Added
+- style.css (Implementation to come later)
+- jsource folder (to keep our code and code we draw from separate)
+- Added chart, dataTables, jquery, jsbootstrap, and sweetalert to jsource
+
+## Removed
+- Unnecessary registration information from register form
+- All APIs from api.js 
+- dateTimeZip function
+- References to deprecated registration information
+- DivEnvironment and all references
+
+## Fixed
+- Website functionality break
+- Hamburger button icon break
+
 ## [0.0.8] - 2024-09-16
 
 ## Added
