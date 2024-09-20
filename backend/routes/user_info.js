@@ -142,7 +142,7 @@ app.post('/add_user_email', (req, res) => {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `INSERT INTO tblEmail (EmailID, EmailAddress, EmployeeID, TypeID, Valid)
+                        `INSERT INTO tblEmail (EmailID, EmailAddress, EmployeeID, EmailTypeID, Valid)
                          VALUES ('${email_id}', '${email_address}', '${employee_id}', '${type}', 1)`
                     ).then(() => {
                         res.status(201).send(
@@ -331,14 +331,12 @@ app.post('/add_user_phone', (req, res) => {
         }
         else {
             const digits = phone_number.replace(/\D/g, '');
-            const area_code = digits.substring(0, 3);
-            const number = digits.substring(3);
 
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `INSERT INTO tblPhoneNumbers (PhoneNumberID, AreaCode, Number, TypeID, Valid, EmployeeID)
-                         VALUES ('${phone_number_id}', '${area_code}', '${number}', '${phone_type}', 1, '${employee_id}')`
+                        `INSERT INTO tblPhoneNumbers (PhoneNumberID, PhoneNumber, PhoneTypeID, Valid, EmployeeID)
+                         VALUES ('${phone_number_id}', '${digits}', '${phone_type}', 1, '${employee_id}')`
                     ).then(() => {
                         res.status(201).send(
                             {
@@ -381,13 +379,10 @@ app.delete('/user_phone', (req, res) => {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     const digits = phone_number.replace(/\D/g, '');
-                    const area_code = digits.substring(0, 3);
-                    const number = digits.substring(3);
                     database.executeQuery(
                         `DELETE
                          FROM tblPhoneNumbers
-                         WHERE AreaCode = '${area_code}'
-                           AND Number = '${number}'
+                         WHERE PhoneNumber = '${digits}'
                            AND EmployeeID = '${employee_id}'`
                     ).then((result) => {
                         if (result.rowsAffected >= 1) {
