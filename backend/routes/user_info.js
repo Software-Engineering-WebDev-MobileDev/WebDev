@@ -82,7 +82,15 @@ app.get("/users_email", (req, res) => {
         const session_id = req.header("session_id");
         const employee_id = req.header("employee_id");
 
-        if (!employee_id.match(/[0-9A-Za-z]{0,32}/)) {
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            )
+        }
+        else if (!employee_id.match(/[0-9A-Za-z]{0,32}/)) {
             return_400(res, "Employee is not valid");
         }
         else {
@@ -130,8 +138,23 @@ app.post('/add_user_email', (req, res) => {
         const email_address = req.header("email_address");
         const type = req.header("type");
 
+
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            )
+        }
+        else if (email_address === undefined) {
+            return_400(res, "Missing email_address");
+        }
+        else if (type === undefined) {
+            return_400(res, "Missing (email) type");
+        }
         // Quick and dirty email validation.
-        if (validate_email(email_address)) {
+        else if (validate_email(email_address)) {
             return_400(res, "Invalid email address");
         }
         // Make sure that the email is a valid type
@@ -142,7 +165,7 @@ app.post('/add_user_email', (req, res) => {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `INSERT INTO tblEmail (EmailID, EmailAddress, EmployeeID, TypeID, Valid)
+                        `INSERT INTO tblEmail (EmailID, EmailAddress, EmployeeID, EmailTypeID, Valid)
                          VALUES ('${email_id}', '${email_address}', '${employee_id}', '${type}', 1)`
                     ).then(() => {
                         res.status(201).send(
@@ -179,7 +202,18 @@ app.delete('/user_email', (req, res) => {
         const session_id = req.header("session_id");
         const email_address = req.header("email_address");
 
-        if (validate_email(email_address)) {
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            )
+        }
+        else if (email_address === undefined) {
+            return_400(res, "Missing email_address");
+        }
+        else if (validate_email(email_address)) {
             return_400(res, "Bad email address");
         }
         else {
@@ -275,7 +309,15 @@ app.get('/users_phone', (req, res) => {
         const session_id = req.header("session_id");
         const employee_id = req.header("employee_id");
 
-        if (!employee_id.match(/[0-9A-Za-z]{0,32}/)) {
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            )
+        }
+        else if (!employee_id.match(/[0-9A-Za-z]{0,32}/)) {
             return_400(res, "Employee is not valid");
         }
         else {
@@ -323,7 +365,21 @@ app.post('/add_user_phone', (req, res) => {
         const phone_number = req.header("phone_number");
         const phone_type = req.header("type");
 
-        if (!phone_number.match(/^\(?\d{3}\)?[\d -]?\d{3}[\d -]?\d{4}$/)) {
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            )
+        }
+        else if (phone_number === undefined) {
+            return_400(res, "Missing phone_number");
+        }
+        else if (phone_type === undefined) {
+            return_400(res, "Missing phone_type")
+        }
+        else if (!phone_number.match(/^\(?\d{3}\)?[\d -]?\d{3}[\d -]?\d{4}$/)) {
             return_400(res, "Invalid phone number")
         }
         else if (!phone_types.includes(phone_type)) {
@@ -331,15 +387,12 @@ app.post('/add_user_phone', (req, res) => {
         }
         else {
             const digits = phone_number.replace(/\D/g, '');
-            const area_code = digits.substring(0, 3);
-            const number = digits.substring(3);
 
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `INSERT INTO tblPhoneNumbers (PhoneNumberID, AreaCode, Number, TypeID, Valid, EmployeeID)
-                         VALUES ('${phone_number_id}', '${area_code}', '${number}', '${phone_type}', 1, '${employee_id}
-                                 ')`
+                        `INSERT INTO tblPhoneNumbers (PhoneNumberID, PhoneNumber, PhoneTypeID, Valid, EmployeeID)
+                         VALUES ('${phone_number_id}', '${digits}', '${phone_type}', 1, '${employee_id}')`
                     ).then(() => {
                         res.status(201).send(
                             {
@@ -375,20 +428,25 @@ app.delete('/user_phone', (req, res) => {
         const session_id = req.header("session_id");
         const phone_number = req.header("phone_number");
 
-        if (!phone_number.match(/^\(?\d{3}\)?[\d -]?\d{3}[\d -]?\d{4}$/)) {
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            )
+        }
+        else if (!phone_number.match(/^\(?\d{3}\)?[\d -]?\d{3}[\d -]?\d{4}$/)) {
             return_400(res, "Invalid phone number")
         }
         else {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     const digits = phone_number.replace(/\D/g, '');
-                    const area_code = digits.substring(0, 3);
-                    const number = digits.substring(3);
                     database.executeQuery(
                         `DELETE
                          FROM tblPhoneNumbers
-                         WHERE AreaCode = '${area_code}'
-                           AND Number = '${number}'
+                         WHERE PhoneNumber = '${digits}'
                            AND EmployeeID = '${employee_id}'`
                     ).then((result) => {
                         if (result.rowsAffected >= 1) {
@@ -437,7 +495,15 @@ app.get('/user_list', (req, res) => {
         const page_size = isNumber(req.header["page_size"]) ? Number(req.header["page_size"]) : 20;
         const session_id = req.header("session_id");
 
-        if (page_size > 30) {
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            )
+        }
+        else if (page_size > 30) {
             return_400(res, "Invalid page size. Page size must be <= 30");
         }
         else {

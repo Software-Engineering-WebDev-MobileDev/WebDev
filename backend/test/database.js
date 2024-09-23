@@ -16,7 +16,7 @@ describe("Ensure that tokens can be converted to employee ids", function () {
 
         // Add the new session to the sessions table
         await database.executeQuery(
-            `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password) VALUES ('${employee_id}', 'John', 'Smith', 'j_smith', 'password')`
+            `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password, RoleID, StartDate) VALUES ('${employee_id}', 'John', 'Smith', 'j_smith', 'password', '1', GETDATE())`
         )
             .then(() => {
             })
@@ -34,10 +34,39 @@ describe("Ensure that tokens can be converted to employee ids", function () {
         });
 
         const response = await database.sessionToEmployeeID(session_id);
-
         test
             .string(response)   // Ensure it's a string
             .is(employee_id);   // And make sure it's the right one
+
+        const admin_response_1 = await database.sessionToRollID(session_id, "admin");
+        test
+            .string(admin_response_1)   // Ensure it's a string
+            .is(employee_id);           // And make sure it's the right one
+
+        const admin_response_2 = await database.sessionToRollID(session_id, "1");
+        test
+            .string(admin_response_2)   // Ensure it's a string
+            .is(employee_id);           // And make sure it's the right one
+
+        const admin_response_3 = await database.sessionToMinimumRollID(session_id, "1");
+        test
+            .string(admin_response_3)   // Ensure it's a string
+            .is(employee_id);           // And make sure it's the right one
+
+        const admin_response_4 = await database.sessionToMinimumRollID(session_id, "2");
+        test
+            .string(admin_response_4)   // Ensure it's a string
+            .is(employee_id);           // And make sure it's the right one
+
+        const admin_response_5 = await database.sessionToMinimumRollID(session_id, "3");
+        test
+            .string(admin_response_5)   // Ensure it's a string
+            .is(employee_id);           // And make sure it's the right one
+
+        const admin_response_6 = await database.sessionToMinimumRollID(session_id, "employee");
+        test
+            .string(admin_response_6)   // Ensure it's a string
+            .is(employee_id);           // And make sure it's the right one
     });
 
 });
@@ -49,7 +78,7 @@ describe("Only increment valid sessions", function () {
 
         // Add the new session to the sessions table
         await database.executeQuery(
-            `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password) VALUES ('${employee_id}', 'John', 'Smith', 'j_smith', 'password')`
+            `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password, RoleID, StartDate) VALUES ('${employee_id}', 'John', 'Smith', 'j_smith1', 'password', '1', GETDATE())`
         )
             .then(() => {
             })
@@ -79,7 +108,7 @@ describe("Only increment valid sessions", function () {
 
         // Add the new session to the sessions table
         await database.executeQuery(
-            `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password) VALUES ('${employee_id}', 'Johnny', 'Smith', 'j_smith', 'password')`
+            `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password, RoleID, StartDate) VALUES ('${employee_id}', 'Johnny', 'Smith', 'j_smith2', 'password', '1', GETDATE())`
         )
             .then(() => {
             })
