@@ -34,7 +34,7 @@ User management:
 
 [Get a list of users (GET)](#get-a-list-of-users-get)
 
-<!--Ingredients:
+Ingredients:
 
 [Get ingredients (GET)](#get-ingredients-get)
 
@@ -44,8 +44,7 @@ User management:
 
 [Add an ingredient (POST)](#add-an-ingredient-post)
 
-[Update an ingredient (PUT)](#update-an-ingredient-put)
--->
+<!--[Update an ingredient (PUT)](#update-an-ingredient-put)-->
 
 ## Create Account (POST)
 
@@ -862,7 +861,7 @@ Error (498):
 }
 ```
 
-<!--## Get ingredients (GET)
+## Get ingredients (GET)
 
 `/api/ingredients`
 
@@ -1204,7 +1203,7 @@ await fetch(`base_uri/api/ingredient`,
 ```
 
 Response:
-IngredientID could be useful, I guess
+<!-- IngredientID could be useful, I guess -->
 ```json
 {
   "status": "success",
@@ -1229,7 +1228,7 @@ Error (498):
 }
 ```
 
-"PUT" update method not yet implemented. See the source code for more details. 
+<!-- "PUT" update method not yet implemented. See the source code for more details. 
 
 ## Update an ingredient (PUT)
 
