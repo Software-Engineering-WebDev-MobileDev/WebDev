@@ -46,9 +46,67 @@ if (process.env.NODE_ENV.trim() === 'development') {
             process.exit(1);
         }
         else {
+            console.log("Adding the schema to the database");
             database
                 .executeQuery(data)
-                .then(() => {
+                .then(async () => {
+                    console.log("Adding triggers to the database");
+                    // Equivalent to:
+                    // `FOREIGN KEY (EmployeeID)
+                    // REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE`
+                    await database.executeQuery(
+                        "CREATE TRIGGER trg_task_comments_employeeid_update\n" +
+                        "    ON tblUsers\n" +
+                        "    AFTER UPDATE\n" +
+                        "    AS\n" +
+                        "BEGIN\n" +
+                        "    -- Update EmployeeID in tblTaskComments when it changes in tblUsers\n" +
+                        "    UPDATE tblTaskComments\n" +
+                        "    SET EmployeeID = inserted.EmployeeID\n" +
+                        "    FROM inserted\n" +
+                        "             JOIN deleted ON inserted.EmployeeID = deleted.EmployeeID\n" +
+                        "    WHERE tblTaskComments.EmployeeID = deleted.EmployeeID;\n" +
+                        "END"
+                    ).then(() => {});
+
+                    // Equivalent to:
+                    // `FOREIGN KEY (AssignedByEmployeeID)
+                    // REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE`
+                    await database.executeQuery(
+                        "CREATE TRIGGER trg_task_assignment_hist_employeeid_update\n" +
+                        "    ON tblUsers\n" +
+                        "    AFTER UPDATE\n" +
+                        "    AS\n" +
+                        "BEGIN\n" +
+                        "    -- Update EmployeeID in tblTaskAssignmentHistory when it changes in tblUsers\n" +
+                        "    UPDATE tblTaskAssignmentHistory\n" +
+                        "    SET AssignedByEmployeeID = inserted.EmployeeID\n" +
+                        "    FROM inserted\n" +
+                        "             JOIN deleted ON inserted.EmployeeID = deleted.EmployeeID\n" +
+                        "    WHERE tblTaskAssignmentHistory.AssignedByEmployeeID = deleted.EmployeeID;\n" +
+                        "END"
+                    ).then(() => {});
+
+                    // Equivalent to:
+                    // `FOREIGN KEY (StatusChangedByEmployeeID)
+                    // REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE`
+                    await database.executeQuery(
+                        "CREATE TRIGGER trg_task_status_audit_employeeid_update\n" +
+                        "    ON tblUsers\n" +
+                        "    AFTER UPDATE\n" +
+                        "    AS\n" +
+                        "BEGIN\n" +
+                        "    -- Update StatusChangedByEmployeeID in tblTaskStatusAudit when it changes in tblUsers\n" +
+                        "    UPDATE tblTaskStatusAudit\n" +
+                        "    SET StatusChangedByEmployeeID = inserted.EmployeeID\n" +
+                        "    FROM inserted\n" +
+                        "             JOIN deleted ON inserted.EmployeeID = deleted.EmployeeID\n" +
+                        "    WHERE tblTaskStatusAudit.StatusChangedByEmployeeID = deleted.EmployeeID;\n" +
+                        "END"
+                    ).then(() => {});
+
+                    console.log("Adding some types to the database");
+
                     // Insert some email types
                     database.executeQuery(
                         "INSERT INTO tblEmailTypes (EmailTypeID, EmailTypeDescription, Active) VALUES " +
@@ -88,6 +146,7 @@ if (process.env.NODE_ENV.trim() === 'development') {
                                 console.error(precedingError.message);
                             })
                         }
+                        process.exit(1);
                     }
                     else
                     {

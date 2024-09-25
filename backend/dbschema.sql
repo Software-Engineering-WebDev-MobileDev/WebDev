@@ -7,16 +7,16 @@ CREATE TABLE tblUserRoles (
 
 -- Users Table: Stores user information, such as employees and their roles
 CREATE TABLE tblUsers (
-    EmployeeID       VARCHAR(50) PRIMARY KEY,               -- Unique identifier for each employee (UUID format)
-    FirstName        VARCHAR(64)        NOT NULL,           -- Employee's first name
-    LastName         VARCHAR(64)        NOT NULL,           -- Employee's last name
-    Username         VARCHAR(20) UNIQUE NOT NULL,           -- Unique username for login
-    Password         VARCHAR(256)       NOT NULL,           -- Hashed password for security
-    RoleID           VARCHAR(50)        NOT NULL,           -- Reference to the role assigned to the employee (UUID format)
-    EmploymentStatus BIT                NOT NULL DEFAULT 1, -- Active (1) or inactive (0) employment status
-    StartDate        DATE               NOT NULL,           -- Date when the employee started working
-    EndDate          DATE,                                  -- Date when the employee left (NULL if still active)
-    FOREIGN KEY (RoleID) REFERENCES tblUserRoles (RoleID) ON UPDATE CASCADE,  -- Foreign key to UserRoles table
+    EmployeeID       VARCHAR(50) PRIMARY KEY,                                -- Unique identifier for each employee (UUID format)
+    FirstName        VARCHAR(64)        NOT NULL,                            -- Employee's first name
+    LastName         VARCHAR(64)        NOT NULL,                            -- Employee's last name
+    Username         VARCHAR(20) UNIQUE NOT NULL,                            -- Unique username for login
+    Password         VARCHAR(256)       NOT NULL,                            -- Hashed password for security
+    RoleID           VARCHAR(50)        NOT NULL,                            -- Reference to the role assigned to the employee (UUID format)
+    EmploymentStatus BIT                NOT NULL DEFAULT 1,                  -- Active (1) or inactive (0) employment status
+    StartDate        DATE               NOT NULL,                            -- Date when the employee started working
+    EndDate          DATE,                                                   -- Date when the employee left (NULL if still active)
+    FOREIGN KEY (RoleID) REFERENCES tblUserRoles (RoleID) ON UPDATE CASCADE, -- Foreign key to UserRoles table
 );
 
 -- Email Types Table: Stores types of emails (e.g., personal, work)
@@ -28,13 +28,13 @@ CREATE TABLE tblEmailTypes (
 
 -- Email Table: Stores email addresses for each employee
 CREATE TABLE tblEmail (
-    EmailID      VARCHAR(50) PRIMARY KEY,                                        -- Unique identifier for each email (UUID format)
-    EmailAddress VARCHAR(320) NOT NULL,                                          -- Email address with max length of 320 characters (standard for emails)
-    EmployeeID   VARCHAR(50)  NOT NULL,                                          -- Reference to the employee who owns the email (UUID format)
-    EmailTypeID  VARCHAR(50)  NOT NULL,                                          -- Type of email (personal, work, etc.) (UUID format)
-    Valid        BIT          NOT NULL DEFAULT 1,                                -- Indicator if the email is valid (1 = valid, 0 = invalid)
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers (EmployeeID) ON DELETE CASCADE, -- Cascading delete on employee removal
-    FOREIGN KEY (EmailTypeID) REFERENCES tblEmailTypes (EmailTypeID) ON UPDATE CASCADE,            -- Reference to email types table
+    EmailID      VARCHAR(50) PRIMARY KEY,                                               -- Unique identifier for each email (UUID format)
+    EmailAddress VARCHAR(320) NOT NULL,                                                 -- Email address with max length of 320 characters (standard for emails)
+    EmployeeID   VARCHAR(50)  NOT NULL,                                                 -- Reference to the employee who owns the email (UUID format)
+    EmailTypeID  VARCHAR(50)  NOT NULL,                                                 -- Type of email (personal, work, etc.) (UUID format)
+    Valid        BIT          NOT NULL DEFAULT 1,                                       -- Indicator if the email is valid (1 = valid, 0 = invalid)
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers (EmployeeID) ON DELETE CASCADE,        -- Cascading delete on employee removal
+    FOREIGN KEY (EmailTypeID) REFERENCES tblEmailTypes (EmailTypeID) ON UPDATE CASCADE, -- Reference to email types table
 );
 
 -- Phone Types Table: Stores types of phone numbers (e.g., mobile, home)
@@ -46,13 +46,13 @@ CREATE TABLE tblPhoneTypes (
 
 -- Phone Numbers Table: Stores phone numbers for each employee
 CREATE TABLE tblPhoneNumbers (
-    PhoneNumberID VARCHAR(50) PRIMARY KEY,                                       -- Unique identifier for each phone number (UUID format)
-    PhoneNumber   VARCHAR(10) NOT NULL,                                          -- 10-digit phone number
-    PhoneTypeID   VARCHAR(50) NOT NULL,                                          -- Type of phone number (e.g., mobile, home, work)
-    Valid         BIT         NOT NULL DEFAULT 1,                                -- Indicator if the phone number is valid (1 = valid, 0 = invalid)
-    EmployeeID    VARCHAR(50) NOT NULL,                                          -- Reference to the employee who owns the phone number
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers (EmployeeID) ON DELETE CASCADE, -- Cascading delete on employee removal
-    FOREIGN KEY (PhoneTypeID) REFERENCES tblPhoneTypes (PhoneTypeID) ON UPDATE CASCADE,            -- Reference to phone types table
+    PhoneNumberID VARCHAR(50) PRIMARY KEY,                                              -- Unique identifier for each phone number (UUID format)
+    PhoneNumber   VARCHAR(10) NOT NULL,                                                 -- 10-digit phone number
+    PhoneTypeID   VARCHAR(50) NOT NULL,                                                 -- Type of phone number (e.g., mobile, home, work)
+    Valid         BIT         NOT NULL DEFAULT 1,                                       -- Indicator if the phone number is valid (1 = valid, 0 = invalid)
+    EmployeeID    VARCHAR(50) NOT NULL,                                                 -- Reference to the employee who owns the phone number
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers (EmployeeID) ON DELETE CASCADE,        -- Cascading delete on employee removal
+    FOREIGN KEY (PhoneTypeID) REFERENCES tblPhoneTypes (PhoneTypeID) ON UPDATE CASCADE, -- Reference to phone types table
 );
 
 -- Sessions Table: Logs user session information (sign-ins and activity)
@@ -68,80 +68,80 @@ CREATE TABLE tblSessions (
 
 -- Inventory Table: Tracks stock levels of ingredients in inventory
 CREATE TABLE tblInventory (
-    InventoryID VARCHAR(50) PRIMARY KEY,  -- Unique identifier for each inventory entry (UUID format)
-    Name        VARCHAR(50) NOT NULL,
-    ShelfLife   INT,
-    ShelfLifeUnit   VARCHAR(10),  
-    ReorderAmount DECIMAL(10,2) NOT NULL,  -- Suggested reorder amount for the ingredient
-    ReorderUnit VARCHAR(20)     NOT NULL
+    InventoryID   VARCHAR(50) PRIMARY KEY, -- Unique identifier for each inventory entry (UUID format)
+    Name          VARCHAR(50)    NOT NULL,
+    ShelfLife     INT,
+    ShelfLifeUnit VARCHAR(10),
+    ReorderAmount DECIMAL(10, 2) NOT NULL, -- Suggested reorder amount for the ingredient
+    ReorderUnit   VARCHAR(20)    NOT NULL
 );
 
 CREATE TABLE tblInventoryHistory (
-    HistID      VARCHAR(50) PRIMARY KEY,
-    ChangeAmount DECIMAL(10, 2),
-    EmployeeID  VARCHAR(50),
-    InventoryID VARCHAR(50),
-    Description VARCHAR(255),
-    Date        DATETIME NOT NULL DEFAULT GETDATE(),
-    ExpirationDate DATETIME, 
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID) ON UPDATE CASCADE,
-    FOREIGN KEY (InventoryID) REFERENCES tblInventory(InventoryID) ON UPDATE CASCADE
-)
+    HistID         VARCHAR(50) PRIMARY KEY,
+    ChangeAmount   DECIMAL(10, 2),
+    EmployeeID     VARCHAR(50),
+    InventoryID    VARCHAR(50),
+    Description    VARCHAR(255),
+    Date           DATETIME NOT NULL DEFAULT GETDATE(),
+    ExpirationDate DATETIME,
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE,
+    FOREIGN KEY (InventoryID) REFERENCES tblInventory (InventoryID) ON UPDATE CASCADE
+);
 
 CREATE TABLE tblPurchaseOrder (
     PurchaseOrderID VARCHAR(50) PRIMARY KEY,
     InventoryID     VARCHAR(50),
-    Date            DATETIME    NOT NULL DEFAULT GETDATE(),
+    Date            DATETIME       NOT NULL DEFAULT GETDATE(),
     OrderQuantity   DECIMAL(10, 2) NOT NULL,
     Vendor          VARCHAR(255),
     PayableAmount   DECIMAL(10, 2),
     PayableDate     DATETIME,
     EmployeeID      VARCHAR(50),
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers(EmployeeID) ON UPDATE CASCADE,
-    FOREIGN KEY (InventoryID) REFERENCES tblInventory(InventoryID) ON UPDATE CASCADE
-)
+    FOREIGN KEY (EmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE,
+    FOREIGN KEY (InventoryID) REFERENCES tblInventory (InventoryID) ON UPDATE CASCADE
+);
 
 -- Recipe Tables --
 
 -- Stores information about recipes
 CREATE TABLE tblRecipes (
-    RecipeID     VARCHAR(50) PRIMARY KEY,                          -- Unique identifier for the recipe
-    RecipeName   VARCHAR(100) NOT NULL,                            -- Name of the recipe
-    Description  VARCHAR(MAX),                                     -- Detailed description of the recipe
-    Category     VARCHAR(50)  NOT NULL,                                      -- Reference to the category the recipe belongs to
-    PrepTime     INT          NOT NULL,                                              -- Preparation time in minutes
-    CookTime     INT          NOT NULL,                                              -- Cooking time in minutes
-    Servings     INT          NOT NULL,                            -- Number of servings
-    Instructions VARCHAR(MAX) NOT NULL,                                     -- Step-by-step cooking instructions
-    CreatedAt    DATETIME     NOT NULL,                            -- Timestamp when the recipe was created
-    UpdatedAt    DATETIME     NOT NULL DEFAULT GETDATE(),                                         -- Timestamp of the last update
+    RecipeID     VARCHAR(50) PRIMARY KEY,                 -- Unique identifier for the recipe
+    RecipeName   VARCHAR(100) NOT NULL,                   -- Name of the recipe
+    Description  VARCHAR(MAX),                            -- Detailed description of the recipe
+    Category     VARCHAR(50)  NOT NULL,                   -- Reference to the category the recipe belongs to
+    PrepTime     INT          NOT NULL,                   -- Preparation time in minutes
+    CookTime     INT          NOT NULL,                   -- Cooking time in minutes
+    Servings     INT          NOT NULL,                   -- Number of servings
+    Instructions VARCHAR(MAX) NOT NULL,                   -- Step-by-step cooking instructions
+    CreatedAt    DATETIME     NOT NULL,                   -- Timestamp when the recipe was created
+    UpdatedAt    DATETIME     NOT NULL DEFAULT GETDATE(), -- Timestamp of the last update
 );
 
 -- Defines the ingredients used in a recipe, including quantities and modifiers
 CREATE TABLE tblIngredients (
-    IngredientID VARCHAR(50) PRIMARY KEY, -- Unique identifier for the recipe ingredient
-    InventoryID     VARCHAR(50) NOT NULL,
-    Quantity DECIMAL(10,2) NOT NULL, -- Quantity of the ingredient
-    UnitOfMeasure VARCHAR(50) NOT NULL, -- Unit of measurement
+    IngredientID  VARCHAR(50) PRIMARY KEY, -- Unique identifier for the recipe ingredient
+    InventoryID   VARCHAR(50)    NOT NULL,
+    Quantity      DECIMAL(10, 2) NOT NULL, -- Quantity of the ingredient
+    UnitOfMeasure VARCHAR(50)    NOT NULL, -- Unit of measurement
     FOREIGN KEY (InventoryID) REFERENCES tblInventory (InventoryID) ON UPDATE CASCADE
 );
 
 -- Stores modifiers for ingredients (e.g., "room temperature", "nearly frozen")
 CREATE TABLE tblIngredientModifiers (
-    ModifierID          VARCHAR(50) PRIMARY KEY,                -- Unique identifier for the modifier
-    ModifierName        VARCHAR(255) NOT NULL,                  -- Description of the modifier
+    ModifierID   VARCHAR(50) PRIMARY KEY, -- Unique identifier for the modifier
+    ModifierName VARCHAR(255) NOT NULL,   -- Description of the modifier
 );
 
 CREATE TABLE tblRecipeIngredientModifier (
-    RecipeID    VARCHAR(50),
+    RecipeID     VARCHAR(50),
     IngredientID VARCHAR(50),
-    ModifierID  VARCHAR(50),
-    ScaleFactor DECIMAL(5,2),
+    ModifierID   VARCHAR(50),
+    ScaleFactor  DECIMAL(5, 2),
     PRIMARY KEY (RecipeID, IngredientID, ModifierID),
-    FOREIGN KEY (RecipeID) REFERENCES tblRecipes(RecipeID) ON UPDATE CASCADE,
-    FOREIGN KEY (IngredientID) REFERENCES tblIngredients(IngredientID) ON UPDATE CASCADE,
-    FOREIGN KEY (ModifierID) REFERENCES tblModifiers(ModifierID) ON UPDATE CASCADE
-)
+    FOREIGN KEY (RecipeID) REFERENCES tblRecipes (RecipeID) ON UPDATE CASCADE,
+    FOREIGN KEY (IngredientID) REFERENCES tblIngredients (IngredientID) ON UPDATE CASCADE,
+    -- FOREIGN KEY (ModifierID) REFERENCES tblModifiers (ModifierID) ON UPDATE CASCADE
+);
 
 -- Task Management Tables --
 
@@ -167,7 +167,7 @@ CREATE TABLE tblTaskComments (
     CommentText VARCHAR(MAX) NOT NULL,                   -- Text of the comment
     CommentDate DATETIME     NOT NULL DEFAULT GETDATE(), -- Date and time the comment was made
     FOREIGN KEY (TaskID) REFERENCES tblTasks (TaskID) ON UPDATE CASCADE,
-    FOREIGN KEY (EmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE
+    -- FOREIGN KEY (EmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE
 );
 
 -- Stores history of task assignments
@@ -178,8 +178,7 @@ CREATE TABLE tblTaskAssignmentHistory (
     AssignedToEmployeeID VARCHAR(50),                            -- Employee who received the task
     AssignmentDate       DATETIME    NOT NULL DEFAULT GETDATE(), -- Date and time of the assignment
     FOREIGN KEY (TaskID) REFERENCES tblTasks (TaskID) ON UPDATE CASCADE,
-    FOREIGN KEY (AssignedByEmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE,
-    FOREIGN KEY (AssignedToEmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE
+    --FOREIGN KEY (AssignedByEmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE
 );
 
 -- Stores history of task status changes
@@ -191,7 +190,7 @@ CREATE TABLE tblTaskStatusAudit (
     StatusChangedByEmployeeID VARCHAR(50),                            -- Employee who changed the status
     StatusChangeDate          DATETIME    NOT NULL DEFAULT GETDATE(), -- Date and time of the status change
     FOREIGN KEY (TaskID) REFERENCES tblTasks (TaskID) ON UPDATE CASCADE,
-    FOREIGN KEY (StatusChangedByEmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE
+    --FOREIGN KEY (StatusChangedByEmployeeID) REFERENCES tblUsers (EmployeeID) ON UPDATE CASCADE
 );
 
 /*
