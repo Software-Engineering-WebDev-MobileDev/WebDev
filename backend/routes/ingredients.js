@@ -22,7 +22,7 @@ app.get("/ingredients", (req, res) => {
         database.sessionToEmployeeID(session_id).then((employee_id) => {
             if (employee_id) {
                 database.executeQuery(
-                    `SELECT *
+                    `SELECT IngredientID, ing.InventoryID, Quantity, UnitOfMeasure, Name, ShelfLife, ShelfLifeUnit, ReorderAmount, ReorderUnit
                      FROM tblIngredients AS ing
                               INNER JOIN tblInventory AS inv ON ing.InventoryID = inv.InventoryID`
                 ).then((result) => {
@@ -120,7 +120,10 @@ app.get("/ingredient", (req, res) => {
         const session_id = req.header('session_id');
         const ingredient_id = req.header('ingredient_id');
 
-        if (!ingredient_id.match(/^[0-9A-Za-z]{32}$/)) {
+        if (ingredient_id === undefined) {
+            return_400(res, "Missing ingredient_id in header");
+        }
+        else if (!ingredient_id.match(/^[0-9A-Za-z]{32}$/)) {
             return_400(res, "Invalid ingredient_id format");
         }
         else {
@@ -179,20 +182,25 @@ app.post("/ingredient", (req, res) => {
         const quantity = req.header("quantity");
         const unit_of_measurement = req.header("unit_of_measurement");
 
-        //const description = req.header("description");
-        //const category = req.header("category");
-        //const measurement = req.header("measurement");
-        //const max_amount = req.header("max_amount");
-        //const reorder_amount = req.header("reorder_amount");
-        //const min_amount = req.header("min_amount");
-
         // Make sure that relevant sentence-like info can be inserted into the DB without SQL injection
         const sentence_regex = /^[\w\s,.!?'"(){}\[\]:-=]{1,50}(?!--|;)$/;
         // The biggest floating point number that will be stored by the database
         const decimal_10whole_2fraction_max = 9_999_999_999.99;
 
+        if (session_id === undefined) {
+            return_400(res, "Missing session_id in headers");
+        }
+        else if (inventory_id === undefined) {
+            return_400(res, "Missing inventory_id in headers");
+        }
+        else if (quantity === undefined) {
+            return_400(res, "Missing quantity in headers");
+        }
+        else if (unit_of_measurement === undefined) {
+            return_400(res, "Missing unit_of_measurement in headers");
+        }
         // TODO: Check if the unit is in a list of metric units or something like that
-        if (!unit_of_measurement.match(sentence_regex)) {
+        else if (!unit_of_measurement.match(sentence_regex)) {
             return_400(res, "Invalid category contents");
         }
         else if (!inventory_id.match(/^\w{0,32}$/)) {
@@ -252,7 +260,10 @@ app.delete('/ingredient', (req, res) => {
         const session_id = req.header('session_id');
         const ingredient_id = req.header("ingredient_id")
 
-        if (!ingredient_id.match(/^[0-9A-Za-z]{32}$/)) {
+        if (ingredient_id === undefined) {
+            return_400(res, "Missing ingredient_id in header");
+        }
+        else if (!ingredient_id.match(/^[0-9A-Za-z]{32}$/)) {
             return_400(res, "Invalid ingredient_id format");
         }
         else {
