@@ -44,6 +44,8 @@ Ingredients:
 
 [Add an ingredient (POST)](#add-an-ingredient-post)
 
+[Delete an Ingredient (DELETE)](#delete-an-ingredient-delete)
+
 <!--[Update an ingredient (PUT)](#update-an-ingredient-put)-->
 
 ## Create Account (POST)
@@ -897,94 +899,114 @@ Response:
   "status": "success",
   "content": [
     {
-      "IngredientID": "0f607a3e121b4f62b151f00afe37ae78",
-      "Description": "Milk",
-      "Category": "Dairy",
-      "Measurement": "L",
-      "MaximumAmount": 200,
-      "ReorderAmount": 50,
-      "MinimumAmount": 10
-    },
-    {
-      "IngredientID": "40a80dbc4f9847c2b025d4315a25e485",
-      "Description": "Vanilla Extract",
-      "Category": "Flavoring",
-      "Measurement": "mL",
-      "MaximumAmount": 500,
-      "ReorderAmount": 100,
-      "MinimumAmount": 20
-    },
-    {
-      "IngredientID": "49508243f1ab46a7b066f3fd345ee38b",
-      "Description": "Baking Powder",
-      "Category": "Baking",
-      "Measurement": "g",
-      "MaximumAmount": 1000,
-      "ReorderAmount": 200,
-      "MinimumAmount": 50
-    },
-    {
-      "IngredientID": "58952a228a5045178c521c286d72a90d",
-      "Description": "Chocolate Chips",
-      "Category": "Confectionery",
-      "Measurement": "kg",
-      "MaximumAmount": 50,
+      "IngredientID": "04ac08a054b147b4a9415c8bb95a3bed",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "g",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
       "ReorderAmount": 10,
-      "MinimumAmount": 2
+      "ReorderUnit": "kg"
     },
     {
-      "IngredientID": "652b28187a614d11961834d779f22641",
-      "Description": "Butter",
-      "Category": "Dairy",
-      "Measurement": "kg",
-      "MaximumAmount": 30,
-      "ReorderAmount": 5,
-      "MinimumAmount": 1
-    },
-    {
-      "IngredientID": "7ef3f3e9693f4ed8a22f8d005dca5579",
-      "Description": "Sugar",
-      "Category": "Baking",
-      "Measurement": "kg",
-      "MaximumAmount": 50,
+      "IngredientID": "31abe85784764824bd07a95199f5bc52",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "kg",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
       "ReorderAmount": 10,
-      "MinimumAmount": 2
+      "ReorderUnit": "kg"
     },
     {
-      "IngredientID": "98d535f598e048cdb027d47062b7a9c9",
-      "Description": "Eggs",
-      "Category": "Dairy",
-      "Measurement": "units",
-      "MaximumAmount": 500,
-      "ReorderAmount": 100,
-      "MinimumAmount": 20
+      "IngredientID": "4263a39ae0ee4d4685b919519f8a15bb",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "kg",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
     },
     {
-      "IngredientID": "b3a6a07dd47547348a3ba783da92352f",
-      "Description": "Yeast",
-      "Category": "Baking",
-      "Measurement": "g",
-      "MaximumAmount": 2000,
-      "ReorderAmount": 500,
-      "MinimumAmount": 100
+      "IngredientID": "49caa4c19b56454482f29ecd32581880",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "kg",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
     },
     {
-      "IngredientID": "b81d751cb98b475fa763959dd20bbb07",
-      "Description": "Flour",
-      "Category": "Baking",
-      "Measurement": "kg",
-      "MaximumAmount": 100,
-      "ReorderAmount": 20,
-      "MinimumAmount": 5
+      "IngredientID": "4b595b76089b47d2beb787c0a83737ce",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "g",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
     },
     {
-      "IngredientID": "e5d92823f3434fc98780a023927617e8",
-      "Description": "Salt",
-      "Category": "Seasoning",
-      "Measurement": "g",
-      "MaximumAmount": 5000,
-      "ReorderAmount": 500,
-      "MinimumAmount": 100
+      "IngredientID": "5a12ba2235974a32921eec97939e5951",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "units",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
+    },
+    {
+      "IngredientID": "75f0d872ad3b4713b45ad6b11b2d0a03",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "mL",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
+    },
+    {
+      "IngredientID": "78cb940d6e50466b9cc752724dae907f",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "g",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
+    },
+    {
+      "IngredientID": "987057807e3c46fd96d6c89d8868749b",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "L",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
+    },
+    {
+      "IngredientID": "b6a242f1c7404346a6b7e983f1535b69",
+      "InventoryID": "2457caf1bf37474d9231a0a64f655355",
+      "Quantity": 10,
+      "UnitOfMeasure": "kg",
+      "Name": "Chocolate Chips",
+      "ShelfLife": 1,
+      "ShelfLifeUnit": "day",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
     }
   ]
 }
@@ -1035,54 +1057,67 @@ Response:
   "status": "success",
   "content": [
     {
-      "IngredientID": "0f607a3e121b4f62b151f00afe37ae78",
-      "Description": "Milk",
-      "Category": "Dairy"
+      "IngredientID": "1ba4277d61f14b8888081b9ae93ddbbb",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "mL"
     },
     {
-      "IngredientID": "40a80dbc4f9847c2b025d4315a25e485",
-      "Description": "Vanilla Extract",
-      "Category": "Flavoring"
+      "IngredientID": "240641e1e1574e96bf44a0072f3ebc6a",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "kg"
     },
     {
-      "IngredientID": "49508243f1ab46a7b066f3fd345ee38b",
-      "Description": "Baking Powder",
-      "Category": "Baking"
+      "IngredientID": "25d75e0b8fbf49549d94c123afc34d8c",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "units"
     },
     {
-      "IngredientID": "58952a228a5045178c521c286d72a90d",
-      "Description": "Chocolate Chips",
-      "Category": "Confectionery"
+      "IngredientID": "27df757ee2b8429b954095fe88460be1",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "kg"
     },
     {
-      "IngredientID": "652b28187a614d11961834d779f22641",
-      "Description": "Butter",
-      "Category": "Dairy"
+      "IngredientID": "2f2c2052122b4f3fb3da3358ae50fe26",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "L"
     },
     {
-      "IngredientID": "7ef3f3e9693f4ed8a22f8d005dca5579",
-      "Description": "Sugar",
-      "Category": "Baking"
+      "IngredientID": "3b492d7a55d840e99d639f9e3abca615",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "kg"
     },
     {
-      "IngredientID": "98d535f598e048cdb027d47062b7a9c9",
-      "Description": "Eggs",
-      "Category": "Dairy"
+      "IngredientID": "48e472c148144ba7b5c6625c29f7bff2",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "g"
     },
     {
-      "IngredientID": "b3a6a07dd47547348a3ba783da92352f",
-      "Description": "Yeast",
-      "Category": "Baking"
+      "IngredientID": "797bb8035c7c4a1dbaa31896bb75b13f",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "kg"
     },
     {
-      "IngredientID": "b81d751cb98b475fa763959dd20bbb07",
-      "Description": "Flour",
-      "Category": "Baking"
-    },
-    {
-      "IngredientID": "e5d92823f3434fc98780a023927617e8",
-      "Description": "Salt",
-      "Category": "Seasoning"
+      "IngredientID": "93663a4cf8a042078e744af047aa3b18",
+      "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+      "Name": "Chocolate Chips",
+      "Quantity": 10,
+      "UnitOfMeasure": "g"
     }
   ]
 }
@@ -1135,13 +1170,10 @@ Response:
 {
   "status": "success",
   "content": {
-    "IngredientID": "b81d751cb98b475fa763959dd20bbb07",
-    "Description": "Flour",
-    "Category": "Baking",
-    "Measurement": "kg",
-    "MaximumAmount": 100,
-    "ReorderAmount": 20,
-    "MinimumAmount": 5
+    "IngredientID": "14fccd4e6d194322a9dcefd1a2e009df",
+    "InventoryID": "b80b42a3cb3648139ce8116c47fe09df",
+    "Quantity": 10,
+    "UnitOfMeasure": "g"
   }
 }
 ```
@@ -1165,17 +1197,11 @@ Error (498):
 
 session_id (str): the session id to use
 
-description (str): Product description
+inventory_id (str): ingredient in the inventory to associate with.
 
-category (str): Product category
+quantity (float|int|Number): Amount of the ingredient
 
-measurement (str): Product unit of measurement
-
-max_amount (float|int|Number): The maximum amount of a product. It must be positive and < 999999.99
-
-reorder_amount (float|int|Number): The reorder amount of a product. It must be positive and < 999999.99
-
-min_amount (float|int|Number): The minimum amount of a product. It must be positive and < 999999.99
+unit_of_measurement (str): Product unit of measurement
 
 Query:
 
@@ -1189,12 +1215,9 @@ await fetch(`base_uri/api/ingredient`,
         method: 'POST',
         headers: {
             session_id: "<session_id>",
-            description: "<description>",
-            category: "<category>",
-            measurement: "<measurement>",
-            max_amount: "<max_amount_num>",
-            reorder_amount: "<reorder_amount_num>",
-            min_amount: "<min_amount_num>"
+            inventory_id: "<inventory_id>",
+            quantity: "<quantity>",
+            unit_of_measurement: "<unit_of_measurement>"
         },
     }
     ).then(
@@ -1209,13 +1232,59 @@ Response:
   "status": "success",
   "content": {
     "IngredientID": "b81d751cb98b475fa763959dd20bbb07",
-    "Description": "Flour",
-    "Category": "Baking",
-    "Measurement": "kg",
-    "MaximumAmount": 100,
-    "ReorderAmount": 20,
-    "MinimumAmount": 5
+    "InventoryID": "d21d751cb98bbb8763959d07b475fa0b",
+    "Quantity": 22.2,
+    "UnitOfMeasure": "kg"
   }
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Delete an ingredient (DELETE)
+
+`/api/ingredient`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+ingredient_id (str): the ingredient to delete
+
+Query:
+
+```
+base_uri/api/ingredient
+```
+
+```js 
+await fetch(`base_uri/api/ingredient`,
+    {
+        method: 'DELETE',
+        headers: {
+            session_id: session_id,
+            ingredient_id: "<ingredient_id>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
 }
 ```
 

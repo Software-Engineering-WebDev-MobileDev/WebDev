@@ -66,13 +66,25 @@ class Database {
     /**
      * Execute a query against the database.
      * @param query {String} The query to execute. MUST BE SANITIZED!
+     * @param depth {Number} Don't use this.
      */
-    async executeQuery(query) {
-        await this.connect();
-        const request = this.poolconnection.request();
-        const result = await request.query(query);
-        await this.disconnect();
-        return result;
+    async executeQuery(query, depth = 0) {
+        try {
+            await this.connect();
+            const request = this.poolconnection.request();
+            const result = await request.query(query);
+            await this.disconnect();
+            return result;
+        }
+        catch (e) {
+            if (e.message.match(/Connection is closed/) && depth < 3) {
+                await this.disconnect();
+                return this.executeQuery(query, depth + 1);
+            }
+            else {
+                throw e;
+            }
+        }
     }
 
     /**
@@ -157,7 +169,10 @@ class Database {
 
         // Get the employee id (if valid)
         return await this.executeQuery(
-            `SELECT EmployeeID FROM tblSessions WHERE SessionID = '${session_id}' AND EmployeeID IN (SELECT EmployeeID FROM tblUsers WHERE RoleID = '${role}')`
+            `SELECT EmployeeID
+             FROM tblSessions
+             WHERE SessionID = '${session_id}'
+               AND EmployeeID IN (SELECT EmployeeID FROM tblUsers WHERE RoleID = '${role}')`
         ).then((value) => {
             if (value.rowsAffected[0] === 1) {
                 return value.recordset[0]["EmployeeID"];
@@ -165,10 +180,7 @@ class Database {
             else {
                 return false;
             }
-        }).catch((e) => {
-            console.log(e);
-            return false;
-        });
+        })
     }
 
     /**

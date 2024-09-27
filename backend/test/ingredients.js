@@ -90,11 +90,22 @@ const test_ingredients = [
     }
 ];
 
-const test_ingredient_strings = test_ingredients.map(ingredient => JSON.stringify(ingredient));
+const test_ingredient_strings = test_ingredients.map(
+    ingredient => JSON.stringify({
+        Name: ingredient.description,
+        Quantity: 10.0,
+        UnitOfMeasure: ingredient.measurement,
+        ShelfLife: 1,
+        ShelfLifeUnit: 'day',
+        ReorderAmount: 10.00,
+        ReorderUnit: 'kg',
+    })
+);
 const test_ingredient_strings_short = test_ingredients.map(
     ingredient => JSON.stringify({
-        description: ingredient.description,
-        category: ingredient.category
+        Name: ingredient.description,
+        Quantity: 10.0,
+        UnitOfMeasure: ingredient.measurement
     })
 );
 
@@ -106,7 +117,19 @@ const base_uri = "http://localhost:3000/api",
     test_password = "Password123";
 let session_id;
 
+let test_uuid;
+
 describe("Create and retrieve ingredients", function () {
+    before(async function () {
+        for (const ingredient of test_ingredients) {
+            test_uuid = database.gen_uuid();
+            await database.executeQuery(
+                `INSERT INTO tblInventory (InventoryID, Name, ShelfLife, ShelfLifeUnit, ReorderAmount, ReorderUnit)
+                 VALUES ('${test_uuid}', '${ingredient.description}', 1, 'day', ${ingredient.reorder_amount},
+                         '${ingredient.measurement}')`
+            )
+        }
+    });
     it("Add some ingredients", async function () {
         let responses = [];
 
@@ -143,12 +166,13 @@ describe("Create and retrieve ingredients", function () {
                         method: "POST",
                         headers: {
                             session_id: session_id,
-                            description: ingredient.description,
-                            category: ingredient.category,
-                            measurement: ingredient.measurement,
-                            max_amount: ingredient.max_amount,
-                            reorder_amount: ingredient.reorder_amount,
-                            min_amount: ingredient.min_amount
+                            //description: ingredient.description,
+                            inventory_id: test_uuid,
+                            quantity: 10.0,
+                            unit_of_measurement: ingredient.measurement,
+                            // max_amount: ingredient.max_amount,
+                            // reorder_amount: ingredient.reorder_amount,
+                            // min_amount: ingredient.min_amount
                         }
                     }
                 )
@@ -213,18 +237,19 @@ describe("Create and retrieve ingredients", function () {
         for (const ingredient of ingredient_list["content"]) {
             let ingredient_string = JSON.stringify(
                 {
-                    description: ingredient["Description"],
-                    category: ingredient["Category"],
-                    measurement: ingredient["Measurement"],
-                    max_amount: ingredient["MaximumAmount"],
-                    reorder_amount: ingredient["ReorderAmount"],
-                    min_amount: ingredient["MinimumAmount"]
+                    Name: ingredient["Name"],
+                    Quantity: ingredient["Quantity"],
+                    UnitOfMeasure: 'kg', // ingredient["UnitOfMeasure"],
+                    ShelfLife: 1,
+                    ShelfLifeUnit: 'day',
+                    ReorderAmount: 10.00,
+                    ReorderUnit: 'kg'
                 }
             );
             assert.strictEqual(
                 test_ingredient_strings.includes(ingredient_string),
                 true,
-                `Expected ingredient list to include ingredient ${ingredient}`
+                `Expected ingredient list to include ingredient: ${JSON.stringify(ingredient)}\n${ingredient_string}`
             );
         }
 
@@ -257,8 +282,9 @@ describe("Create and retrieve ingredients", function () {
         for (const ingredient of ingredient_list["content"]) {
             let ingredient_string = JSON.stringify(
                 {
-                    description: ingredient["Description"],
-                    category: ingredient["Category"]
+                    Name: ingredient["Name"],
+                    Quantity: ingredient["Quantity"],
+                    UnitOfMeasure: 'kg', // ingredient["UnitOfMeasure"],
                 }
             );
             assert.strictEqual(

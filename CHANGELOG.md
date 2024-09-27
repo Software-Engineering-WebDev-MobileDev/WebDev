@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Indev1] - 2024-09-19
 
+## [0.1.2] - 2024-09-27
+
+## Changed
+- Update SQL schema to hopefully fulfil all MVP requirements
+- Updated API endpoints to reflect the new schema
+- Updated [documentation](./backend/DOCUMENTATION.md) to reflect the new parameters and output of the schema
+- Updated [documentation](./backend/DOCUMENTATION.md) to reflect the new setup for frontend development
+
 ## [0.1.1] - 2024-09-19
 
 ## Added
