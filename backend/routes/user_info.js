@@ -506,6 +506,18 @@ app.get('/user_list', (req, res) => {
         else if (page_size > 30) {
             return_400(res, "Invalid page size. Page size must be <= 30");
         }
+        else if (page_size < 1) {
+            return_400(res, "Invalid page size. Page size must be > 0");
+        }
+        else if (page < 1) {
+            return_400(res, "Page must be >= 1")
+        }
+        else if (!Number.isInteger(page_size)) {
+            return_400(res, "page_size must be an integer");
+        }
+        else if (!Number.isInteger(page)) {
+            return_400(res, "page must be an integer");
+        }
         else {
             // Get the users and return the requested count and page
             database.sessionToEmployeeID(session_id).then((employee_id) => {
