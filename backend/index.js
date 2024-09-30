@@ -22,6 +22,8 @@ const productRequirementRouter = require('./routes/product_requirements');
 const inventoryRouter = require('./routes/inventory');
 const userInfoRouter = require('./routes/user_info');
 const ingredientRouter = require('./routes/ingredients');
+const recipeRouter = require('./routes/recipes');
+const taskRouter = require('./routes/tasks');
 
 // App
 const app = express();
@@ -363,7 +365,9 @@ app.use('/api',
     productRequirementRouter,
     inventoryRouter,
     userInfoRouter,
-    ingredientRouter
+    ingredientRouter,
+    recipeRouter,
+    taskRouter
 );
 
 // Serve the static frontend
