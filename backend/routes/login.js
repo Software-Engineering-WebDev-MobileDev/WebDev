@@ -1,7 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
 const crypto = require('crypto');
-const {v4} = require('uuid');
 const {return_500, return_400, return_498} = require('./codes')
 
 // Database setup:
@@ -16,27 +15,33 @@ const app = express.Router();
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 
-const gen_session_id = function () {
-    return v4().replace(/-/g, '');
-}
 
 app.post('/create_account', (req, res) => {
-    let employee_id,    // EmployeeID field in the request header
-        first_name,     // FirstName field in the request header
-        last_name,      // LastName field in the request header
-        username,       // Username field in the request header
-        password;       // Password field in the request header
-
     try {
         // Get header fields
-        employee_id = req.header('employee_id');
-        first_name = req.header('first_name');
-        last_name = req.header('last_name');
-        username = req.header('username');
-        password = req.header('password');
+        const employee_id = req.header('employee_id');  // EmployeeID field in the request header
+        const first_name = req.header('first_name');    // FirstName field in the request header
+        const last_name = req.header('last_name');      // LastName field in the request header
+        const username = req.header('username');        // Username field in the request header
+        const password = req.header('password');        // Password field in the request header
 
+        if (employee_id === undefined) {
+            return_400(res, "Missing employee_id");
+        }
+        else if (first_name === undefined) {
+            return_400(res, "Missing first_name");
+        }
+        else if (last_name === undefined) {
+            return_400(res, "Missing last_name");
+        }
+        else if (username === undefined) {
+            return_400(res, "Missing username");
+        }
+        else if (password === undefined) {
+            return_400(res, "Missing password");
+        }
         // Basic username/password verification
-        if (username.length < 4 || password.length < 8) {
+        else if (username.length < 4 || password.length < 8) {
             return_400(res, "Invalid username or password length");
         }
         // Prevent SQL injection with the username
@@ -66,13 +71,23 @@ app.post('/create_account', (req, res) => {
                     .update(password)           // Hash the password itself
                     .digest('hex');    // Grab the hex digest for the DB
 
+            // Make the first user the owner
+            let role = "3";
+            database.executeQuery(
+                `SELECT * FROM tblUsers`
+            ).then((result) => {
+                if (result.rowsAffected[0] === 0) {
+                    role = "0";
+                }
+            })
+
             // Insert the user into the DB
             database.executeQuery(
-                `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password)
-                 VALUES ('${employee_id}', '${first_name}', '${last_name}', '${username}', '${password_hash}')`
+                `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password, RoleID, StartDate)
+                 VALUES ('${employee_id}', '${first_name}', '${last_name}', '${username}', '${password_hash}', '${role}', GETDATE())`
             ).then(() => {
                 // Generate a session ID
-                const session_id = gen_session_id()
+                const session_id = database.gen_uuid()
 
                 // Add the new session to the sessions table
                 database.executeQuery(
@@ -157,7 +172,7 @@ app.post('/login', (req, res) => {
             ).then((result) => {
                 if (result.rowsAffected[0] === 1) {
                     const employee_id = result.recordset[0]["EmployeeID"];
-                    const session_id = gen_session_id()
+                    const session_id = database.gen_uuid();
 
                     // Add the new session to the sessions table
                     database.executeQuery(

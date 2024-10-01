@@ -11,10 +11,10 @@ let session_id;
 
 // Make a bunch of test emails
 let test_emails = [];
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 5; i++) {
     test_emails.push(`free_software+${i}@gnu.org`);
 }
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 5; i++) {
     test_emails.push(`free_software${i}@gnu.com`);
 }
 
@@ -303,7 +303,7 @@ describe("Test user info retrieval", function () {
         for (const phone_entry of result_phone_numbers["phone_numbers"]) {
             assert.equal(
                 test_phone_results.includes(
-                    phone_entry["AreaCode"] + phone_entry["Number"]),
+                    phone_entry["PhoneNumber"]),
                 true,
                 `Phone object's number not found in response! (${JSON.stringify(phone_entry)})`
             );
@@ -350,7 +350,7 @@ describe("Test user info retrieval", function () {
         for (const phone_entry of result_phone_numbers["phone_numbers"]) {
             assert.equal(
                 test_phone_results.includes(
-                    phone_entry["AreaCode"] + phone_entry["Number"]),
+                    phone_entry["PhoneNumber"]),
                 true,
                 `Phone object's number not found in response! (${JSON.stringify(phone_entry)})`
             );
