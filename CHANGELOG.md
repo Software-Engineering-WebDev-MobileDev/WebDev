@@ -7,9 +7,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Indev1] - 2024-09-19
 
+## [0.1.3] - 2024-10-01
+
+### Added
+- Inventory routes to:
+  - Get inventory
+  - Get inventory item
+  - Add inventory item
+  - Update inventory item
+  - Delete inventory item
+  - Update inventory item
+  - Update inventory quantity
+  - Get inventory change history
+  - Delete an inventory change
+  - Get inventory amounts
+
 ## [0.1.2] - 2024-09-27
 
-## Changed
+### Changed
 - Update SQL schema to hopefully fulfil all MVP requirements
 - Updated API endpoints to reflect the new schema
 - Updated [documentation](./backend/DOCUMENTATION.md) to reflect the new parameters and output of the schema

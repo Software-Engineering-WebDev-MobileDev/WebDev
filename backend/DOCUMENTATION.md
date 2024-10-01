@@ -48,6 +48,26 @@ Ingredients:
 
 <!--[Update an ingredient (PUT)](#update-an-ingredient-put)-->
 
+Inventory:
+
+[Get inventory (GET)](#get-inventory-get)
+
+[Get inventory item (GET)](#get-inventory-item-get)
+
+[Add inventory item (POST)](#add-inventory-item-post)
+
+[Update inventory item (PUT)](#update-inventory-item-put)
+
+[Delete an inventory item (DELETE)](#delete-an-inventory-item-delete)
+
+[Update an inventory quantity (POST)](#update-an-inventory-quantity-post)
+
+[Get inventory change history (GET)](#get-inventory-change-history-get)
+
+[Delete an inventory change (DELETE)](#delete-an-inventory-change-delete)
+
+[Get inventory amounts (GET)](#get-inventory-amounts-get)
+
 ## Create Account (POST)
 
 `/api/create_account`
@@ -1365,90 +1385,19 @@ Error (498):
 
 -->
 
-<!-- 
-More endpoint docs can go below here. 
-Check below to see if there are already skeleton docs.  
--->
-
----
-
-<!-- Unimplemented endpoints:
-
-## Product requirements (GET)
-
-`/api/product_requirements`
-
-### Arguments:
-
-product (str): product name
-
-### Example:
-
-Query:
-
-```
-base_uri/api/product_requirements?product=sourdough
-```
-
-Response:
-
-```json
-{"data": "data"}
-```
-
-## Add product requirements (POST)
-
-`/api/add_product_requirements`
-
-### Arguments:
-
-(body)
-
-product (str): product name
-
-requirements (?): ?
-
-### Example:
-
-Query:
-
-```
-base_uri/api/add_product_requirements
-```
-
-## Delete product requirements (DELETE)
-
-`/api/delete_product_requirements`
-
-### Arguments:
-
-(body)
-
-product (str): product name
-
-### Example:
-
-Query:
-
-```
-base_uri/api/delete_product_requirements
-```
-
-Response:
-
-```json
-{"status": "success"}
-```
-
-## Inventory (GET)
+## Get inventory (GET)
 
 `/api/inventory`
 
 ### Arguments:
 
-page (Number/int)
+(headers)
 
-### Example:
+session_id (str): the session id to use
+
+page (int): the page to retrieve, optional, default of 1
+
+page_size (int): the size of retrieved pages, optional, default of 20 and max of 30
 
 Query:
 
@@ -1456,80 +1405,792 @@ Query:
 base_uri/api/inventory
 ```
 
+```js 
+await fetch(`base_uri/api/inventory`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            page: 1,
+            page_size: 20
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
 Response:
-(paginated)
+
 ```json
 {
-    "page": 1,
-    "items": [
-        {
-            "name": "butter",
-            "count": 200
-            }
-    ]
+  "status": "success",
+  "page": 1,
+  "page_count": 1,
+  "content": [
+    {
+      "InventoryID": "06c6435b92f042c9bdd16c1130dc6121",
+      "Name": "vanilla extract",
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 5,
+      "ReorderUnit": "liters"
+    },
+    {
+      "InventoryID": "3bba846ec5b34b55838e8c0f27451802",
+      "Name": "eggs",
+      "ShelfLife": 30,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 100,
+      "ReorderUnit": "pieces"
+    },
+    {
+      "InventoryID": "487b700a9675499b8acdf499b3fe8ace",
+      "Name": "salt",
+      "ShelfLife": 1095,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 5,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "5e157c98c4f841759ea4cbbee1aef113",
+      "Name": "yeast",
+      "ShelfLife": 180,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 2,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "69e9e229aacf4de181a105e6848adeb0",
+      "Name": "cocoa powder",
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 15,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "8a8748b4419c492aa3441123b3d4608f",
+      "Name": "butter",
+      "ShelfLife": 180,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 20,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "8fd386f46f9145509858a29508dea735",
+      "Name": "baking powder",
+      "ShelfLife": 365,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "ab84a7fc1e634f9784d4607f3b87f870",
+      "Name": "flour",
+      "ShelfLife": 365,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 50,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "dabd921428bb4e3db768160d82d3eb13",
+      "Name": "sugar",
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 30,
+      "ReorderUnit": "kg"
+    }
+  ]
 }
 ```
 
-## Inventory Item (GET)
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Get inventory item (GET)
 
 `/api/inventory_item`
 
 ### Arguments:
 
-item (str): item name
+(headers)
 
-### Example:
+session_id (str): the session id to use
+
+inventory_id (str): the inventory item to retrieve
 
 Query:
 
 ```
-base_uri/api/inventory_item?item=butter
+base_uri/api/inventory_item
+```
+
+```js 
+await fetch(`base_uri/api/inventory_item`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            inventory_id: "06c6435b92f042c9bdd16c1130dc6121"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
 ```
 
 Response:
 
 ```json
 {
-    "name": "butter",
-    "count": 200,
-    "expiration_date": "1724797536",
-    "supplier_info": "data",
-    "order_info": "how do I order this?"
+  "status": "success",
+  "content": {
+    "InventoryID": "06c6435b92f042c9bdd16c1130dc6121",
+    "Name": "vanilla extract",
+    "ShelfLife": 730,
+    "ShelfLifeUnit": "days",
+    "ReorderAmount": 5,
+    "ReorderUnit": "liters"
+  }
 }
 ```
 
--->
+Error (498):
 
-<!--
-## Reminders
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
 
-`/api/reminders`
+## Add inventory item (POST)
+
+`/api/inventory_item`
+
+REQUIRES `manager` ROLE OR GREATER!
 
 ### Arguments:
 
-None
+(headers)
 
-### Example:
+session_id (str): the session id to use
+
+name (str): the name of the inventory item to be added
+
+shelf_life (int): the shelf life of the item, optional, ignored if shelf_life_unit not given
+
+shelf_life_unit (str): the shelf life unit of the item, optional, ignored if shelf_life not given
+
+reorder_amount (float|int): the item's reorder amount
+
+reorder_unit (str): the item's reorder amount unit
 
 Query:
 
 ```
-base_uri/api/reminders
+base_uri/api/inventory_item
+```
+
+```js 
+await fetch(`base_uri/api/inventory_item`,
+    {
+        method: 'POST',
+        headers: {
+            session_id: session_id,
+            name: "<item_name>",
+            shelf_life: "<shelf_life_num>",
+            shelf_life_unit: "<shelf_life_unit>",
+            reorder_amount: "<reorder_amount>",
+            reorder_unit: "<reorder_unit>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
 ```
 
 Response:
 
 ```json
-[
-    {
-        "name": "name",
-        "time": "1724797536",
-        "notes": "butter expiration"
-    },
-    ...
-]
+{
+  "status": "success",
+  "inventory_id": "06c6435b92f042c9bdd16c1130dc6121"
+}
 ```
--->
 
+Error (498):
 
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
 
+## Update inventory item (PUT)
+
+`/api/inventory_item`
+
+REQUIRES `manager` ROLE OR GREATER!
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+inventory_id (str): the inventory id to update
+
+name (str): the name of the inventory item to be added
+
+shelf_life (int): the shelf life of the item, optional, ignored if shelf_life_unit not given
+
+shelf_life_unit (str): the shelf life unit of the item, optional, ignored if shelf_life not given
+
+reorder_amount (float|int): the item's reorder amount
+
+reorder_unit (str): the item's reorder amount unit
+
+Query:
+
+```
+base_uri/api/inventory_item
+```
+
+```js 
+await fetch(`base_uri/api/inventory_item`,
+    {
+        method: 'PUT',
+        headers: {
+            session_id: session_id,
+            inventory_id: "<inventory_id>",
+            name: "<item_name>",
+            shelf_life: "<shelf_life_num>",
+            shelf_life_unit: "<shelf_life_unit>",
+            reorder_amount: "<reorder_amount>",
+            reorder_unit: "<reorder_unit>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "inventory_id": "06c6435b92f042c9bdd16c1130dc6121"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Delete an inventory item (DELETE)
+
+`/api/inventory_item`
+
+REQUIRES `manager` ROLE OR GREATER!
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+inventory_id (str): the inventory id to delete
+
+Query:
+
+```
+base_uri/api/inventory_item
+```
+
+```js 
+await fetch(`base_uri/api/inventory_item`,
+    {
+        method: 'DELETE',
+        headers: {
+            session_id: session_id,
+            inventory_id: "<inventory_id>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Update an inventory quantity (POST)
+
+`/api/inventory_change`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+change_amount (int|float): the amount by which the inventory is being changed
+
+inventory_id (str): the inventory id to associate with
+
+description (str): the description of the change, optional
+
+expiration_date (str): the expiration date (in ISO 8601 format) of product added, optional
+
+Query:
+
+```
+base_uri/api/inventory_change
+```
+
+```js 
+await fetch(`base_uri/api/inventory_change`,
+    {
+        method: 'POST',
+        headers: {
+            session_id: session_id,
+            change_amount: "<the_change_amount>",
+            inventory_id: "<inventory_id>",
+            description: "Made a purchase or something",
+            expiration_date: date.toISOString()
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "hist_id": "ab84a7fc1e634f9784d4607f3b87f870"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Get inventory change history (GET)
+
+`/api/inventory_change`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+page (int): the page to retrieve, optional, default of 1
+
+page_size (int): the size of retrieved pages, optional, default of 20 and max of 30
+
+Query:
+
+```
+base_uri/api/inventory_change
+```
+
+```js 
+await fetch(`base_uri/api/inventory_change`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            page: 1,
+            page_size: 20
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "page": 1,
+  "page_count": 1,
+  "content": [
+    {
+      "InventoryID": "8a8748b4419c492aa3441123b3d4608f",
+      "Name": "butter",
+      "ShelfLife": 180,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 20,
+      "ReorderUnit": "kg",
+      "HistID": "0911b42510154241ab2ca208d9ea9e6c",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.247Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "487b700a9675499b8acdf499b3fe8ace",
+      "Name": "salt",
+      "ShelfLife": 1095,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 5,
+      "ReorderUnit": "kg",
+      "HistID": "260594ede64a47588f466468845a7940",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.243Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "06c6435b92f042c9bdd16c1130dc6121",
+      "Name": "vanilla extract",
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 5,
+      "ReorderUnit": "liters",
+      "HistID": "2aafd864795446d9b0195adcc651dc5f",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.153Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "5e157c98c4f841759ea4cbbee1aef113",
+      "Name": "yeast",
+      "ShelfLife": 180,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 2,
+      "ReorderUnit": "kg",
+      "HistID": "380077e19db24e2bb8e07c52389848e2",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.243Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "dabd921428bb4e3db768160d82d3eb13",
+      "Name": "sugar",
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 30,
+      "ReorderUnit": "kg",
+      "HistID": "5e84ba31ef59435cb8100a4c5a8f033b",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.247Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "3bba846ec5b34b55838e8c0f27451802",
+      "Name": "eggs",
+      "ShelfLife": 30,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 100,
+      "ReorderUnit": "pieces",
+      "HistID": "6b0241ac890542678a21aad9fd263a74",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.240Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "8fd386f46f9145509858a29508dea735",
+      "Name": "baking powder",
+      "ShelfLife": 365,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg",
+      "HistID": "6d1d329c4ab745be939659e9cbdc274a",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.247Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "06c6435b92f042c9bdd16c1130dc6121",
+      "Name": "vanilla extract",
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 5,
+      "ReorderUnit": "liters",
+      "HistID": "80368fb1fc854f3f8ae441c25e9f8c6d",
+      "ChangeAmount": -20,
+      "EmployeeID": "00123456789",
+      "Description": "Used all the vanilla extract to make a singular load of bread",
+      "Date": "2024-10-01T17:40:10.070Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "69e9e229aacf4de181a105e6848adeb0",
+      "Name": "cocoa powder",
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 15,
+      "ReorderUnit": "kg",
+      "HistID": "8827483ad3ca4a2db488b156389d0f24",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.243Z",
+      "ExpirationDate": null
+    },
+    {
+      "InventoryID": "ab84a7fc1e634f9784d4607f3b87f870",
+      "Name": "flour",
+      "ShelfLife": 365,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 50,
+      "ReorderUnit": "kg",
+      "HistID": "d2c9b10996174a2f8324724c939f5bf6",
+      "ChangeAmount": 20,
+      "EmployeeID": "00123456789",
+      "Description": null,
+      "Date": "2024-10-01T17:40:10.247Z",
+      "ExpirationDate": null
+    }
+  ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Delete an inventory change (DELETE)
+
+`/api/inventory_change`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+hist_id (str): the hist_id to delete
+
+Query:
+
+```
+base_uri/api/inventory_change
+```
+
+```js 
+await fetch(`base_uri/api/inventory_change`,
+    {
+        method: 'DELETE',
+        headers: {
+            session_id: session_id,
+            hist_id: "<hist_id>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Get inventory amounts (GET)
+
+`/api/inventory_amount`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+page (int): the page to retrieve, optional, default of 1
+
+page_size (int): the size of retrieved pages, optional, default of 20 and max of 30
+
+Query:
+
+```
+base_uri/api/inventory_amount
+```
+
+```js 
+await fetch(`base_uri/api/inventory_amount`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            page: 1,
+            page_size: 20
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "page": 1,
+  "page_count": 1,
+  "content": [
+    {
+      "InventoryID": "06c6435b92f042c9bdd16c1130dc6121",
+      "Name": "vanilla extract",
+      "Amount": 0,
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 5,
+      "ReorderUnit": "liters"
+    },
+    {
+      "InventoryID": "3bba846ec5b34b55838e8c0f27451802",
+      "Name": "eggs",
+      "Amount": 40,
+      "ShelfLife": 30,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 100,
+      "ReorderUnit": "pieces"
+    },
+    {
+      "InventoryID": "487b700a9675499b8acdf499b3fe8ace",
+      "Name": "salt",
+      "Amount": 40,
+      "ShelfLife": 1095,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 5,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "5e157c98c4f841759ea4cbbee1aef113",
+      "Name": "yeast",
+      "Amount": 40,
+      "ShelfLife": 180,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 2,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "69e9e229aacf4de181a105e6848adeb0",
+      "Name": "cocoa powder",
+      "Amount": 40,
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 15,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "8a8748b4419c492aa3441123b3d4608f",
+      "Name": "butter",
+      "Amount": 40,
+      "ShelfLife": 180,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 20,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "8fd386f46f9145509858a29508dea735",
+      "Name": "baking powder",
+      "Amount": 40,
+      "ShelfLife": 365,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 10,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "ab84a7fc1e634f9784d4607f3b87f870",
+      "Name": "flour",
+      "Amount": 40,
+      "ShelfLife": 365,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 50,
+      "ReorderUnit": "kg"
+    },
+    {
+      "InventoryID": "dabd921428bb4e3db768160d82d3eb13",
+      "Name": "sugar",
+      "Amount": 40,
+      "ShelfLife": 730,
+      "ShelfLifeUnit": "days",
+      "ReorderAmount": 30,
+      "ReorderUnit": "kg"
+    }
+  ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+---

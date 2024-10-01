@@ -2,7 +2,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const {v4} = require('uuid');
 const {return_500, return_400, return_498} = require('./codes')
-const isNumber = (v) => typeof v === "number" || (typeof v === "string" && Number.isFinite(+v))
+const isNumber = (v) => typeof v === "number" || (typeof v === "string" && Number.isFinite(+v));
 
 // Database setup:
 const config = require('../config.js');
@@ -88,7 +88,7 @@ app.get("/users_email", (req, res) => {
                     status: "error",
                     reason: "Missing session_id in headers"
                 }
-            )
+            );
         }
         else if (!employee_id.match(/[0-9A-Za-z]{0,32}/)) {
             return_400(res, "Employee is not valid");
@@ -208,7 +208,7 @@ app.delete('/user_email', (req, res) => {
                     status: "error",
                     reason: "Missing session_id in headers"
                 }
-            )
+            );
         }
         else if (email_address === undefined) {
             return_400(res, "Missing email_address");
@@ -315,7 +315,7 @@ app.get('/users_phone', (req, res) => {
                     status: "error",
                     reason: "Missing session_id in headers"
                 }
-            )
+            );
         }
         else if (!employee_id.match(/[0-9A-Za-z]{0,32}/)) {
             return_400(res, "Employee is not valid");
@@ -371,7 +371,7 @@ app.post('/add_user_phone', (req, res) => {
                     status: "error",
                     reason: "Missing session_id in headers"
                 }
-            )
+            );
         }
         else if (phone_number === undefined) {
             return_400(res, "Missing phone_number");
@@ -434,7 +434,7 @@ app.delete('/user_phone', (req, res) => {
                     status: "error",
                     reason: "Missing session_id in headers"
                 }
-            )
+            );
         }
         else if (!phone_number.match(/^\(?\d{3}\)?[\d -]?\d{3}[\d -]?\d{4}$/)) {
             return_400(res, "Invalid phone number")
@@ -491,8 +491,8 @@ app.delete('/user_phone', (req, res) => {
 app.get('/user_list', (req, res) => {
     try {
         // Pagination, default of one page of 20 users
-        const page = isNumber(req.header["page"]) ? Number(req.header["page"]) : 1;
-        const page_size = isNumber(req.header["page_size"]) ? Number(req.header["page_size"]) : 20;
+        const page = isNumber(req.header("page")) ? Number(req.header("page")) : 1;
+        const page_size = isNumber(req.header("page_size")) ? Number(req.header("page_size")) : 20;
         const session_id = req.header("session_id");
 
         if (session_id === undefined) {
@@ -501,10 +501,22 @@ app.get('/user_list', (req, res) => {
                     status: "error",
                     reason: "Missing session_id in headers"
                 }
-            )
+            );
         }
         else if (page_size > 30) {
             return_400(res, "Invalid page size. Page size must be <= 30");
+        }
+        else if (page_size < 1) {
+            return_400(res, "Invalid page size. Page size must be > 0");
+        }
+        else if (page < 1) {
+            return_400(res, "Page must be >= 1")
+        }
+        else if (!Number.isInteger(page_size)) {
+            return_400(res, "page_size must be an integer");
+        }
+        else if (!Number.isInteger(page)) {
+            return_400(res, "page must be an integer");
         }
         else {
             // Get the users and return the requested count and page
