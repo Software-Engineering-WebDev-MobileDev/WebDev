@@ -541,6 +541,8 @@ app.post('/inventory_change', (req, res) => {
         // ISO 8601 format date for the database: https://learn.microsoft.com/en-us/sql/t-sql/data-types/datetime-transact-sql?view=sql-server-ver16
         let expiration_date = req.header("expiration_date");
 
+        let test_date = new Date(expiration_date);
+
         if (session_id === undefined) {
             res.status(403).send(
                 {
@@ -567,11 +569,8 @@ app.post('/inventory_change', (req, res) => {
         else if (change_amount < -9_999_999_999.99) {
             return_400(res, "change_amount too small");
         }
-        else if (expiration_date !== undefined) {
-            let test_date = new Date(expiration_date);
-            if (test_date.toString() === "Invalid Date" || isNaN(test_date.getTime()) || test_date.toISOString() !== expiration_date) {
-                return_400(res, "Invalid expiration_date format. It should be in ISO 8601 format");
-            }
+        else if (expiration_date !== undefined && (test_date.toString() === "Invalid Date" || isNaN(test_date.getTime()) || test_date.toISOString() !== expiration_date)) {
+            return_400(res, "Invalid expiration_date format. It should be in ISO 8601 format");
         }
         else if (description !== undefined && !description.match(/^[\w\s.,*/]{1,255}$/)) {
             if (description.length > 255) {
@@ -585,13 +584,15 @@ app.post('/inventory_change', (req, res) => {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id && expiration_date !== undefined) {
                     database.executeQuery(
-                        `INSERT INTO tblInventoryHistory (HistID, ChangeAmount, EmployeeID, InventoryID, ${description !== undefined ? 'Description, ' : ''} ExpirationDate)
-                         VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}',
-                                 ${description !== undefined ? `\'${description}\', ` : ''} CAST('${expiration_date}
-                                 ' AS DATETIME))`
+                        `INSERT INTO tblInventoryHistory (HistID, ChangeAmount, EmployeeID, InventoryID, ` +
+                         (description !== undefined ? 'Description, ' : '') +
+                         'ExpirationDate) ' +
+                         `VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}', ` +
+                         (description !== undefined ? `\'${description}\', ` : '') +
+                         `GETDATE())`
                     ).then((result) => {
                         if (result.rowsAffected[0] > 0) {
-                            res.status(200).send(
+                            res.status(201).send(
                                 {
                                     status: "success",
                                     hist_id: hist_id
@@ -608,12 +609,14 @@ app.post('/inventory_change', (req, res) => {
                 }
                 else if (employee_id) {
                     database.executeQuery(
-                        `INSERT INTO tblInventoryHistory (HistID, ChangeAmount, EmployeeID, InventoryID, ${description !== undefined ? 'Description' : ''})
-                         VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}',
-                                 ${description !== undefined ? `\'${description}\'` : ''}`
+                        `INSERT INTO tblInventoryHistory (HistID, ChangeAmount, EmployeeID, InventoryID` +
+                         (description !== undefined ? ', Description' : '') +
+                         `) VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}'` +
+                         (description !== undefined ? `, \'${description}\'` : '') +
+                         ')'
                     ).then((result) => {
                         if (result.rowsAffected[0] > 0) {
-                            res.status(200).send(
+                            res.status(201).send(
                                 {
                                     status: "success",
                                     hist_id: hist_id
