@@ -630,7 +630,10 @@ describe("Test inventory amount change endpoints", function () {
              FROM tblInventory
              WHERE Name <> 'vanilla extract'`
         ).then((result) => {
+            // Get the result records
             let result_list = result.recordsets[0];
+
+            // Extract only the InventoryID as only the string itself
             result_list = result_list.map((record) =>
                 record["InventoryID"]
             );
@@ -639,6 +642,7 @@ describe("Test inventory amount change endpoints", function () {
 
         // The List of database promises to be resolved later
         let hist_promises = [];
+
         // Add some data to the database to be retrieved.
         for (const inventory_id of inventory_ids) {
             // Hold on to the promise to be resolved later for the sake of speed
@@ -648,6 +652,7 @@ describe("Test inventory amount change endpoints", function () {
                          NULL)`
             ));
         }
+
         // Await all the promises from before so that we know the data is in the database
         for (const prom of hist_promises) {
             await prom;
@@ -673,6 +678,7 @@ describe("Test inventory amount change endpoints", function () {
             .hasProperty('status') // Check if 'status' exists
             .string(response_json.status).is('success'); // Check if 'status' is 'success'
 
+        // Make sure that the response has all the correct properties
         for (const inventory_item of response_json["content"]) {
             test
                 .object(inventory_item)
@@ -704,7 +710,7 @@ describe("Test inventory amount change endpoints", function () {
     });
 
     it("Get inventory changes, but not amounts", async function () {
-       this.timeout(10_000);
+        this.timeout(10_000);
 
         // Retrieve the amounts
         let inventory_history = await fetch(`${base_uri}/inventory_change`, {
@@ -728,6 +734,7 @@ describe("Test inventory amount change endpoints", function () {
             .number(response_json.page).is(1)           // Check that the page is correct
             .number(response_json.page_count);          // Make sure we have a page count as well
 
+        // Make sure that the response has all the correct properties.
         for (const history_entry of response_json["content"]) {
             test
                 .object(history_entry)
@@ -766,5 +773,51 @@ describe("Test inventory amount change endpoints", function () {
                 .object(history_entry)
                 .hasProperty("ExpirationDate");
         }
+    });
+
+    it("Get an inventory change item and delete it", async function () {
+        this.timeout(10_000);
+
+        // Get an inventory id to use for subsequent testing
+        let hist_id = await database.executeQuery(
+            `SELECT HistID
+             FROM tblInventoryHistory
+             WHERE InventoryID NOT IN (SELECT InventoryID
+                                       FROM tblInventory
+                                       WHERE Name <> 'vanilla extract')`
+        ).then((result) => {
+            return result.recordsets[0][0]["HistID"]
+        });
+
+        // Delete the inventory change log from the history
+        let response = await fetch(`${base_uri}/inventory_change`, {
+            method: 'DELETE',
+            headers: {
+                session_id: session_id,
+                hist_id: hist_id
+            },
+        });
+
+        // Check that the status code is 200
+        assert.strictEqual(response.status, 200, `Expected HTTP status 200 (OK)`);
+
+        // Make sure that the status is correct
+        const response_json = await response.json();
+        test
+            .object(response_json)                      // Ensure it's an object
+            .hasProperty('status')                      // Check if 'status' exists
+            .string(response_json.status).is('success') // Check if 'status' is 'success'
+
+        // Check the database for the item that should have been deleted
+        await database.executeQuery(
+            `SELECT * FROM tblInventoryHistory WHERE HistID = '${hist_id}'`
+        ).then((result) => {
+            // rowsAffected[0] should be 0 if the item was removed from the database
+            assert.strictEqual(
+                result.rowsAffected[0],
+                0,
+                "History item not removed from tblInventoryHistory"
+            );
+        });
     });
 });
