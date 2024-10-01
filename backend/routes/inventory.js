@@ -589,7 +589,7 @@ app.post('/inventory_change', (req, res) => {
                          'ExpirationDate) ' +
                          `VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}', ` +
                          (description !== undefined ? `\'${description}\', ` : '') +
-                         `GETDATE())`
+                         `CAST ('${expiration_date}' AS DATETIME))`
                     ).then((result) => {
                         if (result.rowsAffected[0] > 0) {
                             res.status(201).send(
@@ -850,7 +850,7 @@ app.get('/inventory_amount', (req, res) => {
                                 inv.ReorderAmount,
                                 inv.ReorderUnit
                          FROM tblInventory AS inv
-                                  LEFT JOIN tblInventoryHistory ON inv.InventoryID = hist.InventoryID
+                                  LEFT JOIN tblInventoryHistory as hist ON inv.InventoryID = hist.InventoryID
                          GROUP BY inv.InventoryID, inv.Name, inv.ShelfLife, inv.ShelfLifeUnit, inv.ReorderAmount,
                                   inv.ReorderUnit`
                     ).then((result) => {

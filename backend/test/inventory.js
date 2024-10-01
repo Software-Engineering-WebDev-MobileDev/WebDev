@@ -533,7 +533,7 @@ describe("Test inventory amount change endpoints", function () {
         session_id = json_response["session_id"];
     });
     it("Add some changes to the inventory history", async function () {
-        this.timeout(60000);
+        this.timeout(10000);
         // Get an inventory id to use for subsequent testing of endpoints.
         let inventory_id = await database.executeQuery(
            `SELECT InventoryID FROM tblInventory WHERE Name = 'flour'`
