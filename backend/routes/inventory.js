@@ -842,15 +842,15 @@ app.get('/inventory_amount', (req, res) => {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `SELECT inv.InventoryID,
-                                inv.Name,
+                        `SELECT inv.InventoryID AS InventoryID,
+                                inv.Name AS Name,
                                 SUM(COALESCE(hist.ChangeAmount, 0)) AS Amount,
-                                inv.ShelfLife,
-                                inv.ShelfLifeUnit,
-                                inv.ReorderAmount,
-                                inv.ReorderUnit
+                                inv.ShelfLife AS ShelfLife,
+                                inv.ShelfLifeUnit AS ShelfLifeUnit,
+                                inv.ReorderAmount AS ReorderAmount,
+                                inv.ReorderUnit AS ReorderUnit
                          FROM tblInventory AS inv
-                                  LEFT JOIN tblInventoryHistory as hist ON inv.InventoryID = hist.InventoryID
+                                  LEFT JOIN tblInventoryHistory AS hist ON inv.InventoryID = hist.InventoryID
                          GROUP BY inv.InventoryID, inv.Name, inv.ShelfLife, inv.ShelfLifeUnit, inv.ReorderAmount,
                                   inv.ReorderUnit`
                     ).then((result) => {
