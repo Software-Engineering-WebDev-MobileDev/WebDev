@@ -136,7 +136,7 @@ describe("Test inventory management endpoints", function () {
         session_id = json_response["session_id"];
     });
     it("Add ingredients to the database", async function () {
-        this.timeout(10000);
+        this.timeout(10_000);
         // POST responses
         let responses = [];
 
@@ -341,7 +341,7 @@ describe("Test inventory management endpoints", function () {
     });
 
     it("Update an item in the inventory", async function () {
-        this.timeout(10000);
+        this.timeout(10_000);
         // Grab the first one for testing.
         let inventory_item = test_ingredients[1];
 
@@ -465,7 +465,8 @@ describe("Test inventory management endpoints", function () {
     it("Try to delete an item from the inventory", async function () {
         // Get an inventory id from the database to use for testing
         const inventory_id = await database.executeQuery(
-            `SELECT InventoryID FROM tblInventory`
+            `SELECT InventoryID
+             FROM tblInventory`
         ).then((result) => {
             return result.recordsets[0][0]["InventoryID"];
         });
@@ -489,7 +490,9 @@ describe("Test inventory management endpoints", function () {
             .string(response.status).is('success'); // Check if 'status' is 'success'
 
         const missing_inventory_id = await database.executeQuery(
-            `SELECT InventoryID FROM tblInventory WHERE InventoryID = '${inventory_id}'`
+            `SELECT InventoryID
+             FROM tblInventory
+             WHERE InventoryID = '${inventory_id}'`
         ).then((result) => {
             return result.rowsAffected[0];
         });
@@ -533,12 +536,14 @@ describe("Test inventory amount change endpoints", function () {
         session_id = json_response["session_id"];
     });
     it("Add some changes to the inventory history", async function () {
-        this.timeout(10000);
+        this.timeout(10_000);
         // Get an inventory id to use for subsequent testing of endpoints.
         let inventory_id = await database.executeQuery(
-           `SELECT InventoryID FROM tblInventory WHERE Name = 'vanilla extract'`
+            `SELECT InventoryID
+             FROM tblInventory
+             WHERE Name = 'vanilla extract'`
         ).then((result) => {
-           return result.recordsets[0][0]["InventoryID"]
+            return result.recordsets[0][0]["InventoryID"]
         });
 
         // For use in relevant queries
@@ -612,6 +617,154 @@ describe("Test inventory amount change endpoints", function () {
                 true,
                 `hist_id format invalid in response. Value: ${response_json['hist_id']}`
             );
+        }
+    });
+
+    it("Get inventory amounts", async function () {
+        // this.isGoingToTakeAWhile
+        this.timeout(10_000);
+
+        // Get inventory ids to use for subsequent testing of endpoints.
+        let inventory_ids = await database.executeQuery(
+            `SELECT InventoryID
+             FROM tblInventory
+             WHERE Name <> 'vanilla extract'`
+        ).then((result) => {
+            let result_list = result.recordsets[0];
+            result_list = result_list.map((record) =>
+                record["InventoryID"]
+            );
+            return result_list;
+        });
+
+        // The List of database promises to be resolved later
+        let hist_promises = [];
+        // Add some data to the database to be retrieved.
+        for (const inventory_id of inventory_ids) {
+            // Hold on to the promise to be resolved later for the sake of speed
+            hist_promises.push(database.executeQuery(
+                `INSERT INTO tblInventoryHistory
+                 VALUES ('${database.gen_uuid()}', 20.00, '${test_employee_id}', '${inventory_id}', NULL, GETDATE(),
+                         NULL)`
+            ));
+        }
+        // Await all the promises from before so that we know the data is in the database
+        for (const prom of hist_promises) {
+            await prom;
+        }
+
+        // Retrieve the amounts
+        let inventory_amounts = await fetch(`${base_uri}/inventory_amount`, {
+            method: 'GET',
+            headers: {
+                session_id: session_id,
+                page: 1,
+                page_size: 30
+            },
+        });
+
+        // Check that the status code is 200
+        assert.strictEqual(inventory_amounts.status, 200, `Expected HTTP status 200 (OK)`);
+
+        // Make sure that the status is correct
+        const response_json = await inventory_amounts.json();
+        test
+            .object(response_json) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(response_json.status).is('success'); // Check if 'status' is 'success'
+
+        for (const inventory_item of response_json["content"]) {
+            test
+                .object(inventory_item)
+                .hasProperty("InventoryID");
+            test
+                .object(inventory_item)
+                .hasProperty("Name");
+            test
+                .object(inventory_item)
+                .hasProperty("Amount");
+            test
+                .object(inventory_item)
+                .hasProperty("ShelfLife");
+            test
+                .object(inventory_item)
+                .hasProperty("ShelfLifeUnit");
+            test
+                .object(inventory_item)
+                .hasProperty("ReorderAmount");
+            test
+                .object(inventory_item)
+                .hasProperty("ReorderUnit");
+            assert.strictEqual(
+                inventory_item["Amount"] >= 20,
+                true,
+                `Expected inventory item amount to be >= 20 but got ${inventory_item["Amount"]}`
+            )
+        }
+    });
+
+    it("Get inventory changes, but not amounts", async function () {
+       this.timeout(10_000);
+
+        // Retrieve the amounts
+        let inventory_history = await fetch(`${base_uri}/inventory_change`, {
+            method: 'GET',
+            headers: {
+                session_id: session_id,
+                page: 1,
+                page_size: 30
+            },
+        });
+
+        // Check that the status code is 200
+        assert.strictEqual(inventory_history.status, 200, `Expected HTTP status 200 (OK)`);
+
+        // Make sure that the status is correct
+        const response_json = await inventory_history.json();
+        test
+            .object(response_json)                      // Ensure it's an object
+            .hasProperty('status')                      // Check if 'status' exists
+            .string(response_json.status).is('success') // Check if 'status' is 'success'
+            .number(response_json.page).is(1)           // Check that the page is correct
+            .number(response_json.page_count);          // Make sure we have a page count as well
+
+        for (const history_entry of response_json["content"]) {
+            test
+                .object(history_entry)
+                .hasProperty("InventoryID");
+            test
+                .object(history_entry)
+                .hasProperty("Name");
+            test
+                .object(history_entry)
+                .hasProperty("ShelfLife");
+            test
+                .object(history_entry)
+                .hasProperty("ShelfLifeUnit");
+            test
+                .object(history_entry)
+                .hasProperty("ReorderAmount");
+            test
+                .object(history_entry)
+                .hasProperty("ReorderUnit");
+            test
+                .object(history_entry)
+                .hasProperty("HistID");
+            test
+                .object(history_entry)
+                .hasProperty("ChangeAmount");
+            test
+                .object(history_entry)
+                .hasProperty("EmployeeID");
+            test
+                .object(history_entry)
+                .hasProperty("Description");
+            test
+                .object(history_entry)
+                .hasProperty("Date");
+            test
+                .object(history_entry)
+                .hasProperty("ExpirationDate");
         }
     });
 });
