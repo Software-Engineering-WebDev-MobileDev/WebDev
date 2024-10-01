@@ -340,7 +340,7 @@ app.put('/inventory_item', (req, res) => {
         else if (!reorder_unit.match(/^[\w\s.,*/]{1,20}$/)) {
             return_400(res, "Invalid reorder_unit characters or length");
         }
-        else if (shelf_life !== undefined && (!isNumber(shelf_life) || !Number.isInteger(Number(shelf_life)))) {
+        else if (shelf_life !== undefined && !Number.isInteger(Number(shelf_life))) {
             return_400(res, "Invalid shelf_life");
         }
         else if (shelf_life_unit !== undefined && !shelf_life_unit.match(/^[\w\s.,*/]{1,10}$/)) {
@@ -357,6 +357,8 @@ app.put('/inventory_item', (req, res) => {
                     database.executeQuery(
                         `UPDATE tblInventory
                          SET Name          = '${name}',
+                             ShelfLife     = NULL,
+                             ShelfLifeUnit = NULL,
                              ReorderAmount = ${reorder_amount},
                              ReorderUnit   = '${reorder_unit}'
                          WHERE InventoryID = '${inventory_id}'`
@@ -837,10 +839,17 @@ app.get('/inventory_amount', (req, res) => {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `SELECT inv.InventoryID, inv.Name, SUM(COALESCE(hist.ChangeAmount, 0)) AS Amount, inv.ShelfLife, inv.ShelfLifeUnit, inv.ReorderAmount, inv.ReorderUnit
+                        `SELECT inv.InventoryID,
+                                inv.Name,
+                                SUM(COALESCE(hist.ChangeAmount, 0)) AS Amount,
+                                inv.ShelfLife,
+                                inv.ShelfLifeUnit,
+                                inv.ReorderAmount,
+                                inv.ReorderUnit
                          FROM tblInventory AS inv
                                   LEFT JOIN tblInventoryHistory ON inv.InventoryID = hist.InventoryID
-                         GROUP BY inv.InventoryID, inv.Name, inv.ShelfLife, inv.ShelfLifeUnit, inv.ReorderAmount, inv.ReorderUnit`
+                         GROUP BY inv.InventoryID, inv.Name, inv.ShelfLife, inv.ShelfLifeUnit, inv.ReorderAmount,
+                                  inv.ReorderUnit`
                     ).then((result) => {
                         // Make sure that there are results
                         if (result.rowsAffected > 0) {
