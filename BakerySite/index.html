@@ -78,7 +78,7 @@
                         <input id="txtLoginPassword" type="password" class="form-control" placeholder="Password"  onfocusout="check(document.getElementById('txtLoginPassword'), document.getElementById('errLoginPassword') )" required minlength="1" maxlength="99">
                         <label for="txtLoginPassword" class="form-label text-black" aria-label="Password">Password</label>
                     <div id="errLoginPassword" class="emsg"></div>
-                    <div id="capsLockWarning" class="emsg" style="display: none;">
+                    <div id="capsLockWarningLogin" class="emsg" style="display: none;">
                         Caps Lock is on
                     </div>
                     </div>
@@ -121,6 +121,17 @@
                     <div class="form-floating mb-3" required minlength="1"> <!--password-->
                         <input id="txtRegisterPassword" type="password" class="form-control" placeholder="Password" onfocusout="check(document.getElementById('txtRegisterPassword'), document.getElementById('errRegisterPassword') )" required minlength="1">
                         <label for="txtRegisterPassword" class="form-label text-black" aria-label="Password">Password</label>
+                    <div id="passwordRequirements" class="emsg" style="display: none;">
+                        <strong>Password must meet the following requirements:</strong>
+                        <ul>
+                            <li id="lengthReq">At least 8 characters</li>
+                            <li id="numberReq">At least one number</li>
+                            <li id="specialCharReq">At least one special character (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+                    <div id="capsLockWarningRegister" class="emsg" style="display: none;">
+                        Caps Lock is on
+                    </div>
                     <div id="errRegisterPassword" class="emsg"></div>
                     </div>
                     <div class="form-floating mb-3" required minlength="1">     
@@ -135,6 +146,11 @@
                                 <label for="numRegisterPhone" class="form-label text-black" aria-label="Phone number">Phone number</label>
                                 <div id="errRegisterPhone" class="emsg"></div>
                             </div>
+                        </div>
+                        <div class="form-floating mb-3" > <!--Employee ID-->
+                            <input id="txtRegisterEmployeeId" class="form-control" placeholder="Employee ID" onfocusout="check(document.getElementById('txtRegisterEmployeeId'), document.getElementById('errRegisterEmployeeId') )" required minlength="1" maxlength="99">
+                            <label for="txtRegisterEmployeeId" class="form-label text-black" aria-label="Employee ID">Employee ID</label>
+                        <div id="errRegisterEmployeeId" class="emsg"></div>
                         </div>
                     </div>
                     <button id="btnRegister" type="button" class="btn btn-primary charcoal-text col-12 mt-4"><strong>Register</strong></button>

@@ -5,7 +5,36 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Indev1] - 2024-09-19
+## [Unreleased]
+## 2024-10-01
+
+## Added
+- Password requirements to actual register functionality, now needs 8 characters, one number, and one special character to get in
+- Email Validation
+- Skeletal functionality for checking if email is already in use
+- Error message styling
+
+## Changed
+- ~~Turned the long if statement wall in buttons.js into a forEach conditional loop, condensing the code and cleaning it up~~
+- Completely converted the swal-based registration validation to inline validation
+- Password Requirements now update the moment you meet them, rather than one input after
+- Old backend posts to new backend
+
+## Broken
+- Currently login and registration throw a 400 error, so creating a user or logging in is impossible.
+
+## 2024-09-19
+
+## Added
+- Parameters to comments in functions.js
+- Created CapsLock check function for the register page as well (Still broken atm)
+- Created Password Requirements function to automatically tell the user when their password needs certain additions
+
+## Removed
+- Remaining unneccessary images
+
+## Changed
+- Moved Unreleased to its actual intended position, as somewhere to store all the code before a pushed version
 
 ## [0.1.2] - 2024-09-27
 
@@ -42,8 +71,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Transparency to the Sign in and Register pages
 - The name of the site to "Rolling Scones" instead of "Bakery Site"
 - Commented out a large amount of currently unused code in index.html
-
-## [Unreleased]
 
 ## [0.0.9] - 2024-09-18
 

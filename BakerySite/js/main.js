@@ -22,6 +22,7 @@ $(document).ready(function() {
     
 })
 
+/*
 function check(a,b){
   // init
   var valid = true;
@@ -38,10 +39,16 @@ function check(a,b){
   }
 
   return valid;
-}
+}*/
 
 // Attach event listener to the password input
 document.getElementById('txtLoginPassword').addEventListener('keypress', checkCapsLock);
+
+// Attach event listener to the password registration
+document.getElementById('txtRegisterPassword').addEventListener('keypress', checkCapsLock);
+
+// Attach event listener to password input to check requirements in real-time
+document.getElementById('txtRegisterPassword').addEventListener('keypress', checkPasswordRequirements);
 
 // Get the modal
 var modal = document.getElementById("settingsModal");
