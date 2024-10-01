@@ -300,8 +300,8 @@ app.put('/inventory_item', (req, res) => {
         const session_id = req.header("session_id");
         const inventory_id = req.header("inventory_id");
         const name = req.header("name");
-        let shelf_life = req.header("shelf_life");
-        let shelf_life_unit = req.header("shelf_life_unit");
+        const shelf_life = req.header("shelf_life");
+        const shelf_life_unit = req.header("shelf_life_unit");
         const reorder_amount = req.header("reorder_amount");
         const reorder_unit = req.header("reorder_unit");
 

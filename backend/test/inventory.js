@@ -343,7 +343,7 @@ describe("Test inventory management endpoints", function () {
     it("Update an item in the inventory", async function () {
         this.timeout(10000);
         // Grab the first one for testing.
-        let inventory_item = test_ingredients[0];
+        let inventory_item = test_ingredients[1];
 
         let response = await fetch(`${base_uri}/inventory_item`, {
             method: 'POST',
@@ -536,7 +536,7 @@ describe("Test inventory amount change endpoints", function () {
         this.timeout(10000);
         // Get an inventory id to use for subsequent testing of endpoints.
         let inventory_id = await database.executeQuery(
-           `SELECT InventoryID FROM tblInventory WHERE Name = 'flour'`
+           `SELECT InventoryID FROM tblInventory WHERE Name = 'vanilla extract'`
         ).then((result) => {
            return result.recordsets[0][0]["InventoryID"]
         });
@@ -561,7 +561,7 @@ describe("Test inventory amount change endpoints", function () {
             })
         );
 
-        // We shouldn't *need* an expiration date on used flour, right?
+        // We shouldn't *need* an expiration date on vanilla extract, right?
         responses.push(
             await fetch(`${base_uri}/inventory_change`, {
                 method: 'POST',
@@ -569,13 +569,13 @@ describe("Test inventory amount change endpoints", function () {
                     session_id: session_id,
                     change_amount: -20.0,
                     inventory_id: inventory_id,
-                    description: "Used all the flour to make a singular load of bread",
+                    description: "Used all the vanilla extract to make a singular load of bread",
                 },
             })
         );
 
         /*
-         * Make sure that we can just throw the bare minimum at the API and it work.
+         * Make sure that we can just throw the bare minimum at the API and it works.
          * Employees are lazy, after all, right?
          */
         responses.push(
