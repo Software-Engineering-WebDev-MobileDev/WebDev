@@ -122,7 +122,7 @@ describe("Test inventory management endpoints", function () {
             `UPDATE tblUsers
              SET RoleID = '1'
              WHERE EmployeeID = '${test_employee_id}'`
-        )
+        );
         // Login to get a fresh token
         const response = await fetch(`${base_uri}/login`, {
             method: 'POST',
@@ -136,6 +136,7 @@ describe("Test inventory management endpoints", function () {
         session_id = json_response["session_id"];
     });
     it("Add ingredients to the database", async function () {
+        this.timeout(10000);
         // POST responses
         let responses = [];
 
@@ -340,6 +341,7 @@ describe("Test inventory management endpoints", function () {
     });
 
     it("Update an item in the inventory", async function () {
+        this.timeout(10000);
         // Grab the first one for testing.
         let inventory_item = test_ingredients[0];
 
@@ -497,5 +499,119 @@ describe("Test inventory management endpoints", function () {
             0,
             `Inventory item not deleted from the database: ${inventory_id}`
         );
+    });
+});
+
+describe("Test inventory amount change endpoints", function () {
+    before(async function () {
+        // Make sure the account exists (what this returns is irrelevant)
+        await fetch(`${base_uri}/create_account`, {
+            method: 'POST',
+            headers: {
+                employee_id: test_employee_id,
+                first_name: test_first_name,
+                last_name: test_last_name,
+                username: test_username,
+                password: test_password,
+            },
+        });
+        /*
+         * For these tests, the user is not required to be a manager.
+         * Therefore, we'll just not make them a manager.
+         */
+
+        // Login to get a fresh token
+        const response = await fetch(`${base_uri}/login`, {
+            method: 'POST',
+            headers: {
+                username: test_username,
+                password: test_password,
+            },
+        });
+        // Grab the token
+        const json_response = await response.json();
+        session_id = json_response["session_id"];
+    });
+    it("Add some changes to the inventory history", async function () {
+        this.timeout(60000);
+        // Get an inventory id to use for subsequent testing of endpoints.
+        let inventory_id = await database.executeQuery(
+           `SELECT InventoryID FROM tblInventory WHERE Name = 'flour'`
+        ).then((result) => {
+           return result.recordsets[0][0]["InventoryID"]
+        });
+
+        // For use in relevant queries
+        const date = new Date();
+
+        // We'll try a few things with this endpoint and then check them later
+        let responses = [];
+
+        // Query with everything defined
+        responses.push(
+            await fetch(`${base_uri}/inventory_change`, {
+                method: 'POST',
+                headers: {
+                    session_id: session_id,
+                    change_amount: 20.0,
+                    inventory_id: inventory_id,
+                    description: "Made a purchase or something",
+                    expiration_date: date.toISOString()
+                },
+            })
+        );
+
+        // We shouldn't *need* an expiration date on used flour, right?
+        responses.push(
+            await fetch(`${base_uri}/inventory_change`, {
+                method: 'POST',
+                headers: {
+                    session_id: session_id,
+                    change_amount: -20.0,
+                    inventory_id: inventory_id,
+                    description: "Used all the flour to make a singular load of bread",
+                },
+            })
+        );
+
+        /*
+         * Make sure that we can just throw the bare minimum at the API and it work.
+         * Employees are lazy, after all, right?
+         */
+        responses.push(
+            await fetch(`${base_uri}/inventory_change`, {
+                method: 'POST',
+                headers: {
+                    session_id: session_id,
+                    change_amount: 20.0,
+                    inventory_id: inventory_id
+                },
+            })
+        );
+
+        // Make sure that everything came back right
+        for (const response of responses) {
+            // Check that the status code is 201
+            assert.strictEqual(response.status, 201, 'Expected HTTP status 201 (Created)');
+
+            // Make sure that the status is correct
+            const response_json = await response.json();
+            test
+                .object(response_json) // Ensure it's an object
+                .hasProperty('status') // Check if 'status' exists
+                .string(response_json.status).is('success'); // Check if 'status' is 'success'
+
+            // Make sure that the hist_id is returned
+            test
+                .object(response_json)      // Ensure it's an object
+                .hasProperty('hist_id');    // Make sure that it has `inventory_id`
+
+            // Make sure that the hist_id is the correct format
+            assert.strictEqual(
+                /^\w{0,32}$/.test(response_json['hist_id']),
+                true,
+                `hist_id format invalid in response. Value: ${response_json['hist_id']}`
+            );
+        }
     });
 });
