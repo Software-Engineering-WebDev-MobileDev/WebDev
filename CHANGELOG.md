@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Indev1] - 2024-09-19
 
+## [0.1.3] - 2024-10-02
+
+### Added
+- Added `nunjucks` for template rendering.
+  - Use `nunjucks` as the view engine
+  - Set up paths to render templates with and without `.html` in the path, along with doing so in the delivery optimization middleware
+
 ## [0.1.3] - 2024-10-01
 
 ### Added
