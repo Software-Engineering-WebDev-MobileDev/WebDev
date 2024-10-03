@@ -1,12 +1,3 @@
-let strUsername = $('#txtRegisterUsername').val();
-let strPassword = $('#txtRegisterPassword').val();
-let strFirstName = $('#txtRegisterFirstName').val();
-let strLastName = $('#txtRegisterLastName').val();
-let strEmail = $('#txtRegisterEmail').val();
-let strPhone = $('#numRegisterPhone').val();
-let strEmployeeId = $('#txtRegisterEmployeeId').val();
-let phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
-
 $('#btnAbout').on('click',function(){
    $('#divNavButtons').slideToggle();
     //Slide Login or Register card before sliding About card down
@@ -59,11 +50,17 @@ $('#btnLogin').on('click',function(){
         })
     } else {
 
-        $.post('/api/login', {username: strUsername, password: strPassword}, function(result){
-            result = JSON.parse(result);
-            console.log(result);
+        $.ajax({
+            url: "/api/login",
+            method: "POST",
+            headers: {
+                username: strUsername,
+                password: strPassword,
+            },
+            success: function(result) {
+                console.log(result);
+                
 
-            if(result.Outcome != 'false') {
                 sessionStorage.setItem('SessionID',result.SessionID);
                 localStorage.setItem('SessionID', result.SessionID);
 
@@ -77,16 +74,12 @@ $('#btnLogin').on('click',function(){
                 $('#divLogin').slideUp(function(){
                     $('#divDashboard').slideDown();
                 });
-
-                fillTable();
-
-            } else {
-                Swal.fire({
-                    title: "Oops!",
-                    html: '<p>Invalid username and/or password</p>',
-                    icon: "error"
-                })
-            }                    
+                return result;
+            },
+            error: function(e) {
+                console.log(e);
+                return e;
+            }
         });
     }
 })
@@ -115,7 +108,7 @@ $(document).ready(function () {
     $('#txtRegisterEmail').on('input blur', function () {
         let value = $(this).val();
         if (emailRegex.test(value)) {
-            checkEmailInUse(value); // Check if email is already in use
+            //checkEmailInUse(value); // Check if email is already in use
         } else {
             validateField(this, false, "Please enter a valid email.");
         }
@@ -129,9 +122,16 @@ $(document).ready(function () {
         validateField(this, $(this).val().length > 0, "Employee ID cannot be blank.");
     });
     
-    // Final check on form submit
     $('#btnRegister').on('click', function () {
-        $('input').trigger('blur'); // Trigger blur to validate all fields
+        let strUsername = $('#txtRegisterUsername').val();
+        let strPassword = $('#txtRegisterPassword').val();
+        let strFirstName = $('#txtRegisterFirstName').val();
+        let strLastName = $('#txtRegisterLastName').val();
+        let strEmail = $('#txtRegisterEmail').val();
+        let strPhone = $('#numRegisterPhone').val();
+        let strEmployeeId = $('#txtRegisterEmployeeId').val();
+        let phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
+
         if ($('.error').length) {
             // Scroll to the first error if any errors exist
             $('html, body').animate({
@@ -140,50 +140,42 @@ $(document).ready(function () {
             return false; // Prevent form submission if errors are found
         }
         else {
-            //create new user with users.php
-            $.post('/api/create_account', {employee_id: strEmployeeId, first_name: strFirstName, last_name: strLastName, username: strUsername, password: strPassword},function(status){
-                status = JSON.parse(status);
-                console.log(status);
+        $('input').trigger('blur'); // Trigger blur to validate all fields
     
-                if (status.Outcome == 'success') {
-                    //create a session ID
-                    $.post('https://simplecoop.swollenhippo.com/sessions.php', {Email: strEmail, Password: strPassword}, function(sessionResult){
-                        sessionResult = JSON.parse(sessionResult);
-                        console.log(sessionResult);
-    
-                        sessionStorage.setItem('SessionID',sessionResult.SessionID);
-                    });
-    
-                    //record user's address
-                    $.post('https://simplecoop.swollenhippo.com/useraddress.php', {Email: strEmail}, function(result){
-                        console.log(result);
-                    });
-    
-                    //show dashboard
-                    //$('#divNavbar').slideUp();
-                    $('#divRegister').slideUp(function(){
-                        $('#divDashboard').slideDown();
-                    });
-    
-                    fillTable();
-                    
-                } else { //user could not register
-                    Swal.fire({
-                        title: "Oops!",
-                        html: '<p>Registration failed</p>',
-                        icon: "error"
-                    });
-                }
-            })
-        }
-        var observationDateTime = getTime();
+        // Make the AJAX request
+        $.ajax({
+            url: "/api/create_account",
+            method: "POST",
+            headers: {
+                employee_id: strEmployeeId,
+                first_name: strFirstName,
+                last_name: strLastName,
+                username: strUsername,
+                password: strPassword,
+            },
+            success: function(result) {
+                console.log(result);
+
+                //show dashboard
+                //$('#divNavbar').slideUp();
+                $('#divRegister').slideUp(function(){
+                $('#divDashboard').slideDown();
+                });
+                var observationDateTime = getTime();
         
-        console.log(observationDateTime);
-    }
-    )});
+                console.log(observationDateTime);
+                return result;
+            },
+            error: function(e) {
+                console.log(e);
+                return e;
+            }
+        })};
+    })
+    });
 
 // Email in-use check (using AJAX for server-side verification simulation)
-function checkEmailInUse(email) {
+/*function checkEmailInUse(email) {
     // Simulating an AJAX request for duplicate email check
     $.ajax({
         url: '/check-email', // Example endpoint
@@ -200,7 +192,7 @@ function checkEmailInUse(email) {
             validateField('#txtRegisterEmail', false, "Unable to validate email. Please try again.");
         }
     });
-}
+}*/
 
 
 $('#btnToggle').on('click',function(){

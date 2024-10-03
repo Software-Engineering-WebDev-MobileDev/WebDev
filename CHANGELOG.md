@@ -6,6 +6,20 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## 2024-10-02
+
+## TO-DO
+- Make it so that entering the wrong user or password informs the user of this problem
+- Use a more secure way of changing pages, as well as using the return and homepage functionality
+- Implement the email in use checker
+
+## Changed
+- FINALLY connected our backend to frontend
+- Both Register and Login functionality works with the backend
+
+## Fixed
+- Website vulnerabilities related to inline event handlers, moved from HTML to JS
+
 ## 2024-10-01
 
 ## Added
