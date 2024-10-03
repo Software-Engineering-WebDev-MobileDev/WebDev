@@ -71,7 +71,7 @@
                 <form>
                     <div class="form-floating mb-3" > <!--username/email-->
                         <input id="txtLoginUsername" type="text" class="form-control" placeholder="Username or Email">
-                        <label for="txtLoginUsername" class="form-label text-black">Username or Email</label>
+                        <label for="txtLoginUsername" class="form-label text-black">Username</label>
                     <div id="errLoginUsername" class="emsg"></div>
                     </div> 
                     <div class="form-floating mb-3" required minlength="1"> <!--password-->
@@ -84,7 +84,7 @@
                     </div>
                     <button id="btnLogin" type="button" class="btn btn-primary col-12 mt-4"><strong>Login</strong></button>
                     <div class="text-center mt-4">
-                        <a href="#" onclick="return false;" id="btnToggle" class="brown-text">Don't have an account? Register here!</a>
+                        <span id="btnToggle" class="brown-text" role="button" tabindex="0"><strong>Don't have an account? Register here!</strong></span>
                     </div>
                 </form>
             </div>
@@ -157,7 +157,7 @@
                     <button id="btnClear" type="button" class="btn btn-danger col-12 mt-4"><strong>Clear</strong></button>
                     
                     <div class="text-center mt-4">
-                        <a href="index.html" onclick="return false;" id="btnReturn" class="brown-text"> Return </a>
+                        <span id="btnReturn" class="brown-text" role="button" tabindex="0"><strong>Return</strong></span>
                     </div>
                 </form>
             </div>
@@ -184,7 +184,7 @@
                 <h3>Product Owner</h3>
                 <p>Ben Burchfield</p> -->
                 <div class="text-center">
-                    <a href="#" onclick="return false;" id="btnReturnLogin">Return</a>
+                    <span id="btnReturnLogin" class="brown-text" role="button" tabindex="0"><strong>Return</strong></span>
                 </div>
             </div>
         </div>

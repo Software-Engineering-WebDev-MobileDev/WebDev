@@ -54,10 +54,6 @@ document.getElementById('txtLoginUsername').addEventListener('focusout', functio
   check(document.getElementById('txtLoginUsername'), document.getElementById('errLoginUsername'));
 });
 
-document.getElementById('txtLoginEmail').addEventListener('focusout', function() {
-  checkEmail(document.getElementById('txtLoginEmail'), document.getElementById('errLoginEmail'));
-});
-
 document.getElementById('txtLoginPassword').addEventListener('input', function() {
   validatePassword(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
 });

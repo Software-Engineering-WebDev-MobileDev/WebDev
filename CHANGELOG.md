@@ -5,13 +5,43 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-## 2024-10-02
-
 ## TO-DO
 - Make it so that entering the wrong user or password informs the user of this problem
-- Use a more secure way of changing pages, as well as using the return and homepage functionality
+- Use a more secure way of changing pages, ~~as well as using the return and homepage functionality~~
 - Implement the email in use checker
+- Make an error for an already in-use employee ID
+- Make a "main" email and phone number as well as additional ones you can add in account
+- Employee ID needs requirements
+- Fix the Employee ID registration appearance, it's too close to the left
+- Make a confirmation option for the clear button so people don't accidentally hit it, possibly make it smaller
+
+## Backend
+- Inventory Routes
+- Deployment
+
+## [Unreleased]
+---
+
+## [0.2.0] - 2024-10-03
+
+## Changed
+- Username or Email is now just Username on the login page
+- Register and Return buttons are now javascript based instead of hrefs
+- About page return button modified the same way as previous two
+
+## Fixed
+- TypeError related to non-existent addEventListener on txtLoginEmail
+- CSP Violations
+
+## Removed
+- Unnecessary ajax command from session deletion function
+
+## 2024-10-02
+
+## Added
+- Added `nunjucks` for template rendering.
+  - Use `nunjucks` as the view engine
+  - Set up paths to render templates with and without `.html` in the path, along with doing so in the delivery optimization middleware
 
 ## Changed
 - FINALLY connected our backend to frontend
@@ -27,6 +57,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Email Validation
 - Skeletal functionality for checking if email is already in use
 - Error message styling
+- Inventory routes to:
+  - Get inventory
+  - Get inventory item
+  - Add inventory item
+  - Update inventory item
+  - Delete inventory item
+  - Update inventory item
+  - Update inventory quantity
+  - Get inventory change history
+  - Delete an inventory change
+  - Get inventory amounts
 
 ## Changed
 - ~~Turned the long if statement wall in buttons.js into a forEach conditional loop, condensing the code and cleaning it up~~
@@ -35,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Old backend posts to new backend
 
 ## Broken
-- Currently login and registration throw a 400 error, so creating a user or logging in is impossible.
+- ~~Currently login and registration throw a 400 error, so creating a user or logging in is impossible.~~
 
 ## 2024-09-19
 
@@ -50,31 +91,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Changed
 - Moved Unreleased to its actual intended position, as somewhere to store all the code before a pushed version
 
-## [0.1.3] - 2024-10-02
-
-### Added
-- Added `nunjucks` for template rendering.
-  - Use `nunjucks` as the view engine
-  - Set up paths to render templates with and without `.html` in the path, along with doing so in the delivery optimization middleware
-
-## [0.1.3] - 2024-10-01
-
-### Added
-- Inventory routes to:
-  - Get inventory
-  - Get inventory item
-  - Add inventory item
-  - Update inventory item
-  - Delete inventory item
-  - Update inventory item
-  - Update inventory quantity
-  - Get inventory change history
-  - Delete an inventory change
-  - Get inventory amounts
-
 ## [0.1.2] - 2024-09-27
 
-### Changed
+## Changed
 - Update SQL schema to hopefully fulfil all MVP requirements
 - Updated API endpoints to reflect the new schema
 - Updated [documentation](./backend/DOCUMENTATION.md) to reflect the new parameters and output of the schema
