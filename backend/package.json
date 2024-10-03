@@ -6,6 +6,7 @@
   "scripts": {
     "test": "set NODE_ENV=development && mocha test",
     "dev": "set NODE_ENV=development && node index.js",
+    "dev2": "set NODE_ENV=development2 && node index.js",
     "dev_posix": "NODE_ENV=development node index.js",
     "drop_tables": "node drop_tables.js"
   },
@@ -27,6 +28,7 @@
     "html-minifier-terser": "^7.2.0",
     "morgan": "^1.10.0",
     "mssql": "^11.0.1",
+    "nunjucks": "^3.2.4",
     "sharp": "^0.33.5",
     "terser": "^5.33.0",
     "uuid": "^10.0.0",

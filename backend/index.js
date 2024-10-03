@@ -7,6 +7,7 @@ const express = require('express');
 const helmet = require('helmet');
 const logger = require('morgan');
 const { minify } = require('html-minifier-terser');
+const nunjucks = require('nunjucks');
 const path = require('path');
 const sharp = require('sharp');
 const Terser = require('terser');
@@ -165,6 +166,38 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// Configure nunjucks
+nunjucks.configure('../BakerySite', {
+    autoescape: true,
+    express: app
+})
+// Make it the view engine
+app.set('views', path.join(__dirname, '../BakerySite'));
+app.set('view engine', 'html');
+
+// Find all the HTML files
+let html_file_list = [];
+html_file_list = fs.readdirSync("../BakerySite");
+
+/*
+ * For frontend development!
+ * It sets up the relevant renderers outside the compression middleware.
+ */
+if (process.env.NODE_ENV.trim() === 'development') {
+    html_file_list.forEach((file) => {
+        if (file.endsWith(".html")) {
+            // Version with `.html`
+            app.get(`/${file}`, (req, res) => {
+                res.render(`../BakerySite/${file}`);
+            });
+            // Version without `.html`
+            app.get(`/${file.substring(0, file.length - 5)}`, (req, res) => {
+                res.render(`../BakerySite/${file}`);
+            });
+        }
+    });
+}
+
 // Production only.
 // Don't optimize asset serving for dev environment
 if (process.env.NODE_ENV.trim() !== 'development') {
@@ -229,9 +262,17 @@ if (process.env.NODE_ENV.trim() !== 'development') {
     const optimize_html_css_js = (req, res, next) => {
         const ext = path.extname(req.url).toLowerCase();
 
-        if (ext === '.html' || req.url.endsWith("/")) {
-            const original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
-            const cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
+        if (ext === '.html' || req.url.endsWith("/") || html_file_list.includes(req.url.substring(1) + ".html")) {
+            let original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
+            // Account for requests not having `.html` at the end, but are for HTML files
+            if (!original_html_path.endsWith(".html")) {
+                original_html_path += ".html";
+            }
+            let cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
+            // Account for requests not having `.html` at the end, but are for HTML files
+            if (!cached_html_path.endsWith(".html")) {
+                cached_html_path += ".html";
+            }
 
             // Ensure the directory structure for the cache exists
             const cached_html_dir = path.dirname(cached_html_path);
@@ -252,10 +293,12 @@ if (process.env.NODE_ENV.trim() !== 'development') {
                         return next(); // If the HTML doesn't exist, move to next middleware
                     }
 
-                    let original_html_data = fs.readFileSync(original_html_path, 'utf-8');
+                    // Render the HTML
+                    let original_html_data = nunjucks.render(original_html_path);
 
                     // console.log(original_html_data)
 
+                    // Minify the HTML data
                     let optimized_html = await minify(
                         original_html_data,
                         {
@@ -269,7 +312,10 @@ if (process.env.NODE_ENV.trim() !== 'development') {
                             removeEmptyElements: true
                         });
 
+                    // Write the data to the cache directory
                     fs.writeFileSync(cached_html_path, optimized_html, 'utf-8');
+
+                    // Send the file with the appropriate headers
                     return res.sendFile(cached_html_path, {headers: {"Content-Type": "text/html; charset=UTF-8"}});
                 });
             });
@@ -297,15 +343,20 @@ if (process.env.NODE_ENV.trim() !== 'development') {
                         return next(); // If the JS doesn't exist, move to next middleware
                     }
 
+                    // Read the originaal JS data
                     let original_js_data = fs.readFileSync(original_js_path, 'utf-8');
 
                     // console.log(original_js_data);
 
+                    // Optimize it...
                     let optimized_js = await Terser.minify(original_js_data);
 
+                    // If there was an error, do error things.
                     if (optimized_js.error) return next(optimized_js.error);
 
+                    // Save the minified version
                     fs.writeFileSync(cached_js_path, optimized_js.code, 'utf-8');
+                    // Send the file on to the user
                     return res.sendFile(cached_js_path, {headers: {"Content-Type": "application/javascript; charset=UTF-8"}});
                 });
             });
@@ -333,15 +384,20 @@ if (process.env.NODE_ENV.trim() !== 'development') {
                         return next(); // If the CSS doesn't exist, move to next middleware
                     }
 
+                    // Read the original CSS data
                     let original_css_data = fs.readFileSync(original_css_path, 'utf-8');
 
                     // console.log(original_css_data);
 
+                    // Optimize it
                     let optimized_css = await minified_css.minify(original_css_data)
 
+                    // Do error things
                     if (optimized_css.errors.length) return next(optimized_css.errors[0]);
 
+                    // Write the optimized version to the cache
                     fs.writeFileSync(cached_css_path, optimized_css.styles, 'utf-8');
+                    // Send the optimized file to the user
                     return res.sendFile(cached_css_path, {headers: {"Content-Type": "text/css; charset=UTF-8"}});
                 });
             });
@@ -356,7 +412,6 @@ if (process.env.NODE_ENV.trim() !== 'development') {
 
     // For bandwidth saving on the more intensive actions
     app.use(compression());
-
 }
 
 // Routes usage
@@ -388,6 +443,12 @@ app.get('/health', (req, res) => {
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
+    if (process.platform === 'win32') {
+        console.log(`At http://localhost:${port}`);
+    }
+    else {
+        console.log(`At http://0.0.0.0:${port}`);
+    }
 });
 
 module.exports = app;
