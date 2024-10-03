@@ -22,6 +22,7 @@ $(document).ready(function() {
     
 })
 
+/*
 function check(a,b){
   // init
   var valid = true;
@@ -38,10 +39,48 @@ function check(a,b){
   }
 
   return valid;
-}
+}*/
 
 // Attach event listener to the password input
 document.getElementById('txtLoginPassword').addEventListener('keypress', checkCapsLock);
+
+// Attach event listener to the password registration
+document.getElementById('txtRegisterPassword').addEventListener('keypress', checkCapsLock);
+
+// Attach event listener to password input to check requirements in real-time
+document.getElementById('txtRegisterPassword').addEventListener('keypress', checkPasswordRequirements);
+
+document.getElementById('txtLoginUsername').addEventListener('focusout', function() {
+  check(document.getElementById('txtLoginUsername'), document.getElementById('errLoginUsername'));
+});
+
+document.getElementById('txtLoginEmail').addEventListener('focusout', function() {
+  checkEmail(document.getElementById('txtLoginEmail'), document.getElementById('errLoginEmail'));
+});
+
+document.getElementById('txtLoginPassword').addEventListener('input', function() {
+  validatePassword(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
+});
+
+document.getElementById('txtRegisterUsername').addEventListener('focusout', function() {
+  check(document.getElementById('txtRegisterUsername'), document.getElementById('errRegisterUsername'));
+});
+
+document.getElementById('txtRegisterPassword').addEventListener('input', function() {
+  validatePassword(document.getElementById('txtRegisterPassword'), document.getElementById('passwordRequirements'));
+});
+
+document.getElementById('txtRegisterEmail').addEventListener('focusout', function() {
+  checkEmail(document.getElementById('txtRegisterEmail'), document.getElementById('errRegisterEmail'));
+});
+
+document.getElementById('txtRegisterFirstName').addEventListener('focusout', function() {
+  check(document.getElementById('txtRegisterFirstName'), document.getElementById('errRegisterFirstName'));
+});
+
+document.getElementById('txtRegisterLastName').addEventListener('focusout', function() {
+  checkEmail(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastName'));
+});
 
 // Get the modal
 var modal = document.getElementById("settingsModal");
