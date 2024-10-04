@@ -239,11 +239,6 @@ $('#btnLogout').on('click', function(){
     let strSessionID = sessionStorage.getItem('SessionID');
     sessionStorage.removeItem('SessionID');
     localStorage.removeItem('SessionID');
-    $.ajax({
-        url: 'https://simplecoop.swollenhippo.com/sessions.php',
-        type: 'DELETE',
-        data: strSessionID
-    })
     $('#btnLogout').hide();
     window.location.reload();
     setUserLocation('login');
