@@ -23,7 +23,7 @@ if (type) {
         }
     };
 }
-else {
+else if (process.env.NODE_ENV.includes("development")) {
     config = {
         server,
         port,
@@ -32,6 +32,18 @@ else {
         password,
         options: {
             encrypt: false
+        }
+    };
+}
+else {
+    config = {
+        server,
+        port,
+        database,
+        user,
+        password,
+        options: {
+            encrypt: true
         }
     };
 }
