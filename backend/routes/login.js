@@ -106,7 +106,7 @@ app.post('/create_account', (req, res) => {
                         return_400(res, "User exists");
                     }
                     else {
-                        return_500(res);
+                        return_500(res, e.message);
                     }
                 });
             }).catch((e) => {
@@ -114,13 +114,13 @@ app.post('/create_account', (req, res) => {
                     return_400(res, "User exists");
                 }
                 else if (e instanceof RequestError) {
-                    console.log(e);
-                    console.log("If this is thrown in the dev environment, you likely wrote a bad SQL query.");
-                    return_500(res);
+                    console.error(e);
+                    console.error("If this is thrown in the dev environment, you likely wrote a bad SQL query.");
+                    return_500(res, e.message);
                 }
                 else {
-                    console.log(e);
-                    return_500(res);
+                    console.error(e);
+                    return_500(res, e.message);
                 }
             })
         }
@@ -132,7 +132,8 @@ app.post('/create_account', (req, res) => {
         }
         // Something else went wrong
         else {
-            return_500(res);
+            console.error(e);
+            return_500(res, e.message);
         }
     }
 });
