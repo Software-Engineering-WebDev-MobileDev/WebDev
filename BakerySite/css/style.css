@@ -1,0 +1,211 @@
+/* Various Font Colorations */
+.orange1-text {
+    color: #e99002;
+}
+.charcoal-text {
+    color: #2C2C2C;
+}
+.dbrown-text {
+    color: #5c280a;
+}
+.brown-text {
+    color: #8c481b;
+}
+.orange2-text {
+    color: #d17e33;
+}
+.yellow-text {
+    color: #f5c976;
+}
+.beige-text {
+    color: #f6ebd8;
+}
+
+/* Login Form Style */
+
+#divLogin {
+    background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
+    border-radius: 0.25rem; 
+    padding: 1.5rem; 
+}
+.form-control {
+    background-color: #fff; /* Ensure input fields remain fully opaque */
+}
+
+/* Login Button Style */
+#btnLogin {
+    background-color: #f5c976; /* Set the background color */
+    color: #2C2C2C; /* Set the text color */
+    border: none; /* Remove the border */
+    padding: 12px 20px; /*  Add some padding */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline from text */
+    display: inline-block; /* Make sure the button behaves as an inline element */
+    font-size: 16px; /* Set font size */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer when hovered */
+}
+
+#btnLogin:hover {
+    background-color: #e5b567; /* Change color on hover */
+}
+
+/* Navigation Bar Style */
+.navbar-custom {
+    background-color: #f5c976; /* Set the background color */
+}
+
+/* Hamburger Navigation Button Style */
+#btnHamburger {
+    background-color: #f5c976; /* Button background color */
+    border: none; /* Remove border if needed */
+    color: #2C2C2C; /* Text color (icon color) */
+}
+
+#btnHamburger:hover {
+    background-color: #e0a64a; /* Background color on hover */
+}
+
+/* Register Form Style */
+
+#divRegister {
+    background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
+    border-radius: 0.25rem; 
+    padding: 1.5rem; 
+}
+.form-control {
+    background-color: #fff; /* Ensure input fields remain fully opaque */
+}
+
+/* Register Button Style */
+#btnRegister {
+    background-color: #f5c976; /* Set the background color */
+    color: #2C2C2C; /* Set the text color */
+    border: none; /* Remove the border */
+    padding: 12px 20px; /*  Add some padding */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline from text */
+    display: inline-block; /* Make sure the button behaves as an inline element */
+    font-size: 16px; /* Set font size */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer when hovered */
+}
+
+#btnRegister:hover {
+    background-color: #e5b567; /* Change color on hover */
+}
+
+/* Clear Button Style */
+#btnClear {
+    background-color: #D32F2F; /* Set the background color */
+    color: #f6ebd8; /* Set the text color */
+    border: none; /* Remove the border */
+    padding: 12px 20px; /*  Add some padding */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline from text */
+    display: inline-block; /* Make sure the button behaves as an inline element */
+    font-size: 16px; /* Set font size */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer when hovered */
+}
+
+#btnClear:hover {
+    background-color: #B22222; /* Change color on hover */
+}
+
+.error {
+    border-color: #B22222; /* Highlight invalid fields with a red border */
+    font-weight: bold;
+}
+
+.error-message {
+    color: #B22222; /* Make the error message red */
+    font-size: 14px; /* Adjust the font size */
+    margin-top: 5px; /* Add some spacing above the error message */
+    display: block; /* Ensure the error message appears below the input */
+    font-weight: bold; /* Make the error message bold */
+}
+
+.error-message::before {
+    content: "⚠ "; /* Add a warning icon before the error message */
+    font-size: 16px; /* Adjust the size of the icon */
+}
+
+
+/* Orange Default #e99002 */
+/* Dark Brown #5c280a */
+/* Brown #8c481b */
+/* Orange #d17e33 */
+/* Yellowish #f5c976 */
+/* Beige #f6ebd8 (pale Yellow for people who did not take Art 1) */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.background {
+    background-image: url('background.jpg'); /* Replace with your background image */
+    background-size: cover;
+    background-position: center;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.simple-card-container {
+    display: flex;
+    gap: 20px;
+}
+
+.simple-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    width: 150px;
+}
+
+.simple-card-content {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    background-color: #d17e33;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #8c481b
+}
+
+.text h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.text p {
+    margin: 5px 0 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.abstract-shapes {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(45deg, #ccc, #eee);
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}

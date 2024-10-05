@@ -1,0 +1,4 @@
+ScalingFactorID,ScaleFactor,Description,CreatedAt,UpdatedAt
+123e4567-e89b-12d3-a456-426614174022,0.5,Half recipe,2023-09-15 10:00:00,
+123e4567-e89b-12d3-a456-426614174023,1.0,Original recipe,2023-09-15 10:00:00,
+123e4567-e89b-12d3-a456-426614174024,1.5,One and a half times,2023-09-15 10:00:00,
