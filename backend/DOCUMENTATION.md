@@ -48,7 +48,7 @@ Ingredients:
 
 <!--[Update an ingredient (PUT)](#update-an-ingredient-put)-->
 
-Inventory:
+Inventory/Purchase Orders:
 
 [Get inventory (GET)](#get-inventory-get)
 
@@ -67,6 +67,14 @@ Inventory:
 [Delete an inventory change (DELETE)](#delete-an-inventory-change-delete)
 
 [Get inventory amounts (GET)](#get-inventory-amounts-get)
+
+[Get purchase orders (GET)](#get-purchase-orders-get)
+
+[Get a purchase order by id (GET)](#get-a-purchase-order-by-id-get)
+
+[Add a purchase order (POST)](#add-a-purchase-order-post)
+
+[Delete a purchase order by id (DELETE)](#delete-a-purchase-order-by-id-delete)
 
 ## Create Account (POST)
 
@@ -2181,6 +2189,246 @@ Response:
       "ReorderUnit": "kg"
     }
   ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Get purchase orders (GET)
+
+`/api/purchase_order`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+Query:
+
+```
+base_uri/api/purchase_order
+```
+
+```js 
+await fetch(`base_uri/api/purchase_order`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "content": [
+    {
+      "InventoryID": "adfd1785c0f245b3bc501c694ed98131",
+      "Name": "flour",
+      "PurchaseOrderID": "d2bc94a6f6e3418aa2122f2a4500ff76",
+      "Date": "2024-10-05T23:08:36.973Z",
+      "OrderQuantity": 20000,
+      "Vendor": "Big Flour Power",
+      "PayableAmount": 2000,
+      "PayableDate": "2024-10-05T23:08:36.973Z",
+      "EmployeeID": "00123456789"
+    }
+  ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Get a purchase order by id (GET)
+
+`/api/purchase_order_id`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+purchase_order_id (str): the purchase order's id to get
+
+Query:
+
+```
+base_uri/api/purchase_order_id
+```
+
+```js 
+await fetch(`base_uri/api/purchase_order_id`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            purchase_order_id: purchase_order_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "content": {
+    "InventoryID": "adfd1785c0f245b3bc501c694ed98131",
+    "PurchaseOrderID": "d2bc94a6f6e3418aa2122f2a4500ff76",
+    "Name": "flour",
+    "ShelfLife": 365,
+    "ShelfLifeUnit": "days",
+    "ReorderAmount": 50,
+    "ReorderUnit": "kg",
+    "Date": "2024-10-05T23:08:36.973Z",
+    "OrderQuantity": 20000,
+    "Vendor": "Big Flour Power",
+    "PayableAmount": 2000,
+    "PayableDate": "2024-10-05T23:08:36.973Z",
+    "EmployeeID": "00123456789"
+  }
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Add a purchase order (POST)
+
+`/api/purchase_order`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+inventory_id (str): the inventory id to associate with this purchase order
+
+date (str): ISO 8601 format date string
+
+order_quantity (int|float|Number): the quantity of the order
+
+vendor (str): the name of the vendor
+
+payable_amount (int|float|Number): the payment amount for this particular order
+
+payable_date (str): ISO 8601 format date string
+
+Query:
+
+```
+base_uri/api/purchase_order
+```
+
+```js 
+// Date for the purchase order
+let test_date = new Date();
+
+await fetch(`base_uri/api/purchase_order`,
+    {
+        method: 'POST',
+        headers: {
+            session_id: session_id,
+            inventory_id: "<inventory_id>",
+            date: test_date.toISOString(),
+            order_quantity: "<order_quantity>",
+            vendor: "<vendor>",
+            payable_amount: "<payable_amount>",
+            payable_date: test_date.toISOString()
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "purchase_order_id": "d2bc94a6f6e3418aa2122f2a4500ff76"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Delete a purchase order by id (DELETE)
+
+`/api/purchase_order`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+purchase_order_id (str): the purchase order's id to delete
+
+Query:
+
+```
+base_uri/api/purchase_order
+```
+
+```js 
+await fetch(`base_uri/api/purchase_order`,
+    {
+        method: 'DELETE',
+        headers: {
+            session_id: session_id,
+            purchase_order_id: purchase_order_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
 }
 ```
 
