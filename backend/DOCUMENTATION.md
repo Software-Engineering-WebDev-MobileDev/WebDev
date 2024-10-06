@@ -12,6 +12,8 @@ Account Related:
 
 [Token Bump (POST)](#token-bump-post)
 
+[User's own full information (GET)](#users-own-full-information-get)
+
 Account Information Related: 
 
 [User's own email addresses (GET)](#users-own-email-addresses-get)
