@@ -504,7 +504,7 @@ await fetch(`base_uri/api/add_user_email`,
         headers: {
             session_id: session_id,
             email_address: email_address,
-            type: "<personal|work|other>"
+            type: "<personal|work|other|primary>"
         },
     }
     ).then(
@@ -777,7 +777,7 @@ await fetch(`base_uri/api/add_user_phone`,
         headers: {
             session_id: session_id,
             phone_number: phone_number,
-            type: "<mobile|home|work|fax>"
+            type: "<mobile|home|work|fax|primary>"
         },
     }
     ).then(
@@ -790,6 +790,193 @@ Response:
 ```json
 {
   "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## User's own full information (GET)
+
+`/api/my_info`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+Query:
+
+```
+base_uri/api/my_info
+```
+
+```js 
+await fetch(`base_uri/api/my_info`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "content": {
+    "EmployeeID": "01234567890",
+    "FirstName": "Richard",
+    "LastName": "Stallman",
+    "Username": "freethesoftware",
+    "RoleName": "employee",
+    "RoleDescription": "Roller of the Scones. Able to get from most APIs and create, update, and delete from those which pertain to themselves.",
+    "EmploymentStatus": true,
+    "StartDate": "2024-10-06T00:00:00.000Z",
+    "EndDate": null,
+    "Emails": [
+      {
+        "EmailID": "39f0642509e344e8bbd91b4bc7e7f3bf",
+        "EmailAddress": "free_software+4@gnu.org",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "483e0ccbe6d84e55ac53c4db7df22c0c",
+        "EmailAddress": "free_software1@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "64fd04ade6384b05b6604ee658c27890",
+        "EmailAddress": "free_software2@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "74735bb10be14e809789a1edfb886d1c",
+        "EmailAddress": "free_software+3@gnu.org",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "933dc91bce354331b0c77fa28de2cc32",
+        "EmailAddress": "free_software4@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "95fd85e970f64c87a3b2865801f3ee0e",
+        "EmailAddress": "free_software3@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "a1032e2f9e4c4a538cfe405c31e14961",
+        "EmailAddress": "free_software0@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "af1638fcc79643d79b3554d895c688f6",
+        "EmailAddress": "free_software+0@gnu.org",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "d9d0c23985a144cea5994eec29d124bb",
+        "EmailAddress": "free_software+2@gnu.org",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      }
+    ],
+    "PhoneNumbers": [
+      {
+        "PhoneNumberID": "13c28a508daa4aca963ff9f69172be6a",
+        "PhoneNumber": "5678901234",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "18d84512ea9d483a8ad8fc1946624f5e",
+        "PhoneNumber": "1234567890",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "1e23598c89c44208869518993d76091e",
+        "PhoneNumber": "7890123456",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "26d715feb82d47b8a84766ed4c8b6ccd",
+        "PhoneNumber": "4567890123",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "60acffea47174a7c946ed3e2ef787139",
+        "PhoneNumber": "9012345678",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "61f8c1a11aa749f59aee791cc6311826",
+        "PhoneNumber": "6789012345",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "8c450585e1f04a63a14aaaadc7698a90",
+        "PhoneNumber": "3456789012",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "bbeea43fe3224c44b0daf9eb6453fa10",
+        "PhoneNumber": "8901234567",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "bd6251b624734de69db4d4caad327414",
+        "PhoneNumber": "2344567890",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      }
+    ]
+  }
 }
 ```
 
