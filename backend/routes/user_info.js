@@ -569,4 +569,99 @@ app.get('/user_list', (req, res) => {
     }
 });
 
+app.get('/my_info', (req, res) => {
+    try {
+        const session_id = req.header("session_id");
+
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            );
+        }
+        else {
+            database.sessionToEmployeeID(session_id).then(async (employee_id) => {
+                if (employee_id) {
+                    let basic_info = database.executeQuery(
+                        `SELECT EmployeeID,
+                                FirstName,
+                                LastName,
+                                Username,
+                                RoleName,
+                                RoleDescription,
+                                EmploymentStatus,
+                                StartDate,
+                                EndDate
+                         FROM tblUsers AS tU
+                                  INNER JOIN tblUserRoles AS tUR ON tU.RoleID = tUR.RoleID
+                         WHERE EmployeeID = '${employee_id}'`
+                    ).then((result) => {
+                        return result.recordsets[0][0];
+                    }).catch((e) => {
+                        console.error(e);
+                        return [];
+                    });
+                    let emails = database.executeQuery(
+                        `SELECT EmailID, EmailAddress, em.EmailTypeID, EmailTypeDescription, Valid
+                         FROM tblEmail AS em
+                                  INNER JOIN tblEmailTypes AS et ON em.EmailTypeID = et.EmailTypeID
+                         WHERE em.EmployeeID = '${employee_id}'`
+                    ).then((result) => {
+                        return result.recordsets[0];
+                    }).catch((e) => {
+                        console.error(e);
+                        return [];
+                    });
+                    let phone_numbers = database.executeQuery(
+                        `SELECT PhoneNumberID, PhoneNumber, pn.PhoneTypeID, PhoneTypeDescription, Valid
+                         FROM tblPhoneNumbers AS pn
+                                  INNER JOIN tblPhoneTypes AS pt ON pn.PhoneTypeID = pt.PhoneTypeID
+                         WHERE pn.EmployeeID = '${employee_id}'`
+                    ).then((result) => {
+                        return result.recordsets[0];
+                    }).catch((e) => {
+                        console.error(e);
+                        return [];
+                    });
+                    basic_info = await basic_info;
+                    res.status(200).send(
+                        {
+                            status: "success",
+                            content: {
+                                EmployeeID: employee_id,
+                                FirstName: basic_info["FirstName"],
+                                LastName: basic_info["LastName"],
+                                Username: basic_info["Username"],
+                                RoleName: basic_info["RoleName"],
+                                RoleDescription: basic_info["RoleDescription"],
+                                EmploymentStatus: basic_info["EmploymentStatus"],
+                                StartDate: basic_info["StartDate"],
+                                EndDate: basic_info["EndDate"],
+                                Emails: await emails,
+                                PhoneNumbers: await phone_numbers
+                            }
+                        }
+                    );
+                }
+                else {
+                    return_498(res);
+                }
+            }).catch((e) => {
+                console.error(e);
+                return_500(res);
+            })
+        }
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
+        }
+        else {
+            return_500(res);
+        }
+    }
+})
+
 module.exports = app;
