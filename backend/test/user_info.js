@@ -465,4 +465,76 @@ describe("Test user info retrieval", function () {
         assert.strictEqual(result_user_list.page, 1, "Response page invalid");
         assert.strictEqual(result_user_list.content.length <= 12, true, "Response too long");
     });
+    it("Get an employee's info", async function () {
+        // Login to get a fresh token
+        const response = await fetch(`${base_uri}/login`, {
+            method: 'POST',
+            headers: {
+                username: test_username,
+                password: test_password,
+            },
+        });
+        // Grab the token
+        const json_response = await response.json();
+        session_id = json_response["session_id"];
+
+        // Make sure that the login was successful
+        assert.strictEqual(response.status, 201, 'Expected HTTP status 201 for user login');
+        test
+            .object(json_response) // Ensure it's an object
+            .hasProperty('status') // Check if 'status' exists
+            .string(json_response.status).is('success'); // Check if 'status' is 'success'
+
+        // Get the user's info
+        let user_info = await fetch(`${base_uri}/my_info`, {
+            method: 'GET',
+            headers: {
+                session_id: session_id
+            },
+        });
+
+        // Check that the status code is 200
+        assert.strictEqual(user_info.status, 200, `Expected HTTP status 200 (OK)`);
+
+        // Make it JSON
+        user_info = await user_info.json();
+
+        test
+            .object(user_info)                      // Ensure it's an object
+            .hasProperty('status')                  // Check if 'status' exists
+            .hasProperty('content')                 // Check that it has a content field
+            .string(user_info.status).is('success'); // Check if 'status' is 'success'
+
+        assert.strictEqual(
+            typeof user_info["content"],
+            "object",
+            "Expected user_info.content to be an object"
+        );
+
+        // Make sure that user_info.content has all the correct fields
+        test
+            .object(user_info["content"])
+            .hasProperty('EmployeeID')
+            .hasProperty('FirstName')
+            .hasProperty('LastName')
+            .hasProperty('Username')
+            .hasProperty('RoleName')
+            .hasProperty('RoleDescription')
+            .hasProperty('EmploymentStatus')
+            .hasProperty('StartDate')
+            .hasProperty('EndDate')
+            .hasProperty('Emails')
+            .hasProperty('PhoneNumbers');
+
+        assert.strictEqual(
+            user_info["content"]["Emails"] instanceof Array,
+            true,
+            "Expected `Emails` to be an array"
+        );
+        assert.strictEqual(
+            user_info["content"]["PhoneNumbers"] instanceof Array,
+            true,
+            "Expected `PhoneNumbers` to be an array"
+        );
+    });
 });
