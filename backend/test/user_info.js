@@ -1,6 +1,12 @@
 const test = require('unit.js');
 const assert = require('assert');
 
+// Database setup:
+process.env.NODE_ENV = "development";
+const config = require('../config.js');
+const Database = require('../database');
+const database = new Database(config);
+
 const base_uri = "http://localhost:3000/api",
     test_employee_id = "01234567890",
     test_first_name = "Richard",
@@ -31,6 +37,7 @@ for (const input_phone of test_phone_inputs) {
 
 describe("Test user info retrieval", function () {
     it("Add emails for the user", async function () {
+        this.timeout(10_000);
         let responses = [];
 
         // Make sure the account exists (what this returns is irrelevant)
@@ -536,5 +543,56 @@ describe("Test user info retrieval", function () {
             true,
             "Expected `PhoneNumbers` to be an array"
         );
+    });
+
+    it("Increase a user's role", async function () {
+        // Increase the test user's permissions to "owner"
+        await database.executeQuery(
+            `UPDATE tblUsers SET RoleID = '0' WHERE EmployeeID = '${test_employee_id}'`
+        );
+
+        // Make the target user (employee)
+        let target_employee_id = "23061bd4fbdc481baf61f4aa307dd05e";
+        await database.executeQuery(
+            `INSERT INTO tblUsers (EmployeeID, FirstName, LastName, Username, Password, RoleID, StartDate) VALUES ('${target_employee_id}', 'Joe', 'Schmo', 'jschmo', 'gibberish', '3', GETDATE())`
+        ).catch((e) => {
+            if (e.message.startsWith("Violation of UNIQUE KEY constraint") || e.message.startsWith("Violation of PRIMARY KEY constraint")) {}
+            else {
+                throw e;
+            }
+        });
+
+        // Login to get a fresh token
+        const login_response = await fetch(`${base_uri}/login`, {
+            method: 'POST',
+            headers: {
+                username: test_username,
+                password: test_password,
+            },
+        });
+        // Grab the token
+        const json_response = await login_response.json();
+        session_id = json_response["session_id"];
+
+        // Change the user's role to manager
+        let user_role_change_response = await fetch(`${base_uri}/user_role_change`, {
+            method: 'POST',
+            headers: {
+                session_id: session_id,
+                target_employee_id: target_employee_id,
+                role: "manager"
+            },
+        });
+
+        // Check that the status code is 200
+        assert.strictEqual(user_role_change_response.status, 200, `Expected HTTP status 200 (OK)`);
+
+        // Make it JSON
+        user_role_change_response = await user_role_change_response.json();
+
+        test
+            .object(user_role_change_response)                          // Ensure it's an object
+            .hasProperty('status')                                      // Check if 'status' exists
+            .string(user_role_change_response.status).is('success');    // Check if 'status' is 'success'
     });
 });
