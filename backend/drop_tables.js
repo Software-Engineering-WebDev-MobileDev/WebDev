@@ -12,7 +12,7 @@ let table_drops = [
     "DROP TABLE tblEmailTypes",
     "DROP TABLE tblEmail",
     "DROP TABLE tblPhoneTypes",
-    "DROP TABLE tblPhoneNumbe",
+    "DROP TABLE tblPhoneNumbers",
     "DROP TABLE tblSessions",
     "DROP TABLE tblInventory",
     "DROP TABLE tblInventoryHistory",

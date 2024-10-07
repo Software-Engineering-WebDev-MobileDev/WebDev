@@ -115,7 +115,8 @@ if (process.env.NODE_ENV.trim() === 'development') {
                         "INSERT INTO tblEmailTypes (EmailTypeID, EmailTypeDescription, Active) VALUES " +
                         "('personal', 'Personal Email', 1), " +
                         "('work', 'Work Email', 1), " +
-                        "('other', 'Other Email', 1)"
+                        "('other', 'Other Email', 1), " +
+                        "('primary', 'Primary email', 1)"
                     ).then(() => {});
                     // Insert some phone types
                     database.executeQuery(
@@ -123,7 +124,8 @@ if (process.env.NODE_ENV.trim() === 'development') {
                         "('mobile', 'Mobile Phone', 1), " +
                         "('home', 'Home Phone', 1), " +
                         "('work', 'Work Phone', 1), " +
-                        "('fax', 'Fax', 1)"
+                        "('fax', 'Fax', 1), " +
+                        "('primary', 'Primary phone number', 1)"
                     ).then(() => {});
 
                     // Insert some user roles

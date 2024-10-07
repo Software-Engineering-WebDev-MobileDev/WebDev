@@ -1,6 +1,6 @@
 /*
 function: setUserLocation
-parameters: none
+parameters: location
 purpose: This function keeps track of what page the user is on
 */
 function setUserLocation(location) {
@@ -9,18 +9,19 @@ function setUserLocation(location) {
 
 /*
 function: checkCapsLock
-parameters: none
+parameters: event
 purpose: This function checks if caps lock is on and warns the user
 */
 function checkCapsLock(event) {
     const capsLockOn = event.getModifierState && event.getModifierState('CapsLock');
-    const passwordInput = document.getElementById('txtLoginPassword');
-    const capsLockWarning = document.getElementById('capsLockWarning');
-
-    if (capsLockOn && passwordInput === document.activeElement) {
-        capsLockWarning.style.display = 'block';
-    } else {
-        capsLockWarning.style.display = 'none';
+    
+    // Determine which input triggered the event
+    if (event.target.id === 'txtLoginPassword') {
+        const capsLockWarningLogin = document.getElementById('capsLockWarningLogin');
+        capsLockWarningLogin.style.display = capsLockOn ? 'block' : 'none';
+    } else if (event.target.id === 'txtRegisterPassword') {
+        const capsLockWarningRegister = document.getElementById('capsLockWarningRegister');
+        capsLockWarningRegister.style.display = capsLockOn ? 'block' : 'none';
     }
 }
 
@@ -62,7 +63,7 @@ function getTime() {
         
 /*
 function: getSuffix
-parameters: none
+parameters: day
 purpose: This function is in charge of setting the correct suffix for the date functions
 */
 function getSuffix(day) {
@@ -80,21 +81,24 @@ function getSuffix(day) {
 
 /*
 function: save_data_to_localstorage
-parameters: none
+parameters: input_id
 purpose: Saves last entered username to login window between sessions
 */
 function save_data_to_localstorage(input_id) {
     const input_val = document.getElementById(input_id).value;
     localStorage.setItem(input_id, input_val);
     console.log(input_val);
-    }
+    } 
     
-    
+/*
+function: init_values
+parameters:
+purpose: Displays saved username value from last entry
+*/
+function init_values() {
     txtLoginUsername.addEventListener("keyup", function() {
     save_data_to_localstorage("txtLoginUsername");
     });
-    
-    function init_values() {
     if (localStorage["txtLoginUsername"]) {
     txtLoginUsername.value = localStorage["txtLoginUsername"];
     }
@@ -149,3 +153,73 @@ function fillTable() {
 
     })
 }  */
+
+
+/*
+function: checkPasswordRequirements
+parameters: none
+purpose: Get the password input field and the error elements, check input validity
+*/
+function checkPasswordRequirements() {
+    const passwordInput = document.getElementById('txtRegisterPassword');
+    const passwordRequirements = document.getElementById('passwordRequirements');
+    const lengthReq = document.getElementById('lengthReq');
+    const numberReq = document.getElementById('numberReq');
+    const specialCharReq = document.getElementById('specialCharReq');
+    const password = passwordInput.value;
+    let valid = true;
+
+    // Show the password requirements when the field is focused
+    passwordRequirements.style.display = 'block';
+
+    // Check password length
+    if (password.length >= 8) {
+        lengthReq.style.color = '#047609'; // Green if valid
+    } else {
+        lengthReq.style.color = '#B22222'; // Red if invalid
+        valid = false;
+    }
+
+    // Check for at least one number
+    if (/\d/.test(password)) {
+        numberReq.style.color = '#047609'; // Green if valid
+    } else {
+        numberReq.style.color = '#B22222'; // Red if invalid
+        valid = false;
+    }
+
+    // Check for at least one special character
+    if (/[!@#$%^&*]/.test(password)) {
+        specialCharReq.style.color = '#047609'; // Green if valid
+    } else {
+        specialCharReq.style.color = '#B22222'; // Red if invalid
+        valid = false;
+    }
+
+    // Color the entire section green if all requirements are met
+    if (valid) {
+        passwordRequirements.style.color = '#047609'; // Green if all conditions are met
+    } else {
+        passwordRequirements.style.color = '#B22222'; // Red if any condition is unmet
+    }
+
+    return valid;
+}
+
+// Validate and display feedback
+function validateField(element, condition, errorMsg) {
+    const $field = $(element);
+    const $error = $field.next('.error-message');
+
+    if (condition) {
+        $field.removeClass('error');
+        if ($error.length) $error.remove();
+    } else {
+        $field.addClass('error');
+        if (!$error.length) {
+            $field.after(`<span class="error-message">${errorMsg}</span>`);
+        }
+    }
+}
+
+

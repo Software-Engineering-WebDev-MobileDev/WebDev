@@ -79,6 +79,8 @@ app.post('/create_account', (req, res) => {
                 if (result.rowsAffected[0] === 0) {
                     role = "0";
                 }
+            }).catch((e) => {
+                console.error(e);
             })
 
             // Insert the user into the DB
@@ -89,7 +91,7 @@ app.post('/create_account', (req, res) => {
                 // Generate a session ID
                 const session_id = database.gen_uuid()
 
-                // Add the new session to the sessions table
+                // Add the new session to tblSessions
                 database.executeQuery(
                     `INSERT INTO tblSessions (SessionID, EmployeeID, CreateDateTime, LastActivityDateTime)
                      VALUES ('${session_id}', '${employee_id}', GETDATE(), GETDATE())`
@@ -106,6 +108,7 @@ app.post('/create_account', (req, res) => {
                         return_400(res, "User exists");
                     }
                     else {
+                        console.error(e);
                         return_500(res);
                     }
                 });
@@ -114,12 +117,12 @@ app.post('/create_account', (req, res) => {
                     return_400(res, "User exists");
                 }
                 else if (e instanceof RequestError) {
-                    console.log(e);
-                    console.log("If this is thrown in the dev environment, you likely wrote a bad SQL query.");
+                    console.error(e);
+                    console.error("If this is thrown in the dev environment, you likely wrote a bad SQL query.");
                     return_500(res);
                 }
                 else {
-                    console.log(e);
+                    console.error(e);
                     return_500(res);
                 }
             })
@@ -132,6 +135,7 @@ app.post('/create_account', (req, res) => {
         }
         // Something else went wrong
         else {
+            console.error(e);
             return_500(res);
         }
     }
@@ -202,6 +206,7 @@ app.post('/login', (req, res) => {
                         });
                 }
                 else {
+                    console.error(e);
                     return_500(res);
                 }
             });
@@ -217,6 +222,7 @@ app.post('/login', (req, res) => {
             );
         }
         else {
+            console.error(e);
             res.status(500).send(
                 {
                     status: "error",
@@ -248,13 +254,13 @@ app.post('/logout', (req, res) => {
                     }
                 );
             }).catch((e) => {
-                console.log(e);
+                console.error(e);
                 return_500(res);
             })
         }
     }
     catch (e) {
-        console.log(e);
+        console.error(e);
         if (e instanceof TypeError) {
             res.status(401).send(
                 {
@@ -287,7 +293,7 @@ app.post("/token_bump", (req, res) => {
                 return_498(res);
             }
         }).catch((e) => {
-            console.log(e);
+            console.error(e);
             return_500(res);
         });
     }
@@ -296,6 +302,7 @@ app.post("/token_bump", (req, res) => {
             return_400(res, "Invalid query parameters");
         }
         else {
+            console.error(e);
             return_500(res);
         }
     }

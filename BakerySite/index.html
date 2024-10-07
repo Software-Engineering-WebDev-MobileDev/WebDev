@@ -74,21 +74,21 @@
             <div class="card-body">
                 <form>
                     <div class="form-floating mb-3" > <!--username/email-->
-                        <input id="txtLoginUsername" type="text" class="form-control" placeholder="Username or Email" onfocusout="check(document.getElementById('txtLoginUsername'), document.getElementById('errLoginUsername') )" required minlength="1" maxlength="99">
-                        <label for="txtLoginUsername" class="form-label text-black">Username or Email</label>
+                        <input id="txtLoginUsername" type="text" class="form-control" placeholder="Username or Email">
+                        <label for="txtLoginUsername" class="form-label text-black">Username</label>
                     <div id="errLoginUsername" class="emsg"></div>
                     </div> 
                     <div class="form-floating mb-3" required minlength="1"> <!--password-->
-                        <input id="txtLoginPassword" type="password" class="form-control" placeholder="Password"  onfocusout="check(document.getElementById('txtLoginPassword'), document.getElementById('errLoginPassword') )" required minlength="1" maxlength="99">
+                        <input id="txtLoginPassword" type="password" class="form-control" placeholder="Password">
                         <label for="txtLoginPassword" class="form-label text-black" aria-label="Password">Password</label>
                     <div id="errLoginPassword" class="emsg"></div>
-                    <div id="capsLockWarning" class="emsg" style="display: none;">
+                    <div id="capsLockWarningLogin" class="emsg" style="display: none;">
                         Caps Lock is on
                     </div>
                     </div>
                     <button id="btnLogin" type="button" class="btn btn-primary col-12 mt-4"><strong>Login</strong></button>
                     <div class="text-center mt-4">
-                        <a href="#" onclick="return false;" id="btnToggle" class="brown-text">Don't have an account? Register here!</a>
+                        <span id="btnToggle" class="brown-text" role="button" tabindex="0"><strong>Don't have an account? Register here!</strong></span>
                     </div>
                 </form>
             </div>
@@ -104,27 +104,38 @@
                     <div class="row gx-3">
                         <div class="col">   
                             <div class="form-floating mb-3" required minlength="1">
-                                <input id="txtRegisterFirstName" class="form-control" placeholder="First Name" onfocusout="check(document.getElementById('txtRegisterFirstName'), document.getElementById('errRegisterFirstName') )" required minlength="1">
+                                <input id="txtRegisterFirstName" class="form-control" placeholder="First Name">
                                 <label for="txtRegisterFirstName" class="form-label text-black" aria-label="First Name">First name</label>
                                 <div id="errRegisterFirstName" class="emsg"></div>
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-floating mb-3" required minlength="1">
-                                <input id="txtRegisterLastName" class="form-control" placeholder="Last Name" onfocusout="check(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastNAme') )" required minlength="1">
+                                <input id="txtRegisterLastName" class="form-control" placeholder="Last Name">
                                 <label for="txtRegisterLastName" class="form-label text-black" aria-label="Last Name">Last name</label>
                                 <div id="errRegisterLastName" class="emsg"></div>
                             </div>
                         </div>
                     </div>
                     <div class="form-floating mb-3" > <!--username-->
-                        <input id="txtRegisterUsername" class="form-control" placeholder="Username" onfocusout="check(document.getElementById('txtRegisterUsername'), document.getElementById('errRegisterUsername') )" required minlength="1" maxlength="99">
+                        <input id="txtRegisterUsername" class="form-control" placeholder="Username">
                         <label for="txtRegisterUsername" class="form-label text-black" aria-label="Username">Username</label>
                     <div id="errRegisterUsername" class="emsg"></div>
                     </div>
                     <div class="form-floating mb-3" required minlength="1"> <!--password-->
-                        <input id="txtRegisterPassword" type="password" class="form-control" placeholder="Password" onfocusout="check(document.getElementById('txtRegisterPassword'), document.getElementById('errRegisterPassword') )" required minlength="1">
+                        <input id="txtRegisterPassword" type="password" class="form-control" placeholder="Password">
                         <label for="txtRegisterPassword" class="form-label text-black" aria-label="Password">Password</label>
+                    <div id="passwordRequirements" class="emsg" style="display: none;">
+                        <strong>Password must meet the following requirements:</strong>
+                        <ul>
+                            <li id="lengthReq">At least 8 characters</li>
+                            <li id="numberReq">At least one number</li>
+                            <li id="specialCharReq">At least one special character (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+                    <div id="capsLockWarningRegister" class="emsg" style="display: none;">
+                        Caps Lock is on
+                    </div>
                     <div id="errRegisterPassword" class="emsg"></div>
                     </div>
                     <div class="form-floating mb-3" required minlength="1">     
@@ -135,17 +146,22 @@
                     <div class="row gx-3">
                         <div class="col">
                             <div class="form-floating mb-3" required length="10">
-                                <input id="numRegisterPhone" class="form-control" type="tel" placeholder="Phone Number" onfocusout="check(document.getElementById('numRegisterPhone'), document.getElementById('errRegisterPhone') )" required minlength="1">
+                                <input id="numRegisterPhone" class="form-control" type="tel" placeholder="Phone Number">
                                 <label for="numRegisterPhone" class="form-label text-black" aria-label="Phone number">Phone number</label>
                                 <div id="errRegisterPhone" class="emsg"></div>
                             </div>
+                        </div>
+                        <div class="form-floating mb-3" > <!--Employee ID-->
+                            <input id="txtRegisterEmployeeId" class="form-control" placeholder="Employee ID">
+                            <label for="txtRegisterEmployeeId" class="form-label text-black" aria-label="Employee ID">Employee ID</label>
+                        <div id="errRegisterEmployeeId" class="emsg"></div>
                         </div>
                     </div>
                     <button id="btnRegister" type="button" class="btn btn-primary charcoal-text col-12 mt-4"><strong>Register</strong></button>
                     <button id="btnClear" type="button" class="btn btn-danger col-12 mt-4"><strong>Clear</strong></button>
                     
                     <div class="text-center mt-4">
-                        <a href="index.html" onclick="return false;" id="btnReturn" class="brown-text"> Return </a>
+                        <span id="btnReturn" class="brown-text" role="button" tabindex="0"><strong>Return</strong></span>
                     </div>
                 </form>
             </div>
@@ -172,7 +188,7 @@
                 <h3>Product Owner</h3>
                 <p>Ben Burchfield</p> -->
                 <div class="text-center">
-                    <a href="#" onclick="return false;" id="btnReturnLogin">Return</a>
+                    <span id="btnReturnLogin" class="brown-text" role="button" tabindex="0"><strong>Return</strong></span>
                 </div>
             </div>
         </div>

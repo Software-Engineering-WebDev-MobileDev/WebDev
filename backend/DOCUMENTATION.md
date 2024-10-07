@@ -12,6 +12,8 @@ Account Related:
 
 [Token Bump (POST)](#token-bump-post)
 
+[Change a user's role (POST)](#change-a-users-role-post)
+
 Account Information Related: 
 
 [User's own email addresses (GET)](#users-own-email-addresses-get)
@@ -29,6 +31,8 @@ Account Information Related:
 [Delete user's phone number (DELETE)](#delete-users-phone-number-delete)
 
 [Another user's phone numbers (GET)](#another-users-phone-numbers-get)
+
+[User's own full information (GET)](#users-own-full-information-get)
 
 User management:
 
@@ -48,7 +52,7 @@ Ingredients:
 
 <!--[Update an ingredient (PUT)](#update-an-ingredient-put)-->
 
-Inventory:
+Inventory/Purchase Orders:
 
 [Get inventory (GET)](#get-inventory-get)
 
@@ -67,6 +71,14 @@ Inventory:
 [Delete an inventory change (DELETE)](#delete-an-inventory-change-delete)
 
 [Get inventory amounts (GET)](#get-inventory-amounts-get)
+
+[Get purchase orders (GET)](#get-purchase-orders-get)
+
+[Get a purchase order by id (GET)](#get-a-purchase-order-by-id-get)
+
+[Add a purchase order (POST)](#add-a-purchase-order-post)
+
+[Delete a purchase order by id (DELETE)](#delete-a-purchase-order-by-id-delete)
 
 ## Create Account (POST)
 
@@ -232,6 +244,58 @@ await fetch("base_uri/api/token_bump",
         method: "POST",
         headers: {
             session_id: "<session_id>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Change a user's role (POST)
+
+`/api/user_role_change`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+target_employee_id (str): the employee_id associated with the user to change the permissions of
+
+role (str): the role to give the user. Must be less than the current user's permission, and the target must have less permission than the user. Valid roles are: admin, manager, and employee
+
+Query:
+
+```
+base_uri/api/user_role_change
+```
+
+```js 
+await fetch("base_uri/api/user_role_change", 
+    {
+        method: "POST",
+        headers: {
+            session_id: "<session_id>",
+            target_employee_id: "<target_employee_id>",
+            role: "<admin|manager|employee>"
         },
     }
     ).then(
@@ -496,7 +560,7 @@ await fetch(`base_uri/api/add_user_email`,
         headers: {
             session_id: session_id,
             email_address: email_address,
-            type: "<personal|work|other>"
+            type: "<personal|work|other|primary>"
         },
     }
     ).then(
@@ -769,7 +833,7 @@ await fetch(`base_uri/api/add_user_phone`,
         headers: {
             session_id: session_id,
             phone_number: phone_number,
-            type: "<mobile|home|work|fax>"
+            type: "<mobile|home|work|fax|primary>"
         },
     }
     ).then(
@@ -782,6 +846,193 @@ Response:
 ```json
 {
   "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## User's own full information (GET)
+
+`/api/my_info`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+Query:
+
+```
+base_uri/api/my_info
+```
+
+```js 
+await fetch(`base_uri/api/my_info`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "content": {
+    "EmployeeID": "01234567890",
+    "FirstName": "Richard",
+    "LastName": "Stallman",
+    "Username": "freethesoftware",
+    "RoleName": "employee",
+    "RoleDescription": "Roller of the Scones. Able to get from most APIs and create, update, and delete from those which pertain to themselves.",
+    "EmploymentStatus": true,
+    "StartDate": "2024-10-06T00:00:00.000Z",
+    "EndDate": null,
+    "Emails": [
+      {
+        "EmailID": "39f0642509e344e8bbd91b4bc7e7f3bf",
+        "EmailAddress": "free_software+4@gnu.org",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "483e0ccbe6d84e55ac53c4db7df22c0c",
+        "EmailAddress": "free_software1@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "64fd04ade6384b05b6604ee658c27890",
+        "EmailAddress": "free_software2@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "74735bb10be14e809789a1edfb886d1c",
+        "EmailAddress": "free_software+3@gnu.org",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "933dc91bce354331b0c77fa28de2cc32",
+        "EmailAddress": "free_software4@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "95fd85e970f64c87a3b2865801f3ee0e",
+        "EmailAddress": "free_software3@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "a1032e2f9e4c4a538cfe405c31e14961",
+        "EmailAddress": "free_software0@gnu.com",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "af1638fcc79643d79b3554d895c688f6",
+        "EmailAddress": "free_software+0@gnu.org",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      },
+      {
+        "EmailID": "d9d0c23985a144cea5994eec29d124bb",
+        "EmailAddress": "free_software+2@gnu.org",
+        "EmailTypeID": "work",
+        "EmailTypeDescription": "Work Email",
+        "Valid": true
+      }
+    ],
+    "PhoneNumbers": [
+      {
+        "PhoneNumberID": "13c28a508daa4aca963ff9f69172be6a",
+        "PhoneNumber": "5678901234",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "18d84512ea9d483a8ad8fc1946624f5e",
+        "PhoneNumber": "1234567890",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "1e23598c89c44208869518993d76091e",
+        "PhoneNumber": "7890123456",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "26d715feb82d47b8a84766ed4c8b6ccd",
+        "PhoneNumber": "4567890123",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "60acffea47174a7c946ed3e2ef787139",
+        "PhoneNumber": "9012345678",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "61f8c1a11aa749f59aee791cc6311826",
+        "PhoneNumber": "6789012345",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "8c450585e1f04a63a14aaaadc7698a90",
+        "PhoneNumber": "3456789012",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "bbeea43fe3224c44b0daf9eb6453fa10",
+        "PhoneNumber": "8901234567",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      },
+      {
+        "PhoneNumberID": "bd6251b624734de69db4d4caad327414",
+        "PhoneNumber": "2344567890",
+        "PhoneTypeID": "work",
+        "PhoneTypeDescription": "Work Phone",
+        "Valid": true
+      }
+    ]
+  }
 }
 ```
 
@@ -2181,6 +2432,246 @@ Response:
       "ReorderUnit": "kg"
     }
   ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Get purchase orders (GET)
+
+`/api/purchase_order`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+Query:
+
+```
+base_uri/api/purchase_order
+```
+
+```js 
+await fetch(`base_uri/api/purchase_order`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "content": [
+    {
+      "InventoryID": "adfd1785c0f245b3bc501c694ed98131",
+      "Name": "flour",
+      "PurchaseOrderID": "d2bc94a6f6e3418aa2122f2a4500ff76",
+      "Date": "2024-10-05T23:08:36.973Z",
+      "OrderQuantity": 20000,
+      "Vendor": "Big Flour Power",
+      "PayableAmount": 2000,
+      "PayableDate": "2024-10-05T23:08:36.973Z",
+      "EmployeeID": "00123456789"
+    }
+  ]
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Get a purchase order by id (GET)
+
+`/api/purchase_order_id`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+purchase_order_id (str): the purchase order's id to get
+
+Query:
+
+```
+base_uri/api/purchase_order_id
+```
+
+```js 
+await fetch(`base_uri/api/purchase_order_id`,
+    {
+        method: 'GET',
+        headers: {
+            session_id: session_id,
+            purchase_order_id: purchase_order_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "content": {
+    "InventoryID": "adfd1785c0f245b3bc501c694ed98131",
+    "PurchaseOrderID": "d2bc94a6f6e3418aa2122f2a4500ff76",
+    "Name": "flour",
+    "ShelfLife": 365,
+    "ShelfLifeUnit": "days",
+    "ReorderAmount": 50,
+    "ReorderUnit": "kg",
+    "Date": "2024-10-05T23:08:36.973Z",
+    "OrderQuantity": 20000,
+    "Vendor": "Big Flour Power",
+    "PayableAmount": 2000,
+    "PayableDate": "2024-10-05T23:08:36.973Z",
+    "EmployeeID": "00123456789"
+  }
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Add a purchase order (POST)
+
+`/api/purchase_order`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+inventory_id (str): the inventory id to associate with this purchase order
+
+date (str): ISO 8601 format date string
+
+order_quantity (int|float|Number): the quantity of the order
+
+vendor (str): the name of the vendor
+
+payable_amount (int|float|Number): the payment amount for this particular order
+
+payable_date (str): ISO 8601 format date string
+
+Query:
+
+```
+base_uri/api/purchase_order
+```
+
+```js 
+// Date for the purchase order
+let test_date = new Date();
+
+await fetch(`base_uri/api/purchase_order`,
+    {
+        method: 'POST',
+        headers: {
+            session_id: session_id,
+            inventory_id: "<inventory_id>",
+            date: test_date.toISOString(),
+            order_quantity: "<order_quantity>",
+            vendor: "<vendor>",
+            payable_amount: "<payable_amount>",
+            payable_date: test_date.toISOString()
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "purchase_order_id": "d2bc94a6f6e3418aa2122f2a4500ff76"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Delete a purchase order by id (DELETE)
+
+`/api/purchase_order`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+purchase_order_id (str): the purchase order's id to delete
+
+Query:
+
+```
+base_uri/api/purchase_order
+```
+
+```js 
+await fetch(`base_uri/api/purchase_order`,
+    {
+        method: 'DELETE',
+        headers: {
+            session_id: session_id,
+            purchase_order_id: purchase_order_id
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
 }
 ```
 
