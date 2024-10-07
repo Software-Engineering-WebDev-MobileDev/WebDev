@@ -12,8 +12,6 @@ Account Related:
 
 [Token Bump (POST)](#token-bump-post)
 
-[User's own full information (GET)](#users-own-full-information-get)
-
 Account Information Related: 
 
 [User's own email addresses (GET)](#users-own-email-addresses-get)
@@ -31,6 +29,8 @@ Account Information Related:
 [Delete user's phone number (DELETE)](#delete-users-phone-number-delete)
 
 [Another user's phone numbers (GET)](#another-users-phone-numbers-get)
+
+[User's own full information (GET)](#users-own-full-information-get)
 
 User management:
 
@@ -242,6 +242,58 @@ await fetch("base_uri/api/token_bump",
         method: "POST",
         headers: {
             session_id: "<session_id>"
+        },
+    }
+    ).then(
+        (response) => {response.json();}
+    ).catch(() => {});
+```
+
+Response:
+
+```json
+{
+  "status": "success"
+}
+```
+
+Error (498):
+
+```json 
+{
+  "status": "error",
+  "reason": "Invalid or expired token"
+}
+```
+
+## Change a user's role (POST)
+
+`/api/user_role_change`
+
+### Arguments:
+
+(headers)
+
+session_id (str): the session id to use
+
+target_employee_id (str): the employee_id associated with the user to change the permissions of
+
+role (str): the role to give the user. Must be less than the current user's permission, and the target must have less permission than the user. Valid roles are: admin, manager, and employee
+
+Query:
+
+```
+base_uri/api/user_role_change
+```
+
+```js 
+await fetch("base_uri/api/user_role_change", 
+    {
+        method: "POST",
+        headers: {
+            session_id: "<session_id>",
+            target_employee_id: "<target_employee_id>",
+            role: "<admin|manager|employee>"
         },
     }
     ).then(
