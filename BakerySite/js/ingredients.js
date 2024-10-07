@@ -1,17 +1,4 @@
-/*! Ingredients 1.0.0
- */
-
-/**
- * @summary     Ingredients
- * @description Add, search and remove ingredients
- * @version     1.0.0
- * @author      Mikel Gonzalez
- * @contact     www.ingredients.net
- * @copyright   Mikel Gonzalez
- *
- */
-
- $(document).ready(function() {
+$(document).ready(function() {
     // Preview option on single click
     let clickTimeout;
     $('#btn').on('click', function() {

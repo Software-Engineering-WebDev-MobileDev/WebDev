@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+
+    <style>
+        /* Chrome, Safari, Edge, Opera */
+        .settings-box input::-webkit-outer-spin-button,
+        .settings-box input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        .settings-box input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+
+    <link href="images/BreadIcon.png" rel="icon" type="image/png"/><!--favicon next to website title-->
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/animate.min.css" rel="stylesheet"/>
+    <link href="css/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="css/dataTables.css" rel="stylesheet"/>
+    <link href="css/font.all.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/ingredients_icons.css">
+   
+</head>
+<body background={{ background }} style="background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+    <!--Navbar at the top of the page-->
+    <nav id="divNavbar" class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid col-6">
+            <a class="navbar-brand charcoal-text fs-1" href="index.html">
+                <img src="images/BreadIcon.png" alt="BakerySite logo" width="50" height="50">
+                <strong>Rolling Scones</strong>
+            </a>
+        </div>
+      <!--Navigation Button-->
+      <div class="col-6 d-flex justify-content-end">
+        <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi-list fs-1"> </i>
+        </button>
+    
+        <ul id="dropDownMenu" class="dropdown-menu dropdown-menu-end">
+            <li><button id="btnAbout" class="dropdown-item position-relative" type="button">About</button></li>
+            <li><button id="btnAccount" class="dropdown-item position-relative" type="button" style="display: none;">Account</button></li>
+            <li><button id="btnDashboard" class="dropdown-item position-relative" type="button" style="display: none;">Dashboard</button></li>
+            <li><button id="btnIngredient" class="dropdown-item position-relative" type="button" style="display: none;">Ingredient</button></li>
+            <li><button id="btnRecipe" class="dropdown-item position-relative" type="button" style="display: none;">Recipe</button></li>
+            <li><button id="btnTask" class="dropdown-item position-relative" type="button" style="display: none;">Task</button></li>
+            <li><button id="btnLogout" class="dropdown-item position-relative" type="button" style="display: none;">Logout</button></li>        
+        </ul>
+      </div>
+    </nav>
+
+    <style>
+        .err { background: #ffe6ee; border: 1px solid #b1395f; }
+        .emsg { color: #c12020; font-weight: bold; }
+    </style>   
+
+{% block content %}{% endblock %}
+
+    <!--START OF JAVASCRIPT-->
+
+    <script src="/js/jsource/jquery.js"></script>
+    <script src="/js/jsource/chart.js"></script>
+    <script src="/js/jsource/dataTables.js"></script>
+    <script src="/js/jsource/jsbootstrap.js"></script>
+    <script src="/js/jsource/sweetalert.js"></script>  
+    <script src="/js/buttons.js"></script>
+    <script src="/js/functions.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/settings.js"></script>
+    <script src="/js/temp.js"></script>
+    <script src="/js/ingredients.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,8 +7,13 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="background">
-        <div class="simple-card-container">
+    <div class="background"> -->
+{% extends 'base.html' %}
+{% set background = '' %}
+{% set title = 'Ingredients' %}
+
+{% block content %}
+        <!-- <div class="simple-card-container">
             <div class="simple-card">
                 <div class="simple-card-content">
                     <div class="icon">
@@ -76,14 +81,16 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        </div> -->
+        <script>displayIngredients();</script>
+{% endblock %}
+
+
+    <!-- </div>
 <body>
-    <div id="ingredientContainer"></div>
-
+    <div id="ingredientContainer"></div> -->
     <!--START OF JAVASCRIPT-->
-
-    <script src="/js/jsource/jquery.js"></script>
+<!--    <script src="/js/jsource/jquery.js"></script>
     <script src="/js/jsource/chart.js"></script>
     <script src="/js/jsource/dataTables.js"></script>
     <script src="/js/jsource/jsbootstrap.js"></script>
@@ -121,4 +128,4 @@
         }
     </script>
 </body>
-</html>
+</html> -->

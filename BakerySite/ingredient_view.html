@@ -1,17 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card_Icons</title>
-    <link rel="stylesheet" href="css/ingredients_icons.css">
-</head>
-<body>
-    <div class="card">
+{% extends 'base.html' %}
+{% set background = '' %}
+{% set title = 'Ingredient View' %} <!-- Change dynamically based on which ingredient was clicked on from ingredient.html -->
+<!-- <link rel="stylesheet" href="css/ingredients_icons.css"> -->
+
+{% block content %}
+    <!-- <div class="card">
         <div class="card-image">
             <img src="path/to/your/image.jpg" alt="Card Image">
+        </div> -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <div class="container mt-5">
+            <div class="row" id="ingredient-cards"></div>
         </div>
-        <div class="card-content">
+        
+        <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+        <!-- <div class="card-content">
              <h2 class="card-title">Recipes</h2>
              <p class="card-description">Try this recipe</p>
              <div class="card-icons">
@@ -20,6 +23,5 @@
                 <i class="fas fa-carrot"></i>
              </div>
         </div>
-    </div>
-</body>
-</html>
+    </div> -->
+{% endblock %}

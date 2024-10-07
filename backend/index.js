@@ -170,7 +170,7 @@ app.use(cookieParser());
 nunjucks.configure('../BakerySite', {
     autoescape: true,
     express: app
-})
+});
 // Make it the view engine
 app.set('views', path.join(__dirname, '../BakerySite'));
 app.set('view engine', 'html');
@@ -178,20 +178,25 @@ app.set('view engine', 'html');
 // Find all the HTML files
 let html_file_list = [];
 html_file_list = fs.readdirSync("../BakerySite");
+console.log(`HTML files found: ${html_file_list}`);
 
 /*
  * For frontend development!
  * It sets up the relevant renderers outside the compression middleware.
  */
 if (process.env.NODE_ENV.trim() === 'development') {
+    console.log("Development environment detected. Setting up renderers...");
     html_file_list.forEach((file) => {
         if (file.endsWith(".html")) {
+            console.log(`Setting up renderer for ${file}`);
             // Version with `.html`
             app.get(`/${file}`, (req, res) => {
+                console.log(`Rendering ${file}`);
                 res.render(`../BakerySite/${file}`);
             });
             // Version without `.html`
             app.get(`/${file.substring(0, file.length - 5)}`, (req, res) => {
+                console.log(`Rendering ${file}`);
                 res.render(`../BakerySite/${file}`);
             });
         }

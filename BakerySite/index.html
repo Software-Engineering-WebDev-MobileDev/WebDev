@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,8 +19,8 @@
         }
     </style>
 
-    <link href="images/BreadIcon.png" rel="icon" type="image/png"/><!--favicon next to website title-->
-    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="images/BreadIcon.png" rel="icon" type="image/png"/>--><!--favicon next to website title-->
+    <!-- <link href="css/bootstrap.min.css" rel="stylesheet"/>
     <link href="css/animate.min.css" rel="stylesheet"/>
     <link href="css/bootstrap-icons.css" rel="stylesheet"/>
     <link href="css/dataTables.css" rel="stylesheet"/>
@@ -28,17 +28,17 @@
     <link href="css/style.css" rel="stylesheet">
    
 </head>
-<body background="images/BreadBack.jfif" style="background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+<body background="images/BreadBack.jfif" style="background-repeat: no-repeat; background-size: cover; background-attachment: fixed;"> -->
     <!--Navbar at the top of the page-->
-    <nav id="divNavbar" class="navbar navbar-expand-lg navbar-custom">
+    <!-- <nav id="divNavbar" class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid col-6">
             <a class="navbar-brand charcoal-text fs-1" href="index.html">
                 <img src="images/BreadIcon.png" alt="BakerySite logo" width="50" height="50">
                 <strong>Rolling Scones</strong>
             </a>
-        </div>
+        </div> -->
       <!--Navigation Button-->
-      <div class="col-6 d-flex justify-content-end">
+      <!-- <div class="col-6 d-flex justify-content-end">
         <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi-list fs-1"> </i>
         </button>
@@ -58,8 +58,12 @@
     <style>
         .err { background: #ffe6ee; border: 1px solid #b1395f; }
         .emsg { color: #c12020; font-weight: bold; }
-    </style>    
+    </style>     -->
 
+{% extends 'base.html' %}
+{% set background = 'images/BreadBack.jfif' %}
+{% set title = 'Rolling Scones' %}
+{% block content %}
     <!-- Central Card -->
     <div class="d-flex align-items-center justify-content-center">
         <!--Login Form-->
@@ -214,12 +218,12 @@
             <button id="settingsLink" class="btn btn-link" onclick="openSettings()">
                 <i class="fas fa-cog"></i> Settings
             </button>
-        </div>
+        </div>-->
     </div>
-</div>-->
+    {% endblock %}
 
 <!-- Settings Modal -->
-<div id="settingsModal" class="modal settings-box" tabindex="-1">
+<!-- <div id="settingsModal" class="modal settings-box" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
@@ -229,9 +233,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                <div class="row">
+                <div class="row"> -->
                     <!-- Door Times Setting -->
-                    <div class="col-md-5">
+                    <!-- <div class="col-md-5">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Door Times</h5>
@@ -245,16 +249,16 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
 
                     <!-- Other Settings (Fan Temperature, Heater Temperature) -->
-                    <div id="otherSettingsContainer" class="col-md-7">
+                    <!-- <div id="otherSettingsContainer" class="col-md-7">
                         <div class="card h-100">
                             <div class="card-body">
                                 <h5 class="card-title">Other Settings</h5>
                                 <div class="row">
-                                    <!-- Fan Temperature Setting -->
-                                    <div class="col-sm-6">
+                                    Fan Temperature Setting -->
+                                    <!-- <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="fanTemperature">Fan Temperature (&deg;F):</label>
                                             <div class="input-group">
@@ -267,10 +271,10 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                     <!-- Heater Temperature Setting -->
-                                    <div class="col-sm-6">
+                                    <!-- <div class="col-sm-6">
                                         <div class="form-group">
                                             <label for="heaterTemperature">Heater Temperature (&deg;F):</label>
                                             <div class="input-group">
@@ -287,9 +291,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <!-- Door Status Setting -->
-                    <div class="row mt-md-0 mt-3" style="padding-left: 35px;">
+                    <!-- <div class="row mt-md-0 mt-3" style="padding-left: 35px;">
                         <div class="col-md-12 d-flex justify-content-center">
                             <div class="card border-top-0" style="width: 1600px;">
                                 <div class="card-body text-center">
@@ -311,10 +315,10 @@
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
     <!--Egg Modal (popup)-->
-    <div class="modal fade" id="eggModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="eggModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -333,11 +337,10 @@
                 </div>
             </div>
         </div>
-    </div>
-
+    </div> -->
     <!--START OF JAVASCRIPT-->
 
-    <script src="/js/jsource/jquery.js"></script>
+    <!-- <script src="/js/jsource/jquery.js"></script>
     <script src="/js/jsource/chart.js"></script>
     <script src="/js/jsource/dataTables.js"></script>
     <script src="/js/jsource/jsbootstrap.js"></script>
@@ -349,4 +352,4 @@
     <script src="/js/temp.js"></script>
     <script src="/js/ingredients.js"></script>
 </body>
-</html>
+</html> -->
