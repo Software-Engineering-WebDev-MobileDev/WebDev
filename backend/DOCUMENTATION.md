@@ -12,6 +12,8 @@ Account Related:
 
 [Token Bump (POST)](#token-bump-post)
 
+[Change a user's role (POST)](#change-a-users-role-post)
+
 Account Information Related: 
 
 [User's own email addresses (GET)](#users-own-email-addresses-get)
