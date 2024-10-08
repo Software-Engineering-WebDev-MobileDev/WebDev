@@ -98,6 +98,10 @@ username (str): username
 
 password (str): password
 
+email_address (str): optional parameter for adding an email address during account creation
+
+phone_number (str) optional parameter for adding a phone number during account creation
+
 ### Example
 
 Query:
@@ -116,6 +120,30 @@ await fetch("base_uri/api/create_account",
             last_name: test_last_name,
             username: test_username,
             password: test_password,
+        },
+    })
+    .then((result) => {
+        console.log(result);
+        return result;
+    })
+    .catch((e) => {
+        console.log(e);
+        return e;
+    });
+```
+
+```js 
+await fetch("base_uri/api/create_account",
+    {
+        method: "POST",
+        headers: {
+            employee_id: test_employee_id,
+            first_name: test_first_name,
+            last_name: test_last_name,
+            username: test_username,
+            password: test_password,
+            email_address: test_email_address,
+            phone_number: test_phone_number
         },
     })
     .then((result) => {

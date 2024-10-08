@@ -20,12 +20,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ~~Deployment~~
 
 ## [Unreleased]
+### Added
 - Added purchase order routes, tests, and documentation
 - Added primary phone and email types to the API
 - Added user profile endpoint for full user information
 - Added an overview of the repository to [README.md](./README.md)
 - Added user role change endpoint
 - Added better error logging to [login.js](./backend/routes/login.js)
+### Changed
+- Updated email and phone number option during account creation in the API
 
 ---
 
