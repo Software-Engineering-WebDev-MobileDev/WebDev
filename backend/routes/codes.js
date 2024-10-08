@@ -34,6 +34,7 @@ const return_498 = function (res, reason_for = "Invalid or expired token") {
 /**
  * Send an HTTP code 500 response.
  * @param res {express.Response} The response object to send error with.
+ * @param reason_for {String} Optional reason for the 500, just in case is might be user-caused.
  */
 const return_500 = function (res, reason_for = "The server is having a bad day. Please send encouraging words.") {
     res.status(500).send(
