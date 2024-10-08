@@ -105,7 +105,7 @@ app.post('/create_account', async (req, res) => {
                 }
             }).catch((e) => {
                 console.error(e);
-                can_use_phone = false;
+                // can_use_phone = false;
             });
             // Check for the given email in the database
             let email_query = database.executeQuery(
@@ -116,7 +116,7 @@ app.post('/create_account', async (req, res) => {
                 }
             }).catch((e) => {
                 console.error(e);
-                can_use_email = false;
+                // can_use_email = false;
             });
 
             await role_query;
