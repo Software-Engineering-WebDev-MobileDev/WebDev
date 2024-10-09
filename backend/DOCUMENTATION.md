@@ -97,7 +97,6 @@ last_name (str): User's last name
 username (str): username
 
 password (str): password
-
 email_address (str): optional parameter for adding an email address during account creation
 
 phone_number (str) optional parameter for adding a phone number during account creation

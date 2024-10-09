@@ -20,6 +20,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ~~Deployment~~
 
 ## [Unreleased]
+
+## 2024-10-09
+
+## Added
+- New code added to indicate what page the user is on
+- Refreshing now keeps you on the page you are supposed to be
+
+## Changed
+- Switched all instaces of sessionStorage to localStorage
+- Commented out checkEmail until it works
+- Switched all instances of previous sessionID to session_id to work with new backend
+
+## Fixed
+- Multiple lines of code in main.js that had no purpose (like validatePassword which doesn't exist)
+
+## 2024-10-08
+
 ### Added
 - Added purchase order routes, tests, and documentation
 - Added primary phone and email types to the API
