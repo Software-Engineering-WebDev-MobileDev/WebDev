@@ -4,7 +4,8 @@ parameters: location
 purpose: This function keeps track of what page the user is on
 */
 function setUserLocation(location) {
-    sessionStorage.setItem('userLoc', location);
+    localStorage.setItem('userLoc', location);
+    
 }
 
 /*
@@ -222,4 +223,31 @@ function validateField(element, condition, errorMsg) {
     }
 }
 
+// Email in-use check (using AJAX for server-side verification simulation)
+/*function checkEmailInUse(strEmail) {
+    // Simulating an AJAX request for duplicate email check
+    $.ajax({
+        url: '/api/add_user_email', // Example endpoint
+        method: 'POST',
+        headers: { 
+            'email_address': strEmail,  // Send email in the headers
+            //'session_id': sessionID, // session ID
+            'type': 'main' // Email type
+        },
+        success: function (response) {
+            if (response.status === 'success') {
+                validateField('#txtRegisterEmail', true, "");
+            } else if (response.reason === 'Email is already in use.') {
+                validateField('#txtRegisterEmail', false, "Email is already in use.");
+            } else {
+                validateField('#txtRegisterEmail', false, response.reason || "Unknown error.");
+            }
+        },
+        error: function () {
+            validateField('#txtRegisterEmail', false, "Unable to validate email. Please try again.");
+        }
+    });
+}
+
+*/
 

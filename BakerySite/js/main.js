@@ -2,9 +2,9 @@ init_values();
 
 $(document).ready(function() {
     // Check if SessionID exists in localStorage
-    var sessionID = localStorage.getItem('SessionID');
+    var sessionID = localStorage.getItem('session_id');
     if (sessionID) {
-        sessionStorage.setItem('SessionID', sessionID);
+        //localStorage.setItem('session_id', sessionID);
         
         $('#divLogin').hide();
         $('#divDashboard').slideDown();
@@ -55,7 +55,7 @@ document.getElementById('txtLoginUsername').addEventListener('focusout', functio
 });
 
 document.getElementById('txtLoginPassword').addEventListener('input', function() {
-  validatePassword(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
+  checkPasswordRequirements(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
 });
 
 document.getElementById('txtRegisterUsername').addEventListener('focusout', function() {
@@ -63,11 +63,11 @@ document.getElementById('txtRegisterUsername').addEventListener('focusout', func
 });
 
 document.getElementById('txtRegisterPassword').addEventListener('input', function() {
-  validatePassword(document.getElementById('txtRegisterPassword'), document.getElementById('passwordRequirements'));
+  checkPasswordRequirements(document.getElementById('txtRegisterPassword'), document.getElementById('passwordRequirements'));
 });
 
 document.getElementById('txtRegisterEmail').addEventListener('focusout', function() {
-  checkEmail(document.getElementById('txtRegisterEmail'), document.getElementById('errRegisterEmail'));
+  check(document.getElementById('txtRegisterEmail'), document.getElementById('errRegisterEmail'));
 });
 
 document.getElementById('txtRegisterFirstName').addEventListener('focusout', function() {
@@ -75,7 +75,7 @@ document.getElementById('txtRegisterFirstName').addEventListener('focusout', fun
 });
 
 document.getElementById('txtRegisterLastName').addEventListener('focusout', function() {
-  checkEmail(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastName'));
+  check(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastName'));
 });
 
 // Get the modal
@@ -98,5 +98,53 @@ if (event.target == modal) {
 modal.style.display = "none";
 }
 }
+
+sessionStorage.setItem('refresh', true);
+
+if (sessionStorage.getItem('refresh')) 
+{
+  console.log('yes');
+}
+else{
+  sesssionStorage.setItem('refresh', true)
+  switch (userLoc) {
+    case 'dashboard':
+    case 'registration':
+    case 'login':
+        window.location.href = 'index.html'
+        console.log(userLoc);
+        setUserLocation(userLoc);
+        break;
+    case 'ingredient':
+        window.location.href = 'ingredient.html'
+        console.log(userLoc);
+        setUserLocation(userLoc);
+        break;
+    case 'account':          
+        window.location.href = 'account.html'
+        console.log(userLoc);
+        setUserLocation(userLoc);
+        break;
+    case 'dashboard':          
+        window.location.href = 'dashboard.html'
+        console.log(userLoc);
+        setUserLocation(userLoc);
+        break;
+    case 'recipe':          
+        window.location.href = 'recipe.html'
+        console.log(userLoc);
+        setUserLocation(userLoc);
+        break;
+    case 'task':          
+        window.location.href = 'task.html'
+        console.log(userLoc);
+        setUserLocation(userLoc);
+        break;
+    default:
+        break;
+}
+}
+
+
 
 
