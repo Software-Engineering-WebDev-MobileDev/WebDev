@@ -39,15 +39,14 @@
         </div>
       <!--Navigation Button-->
       <div class="col-6 d-flex justify-content-end">
-        <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle" type="button" style="display: none;" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi-list fs-1"> </i>
         </button>
     
         <ul id="dropDownMenu" class="dropdown-menu dropdown-menu-end">
-            <li><button id="btnAbout" class="dropdown-item position-relative" type="button">About</button></li>
             <li><button id="btnAccount" class="dropdown-item position-relative" type="button" style="display: none;">Account</button></li>
-            <li><button id="btnDashboard" class="dropdown-item position-relative" type="button" style="display: none;">Dashboard</button></li>
-            <li><button id="btnIngredient" class="dropdown-item position-relative" type="button" style="display: none;">Ingredient</button></li>
+            <!--<li><button id="btnErrorPage" class="dropdown-item position-relative" type="button" style="display: none;">Dashboard</button></li>-->
+            <li><button id="btnIngredient" class="dropdown-item position-relative" type="button" style="display: none;">Inventory</button></li>
             <li><button id="btnRecipe" class="dropdown-item position-relative" type="button" style="display: none;">Recipe</button></li>
             <li><button id="btnTask" class="dropdown-item position-relative" type="button" style="display: none;">Task</button></li>
             <li><button id="btnLogout" class="dropdown-item position-relative" type="button" style="display: none;">Logout</button></li>        
@@ -147,10 +146,12 @@
                                 <div id="errRegisterPhone" class="emsg"></div>
                             </div>
                         </div>
-                        <div class="form-floating mb-3" > <!--Employee ID-->
-                            <input id="txtRegisterEmployeeId" class="form-control" placeholder="Employee ID">
-                            <label for="txtRegisterEmployeeId" class="form-label text-black" aria-label="Employee ID">Employee ID</label>
-                        <div id="errRegisterEmployeeId" class="emsg"></div>
+                        <div class="col">
+                            <div class="form-floating mb-3" > <!--Employee ID-->
+                                <input id="txtRegisterEmployeeId" class="form-control" placeholder="Employee ID">
+                                <label for="txtRegisterEmployeeId" class="form-label text-black" aria-label="Employee ID">Employee ID</label>
+                            <div id="errRegisterEmployeeId" class="emsg"></div>
+                            </div>
                         </div>
                     </div>
                     <button id="btnRegister" type="button" class="btn btn-primary charcoal-text col-12 mt-4"><strong>Register</strong></button>
@@ -163,44 +164,14 @@
             </div>
         </div>
 
-        <!--About Card-->
-        <div id="divAbout" class="card col-10 col-md-8 col-lg-6 mt-3" style="display: none;">
+        <!--Error Handler Page -->
+        <div id="divErrorPage" class="card col-10 col-md-8 col-lg-6 mt-3" style="display: none;">
             <div class="card-header">
-                <h2 class="text-center">About</h2>
+                <h2 class="text-center font-weight-bold;">Error</h2>
             </div>
 
             <div class="card-body">
-                 <!-- Deprecated About Page, can be repurposed later
-
-                <p>Welcome to the web app for Smart Chicken Coops by SwollenHippo! You can use this app to register with your Coop ID and interact with your Smart Coop.</p>
-                <h3>Programmers</h3>
-                <ul>
-                    <li>Ethan Dixon</li>
-                    <li>Gage Jones</li>
-                    <li>Colton Sellner</li>
-                    <li>Kevin Ulrich</li>
-                    <li>Sam Warren</li>
-                </ul>
-                <h3>Product Owner</h3>
-                <p>Ben Burchfield</p> -->
-                <div class="text-center">
-                    <span id="btnReturnLogin" class="brown-text" role="button" tabindex="0"><strong>Return</strong></span>
-                </div>
-            </div>
-        </div>
-
-        <!--Dashboard -->
-        <div id="divDashboard" class="card col-10 col-md-8 col-lg-6 mt-3" style="display: none;">
-            <div class="card-header">
-                <h2 class="text-center font-weight-bold;">Dashboard</h2>
-            </div>
-
-            <div class="card-body">
-                <div class="row row-cols-2 mb-3">
-                    <div class="col">
-                        <h3 class="text-center">Hey, no looking yet. We're workin' here.</h3>
-                    </div>
-                </div>
+                        <h3 class="text-center">You shouldn't be here, let the developers know if you make it here.</h3>
             </div>
         </div>
                     <!--  Dashboard elements  <h3 class="text-center">Eggs</h3>
