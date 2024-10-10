@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2024-10-10
+- Create Templates using Nunjucks
+- Templatize account, index, ingredient_view, ingredient, recipe, task pages
+- Created base.html and base_form.html to hold templates
+
 ## 2024-10-09
 
 ## Added

@@ -8,6 +8,8 @@
 </head>
 <body>
     <div class="background"> -->
+<!-- Ingredient
+ Purpose: View all ingredients in the form of cards dynamcially created based on cards in database -->
 {% extends 'base.html' %}
 {% set background = '' %}
 {% set title = 'Ingredients' %}
@@ -82,7 +84,13 @@
                 </div>
             </div>
         </div> -->
-        <script>displayIngredients();</script>
+        <!-- <script>displayIngredients();</script> -->
+    <div class="container mt-5">
+        <div class="row" id="ingredient-cards"></div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
 {% endblock %}
 
 
