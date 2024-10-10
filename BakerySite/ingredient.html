@@ -1,15 +1,4 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ingredient Inventory</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    <div class="background"> -->
-<!-- Ingredient
- Purpose: View all ingredients in the form of cards dynamcially created based on cards in database -->
+<!-- Purpose: View all ingredients in the form of cards dynamcially created based on cards in database -->
 {% extends 'base.html' %}
 {% set background = '' %}
 {% set title = 'Ingredients' %}
@@ -92,48 +81,3 @@
     <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 {% endblock %}
-
-
-    <!-- </div>
-<body>
-    <div id="ingredientContainer"></div> -->
-    <!--START OF JAVASCRIPT-->
-<!--    <script src="/js/jsource/jquery.js"></script>
-    <script src="/js/jsource/chart.js"></script>
-    <script src="/js/jsource/dataTables.js"></script>
-    <script src="/js/jsource/jsbootstrap.js"></script>
-    <script src="/js/jsource/sweetalert.js"></script>  
-    <script src="/js/buttons.js"></script>
-    <script src="/js/functions.js"></script>
-    <script src="/js/main.js"></script>
-    <script src="/js/settings.js"></script>
-    <script src="/js/temp.js"></script>
-    <script>
-        fetchIngredients();
-    </script>
-    <script>
-        async function fetchIngredients() {
-            try {
-                const response = await fetch('#get-ingredients-short-get'); // Replace with your actual API endpoint
-                const ingredients = await response.json();
-                createCards(ingredients);
-            } catch (error) {
-                console.error('Error fetching ingredients:', error);
-            }
-        }
-        
-        function createCards(data) {
-            const container = document.getElementById('cardContainer');
-            data.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.textContent = item.name;
-                card.addEventListener('click', () => {
-                    window.location.href = `ingredient.html?id=${item.id}`;
-                });
-                container.appendChild(card);
-            });
-        }
-    </script>
-</body>
-</html> -->
