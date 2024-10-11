@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Create Templates using Nunjucks
 - Templatize account, index, ingredient_view, ingredient, recipe, task pages
 - Created base.html and base_form.html to hold templates
+- Known bug: hamburger menu only displays on index.html
 
 ## [0.2.1] - 2024-10-10
 
