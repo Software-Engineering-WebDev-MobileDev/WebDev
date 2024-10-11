@@ -208,24 +208,27 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     // Div for buttons
     const buttonDiv = document.createElement('div');
     buttonDiv.align = "center";
+    buttonDiv.style.display = "flex";
+    buttonDiv.style.alignItems = "flex-end";
+    buttonDiv.style.flexDirection = "row";
+    buttonDiv.style.justifyContent = "space-evenly";
 
     // Update task button
     const updateButton = document.createElement('button');
     updateButton.type = "button";
     updateButton.className = "form-control btn btn-primary col-12 mt-4";
-    updateButton.style.width = "50%";
+    updateButton.style.width = "40%";
     updateButton.style.marginBottom = "1em";
     updateButton.id = "updateTaskButton";
     updateButton.innerText = "Update Task";
     buttonDiv.appendChild(updateButton);
-    buttonDiv.appendChild(lineBreak.cloneNode());
     // TODO: Add event listener for update button
 
     // Mark task done button
     const doneButton = document.createElement('button');
     doneButton.type = "button";
     doneButton.className = "form-control btn btn-primary col-12 mt-4";
-    doneButton.style.width = "50%";
+    doneButton.style.width = "40%";
     doneButton.style.marginBottom = "1em";
     doneButton.id = "updateTaskButton";
     doneButton.innerText = "Mark As Done"
@@ -234,6 +237,8 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     // TODO: Add event listener for done button
 
     // Back button
+    const backButtonDiv = document.createElement('div');
+    backButtonDiv.align = "center";
     const backButtonSpan = document.createElement('span');
     backButtonSpan.id = "taskViewBackButton";
     backButtonSpan.className = "brown-text";
@@ -250,8 +255,10 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
             taskBox.hidden = false;
         }
     );
-    buttonDiv.appendChild(backButtonSpan);
+
     taskViewer.appendChild(buttonDiv);
+    backButtonDiv.appendChild(backButtonSpan);
+    taskViewer.appendChild(backButtonDiv);
 
     taskViewer.hidden = false;
     addTaskButton.hidden = true;
@@ -260,6 +267,7 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
 
 async function renderTasks() {
     try {
+        const overDueTaskColor = "#c00";
         if (taskList.length === 0) {
             taskList = await fetchTasks();
         }
@@ -302,7 +310,7 @@ async function renderTasks() {
                 name.innerText = task["RecipeName"];
                 name.style.textAlign = "center";
                 if (whenDue < now) {
-                    name.style.color = "red";
+                    name.style.color = overDueTaskColor;
                 }
                 taskEntry.appendChild(name);
 
@@ -311,7 +319,7 @@ async function renderTasks() {
                 amount.innerText = task["AmountToBake"];
                 amount.style.textAlign = "center";
                 if (whenDue < now) {
-                    amount.style.color = "red";
+                    amount.style.color = overDueTaskColor;
                 }
                 taskEntry.appendChild(amount);
 
@@ -320,7 +328,7 @@ async function renderTasks() {
                 status.innerText = task["Status"];
                 status.style.textAlign = "center";
                 if (whenDue < now) {
-                    status.style.color = "red";
+                    status.style.color = overDueTaskColor;
                 }
                 taskEntry.appendChild(status);
 
@@ -329,7 +337,7 @@ async function renderTasks() {
                 assignmentDate.innerText = task["AssignmentDate"].substring(0, 10);
                 assignmentDate.style.textAlign = "center";
                 if (whenDue < now) {
-                    assignmentDate.style.color = "red";
+                    assignmentDate.style.color = overDueTaskColor;
                 }
                 taskEntry.appendChild(assignmentDate);
 
@@ -339,7 +347,7 @@ async function renderTasks() {
                     dueDate.innerText = task["DueDate"].substring(0, 10);
                     dueDate.style.textAlign = "center";
                     if (whenDue < now) {
-                        dueDate.style.color = "red";
+                        dueDate.style.color = overDueTaskColor;
                     }
                     taskEntry.appendChild(dueDate);
                 }
