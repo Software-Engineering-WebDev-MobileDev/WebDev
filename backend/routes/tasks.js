@@ -249,8 +249,56 @@ app.put("/update_task/:taskID", async (req, res) => {
         console.error(e);
         return_500(res);
     });
-
-
 });
+
+app.post('/task_complete', (req, res) => {
+    try {
+        const session_id = req.headers["session_id"];
+        const task_id = req.headers["task_id"];
+
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            );
+        }
+        // TODO: Drop tables and revalidate with hyphen removed from the regex and length changed to 32
+        else if (!task_id.match(/^[\w-]{0,36}$/)) {
+            return_400(res, "Invalid task_id supplied");
+        }
+        else {
+            database.sessionToEmployeeID(session_id).then((employee_id) => {
+                if (employee_id) {
+                    database.executeQuery(
+                        `UPDATE tblTasks SET Status = 'Completed' WHERE TaskID = '${task_id}'; 
+                             INSERT INTO tblTaskStatusAudit (StatusAuditID, TaskID, OldStatus, NewStatus, StatusChangedByEmployeeID) VALUES ('${database.gen_uuid()}', '${task_id}', 'Pending', 'Completed', '${employee_id}')`
+                    ).then((result) => {
+                        res.status(200).send(
+                            {
+                                status: "success"
+                            }
+                        );
+                    }).catch((e) => {
+                        console.error(e);
+                        return_500(res);
+                    });
+                }
+                else {
+                    return_498(res);
+                }
+            })
+        }
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
+        }
+        else {
+            return_500(res);
+        }
+    }
+})
 
 module.exports = app;
