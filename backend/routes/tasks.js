@@ -57,7 +57,7 @@ app.post('/add_task', async (req, res) => {
 });
 
 app.get("/tasks", async (req, res) => {
-    const query = `SELECT TaskID, tT.RecipeID, RecipeName, AmountToBake, Status, AssignmentDate, DueDate
+    const query = `SELECT TaskID, tT.RecipeID, AssignedEmployeeID AS EmployeeID, RecipeName, AmountToBake, Status, AssignmentDate, DueDate
                    FROM tblTasks AS tT
                             INNER JOIN tblRecipes AS tR ON tT.RecipeID = tR.RecipeID
                    ORDER BY DueDate`;
