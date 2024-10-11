@@ -56,7 +56,7 @@ app.post('/add_task', async (req, res) => {
         return_400(res, "Missing AssignedEmployeeID in body")
     }
     // VARCHAR(MAX) is up to 2^31-1 bytes, so the bee movie script shouldn't break this
-    else if (comments !== undefined && !comments.match(/^[\w\s.,*/]+$/) && comments.length < 2 ** 31 - 1) {
+    else if (comments !== undefined && !comments.match(/^[\w\s\r.,\-!:;?+=#@$%&^()\[\]"*\/]+$/g) && comments.length < 2 ** 31 - 1) {
         return_400(res,
             "Invalid comments supplied. Make sure you're validating that correctly before sending it."
         );
