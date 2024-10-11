@@ -31,6 +31,16 @@
     <!-- DO NOT REMOVE! -->
     <style>
         [data-href] { cursor: pointer; }
+        @media (max-width: 767px) {
+            .task-form {
+                width: 100%;
+            }
+        }
+        @media (min-width: 768px) {
+            .task-form {
+                width: 80%;
+            }
+        }
     </style>
 
 </head>
@@ -51,14 +61,20 @@
     </table>
 </div>
 
-<div id="taskFormContainer" class="mw-100" hidden style="display: block">
+<div
+        id="taskFormContainer"
+        class="container-fluid task-form"
+        hidden
+        style="align-content: center"
+>
+    <h1>Create Task</h1>
     <form>
         <!-- Task creation form -->
         <label
                 for="recipeIDForm"
                 class="control-label"
                 id="recipeIDFormLabel"
-        >Recipe</label>
+        >Recipe:</label>
         <select
                 class="form-control"
                 id="recipeIDForm"
@@ -73,7 +89,7 @@
                 for="amountToBake"
                 class="control-label"
                 id="amountToBakeLabel"
-        >Total Amount</label>
+        >Total Amount:</label>
         <input
                 id="amountToBake"
                 class="form-control"
@@ -88,7 +104,7 @@
         <label
                 for="dueDate"
                 class="control-label"
-        >Due Date</label>
+        >Due Date:</label>
         <input
                 type="date"
                 id="dueDate"
@@ -99,7 +115,7 @@
 
         <label
                 for="assignedEmployeeID"
-        >Assignee</label>
+        >Assignee:</label>
         <input
                 type="text"
                 id="assignedEmployeeID"
@@ -112,6 +128,15 @@
                 pattern="\w{1,50}"
                 title="Employee id should be 1-50 letters or numbers"
         >
+        <label for="taskNotes">Notes:</label><br>
+        <textarea
+            type="text"
+            id="taskNotes"
+            maxlength="255"
+            minlength="0"
+            class="form-control"
+            placeholder="TODO: Make this do something"
+            ></textarea>
         <br>
         <div align="center">
             <button
@@ -120,8 +145,17 @@
                 style="width: 50%"
                 id="submitTaskButton"
             >Submit</button>
+            <br>
+            <span
+                    id="taskFormBackButton"
+                    class="brown-text"
+                    role="button"
+                    tabindex="0">
+                <strong>Back</strong>
+            </span>
         </div>
     </form>
+
 </div>
 
 <!-- TODO: Make this templated except for script(s) needed for this endpoint. -->
@@ -137,4 +171,5 @@
 <script src="js/temp.js"></script>
 <script src="js/ingredients.js"></script>
 <script src="js/tasks.js"></script>
+
 </body>

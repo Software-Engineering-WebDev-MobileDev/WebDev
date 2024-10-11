@@ -42,6 +42,8 @@ const assignedEmployeeID = document.getElementById('assignedEmployeeID');
 
 const submitTaskButton = document.getElementById('submitTaskButton');
 
+const taskFormBackButton = document.getElementById('taskFormBackButton');
+
 async function fetchTasks() {
     if (sessionID) {
         return fetch("/api/tasks",
@@ -328,3 +330,15 @@ submitTaskButton.addEventListener(
             );
     }
 );
+
+taskFormBackButton.addEventListener(
+    'mouseup',
+    () => {
+        // Hide the form
+        taskFormContainer.hidden = true;
+
+        // Show the rest of the interface
+        taskBox.hidden = false;
+        addTaskButton.hidden = false;
+    }
+)
