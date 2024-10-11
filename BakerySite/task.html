@@ -1,2 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <!-- Should replace this with the templated version of it -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Scones</title>
+
+    <style>
+        /* Chrome, Safari, Edge, Opera */
+        .settings-box input::-webkit-outer-spin-button,
+        .settings-box input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        .settings-box input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+
+    <link href="images/BreadIcon.png" rel="icon" type="image/png"/><!--favicon next to website title-->
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/animate.min.css" rel="stylesheet"/>
+    <link href="css/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="css/dataTables.css" rel="stylesheet"/>
+    <link href="css/font.all.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet">
+
+    <!-- DO NOT REMOVE! -->
+    <style>
+        [data-href] { cursor: pointer; }
+    </style>
+
+</head>
+<body>
+<!--
+ Definitely will need to add the nav bar and whatever else from the main page that Gage has added.
+ So, TODO: Nav bar and such
+ -->
+
+<div style="align-content: center">
+    <label for="taskAddButton"></label>
+    <button class="btn btn-primary col-12 mt-4" id="taskAddButton" name="taskAddButton" type="button">Add a task</button>
+</div>
+
+<div>
+    <table id="taskContainer" class="table">
+        <!-- Tasks go here -->
+    </table>
+</div>
+
+<div id="taskFormContainer" class="mw-100" hidden style="display: block">
+    <form>
+        <!-- Task creation form -->
+        <label
+                for="recipeIDForm"
+                class="control-label"
+                id="recipeIDFormLabel"
+        >Recipe</label>
+        <select
+                class="form-control"
+                id="recipeIDForm"
+                name="recipeIDForm"
+                required
+                aria-required="true"
+        >
+            <!-- Recipes go here from JS -->
+        </select>
+
+        <label
+                for="amountToBake"
+                class="control-label"
+                id="amountToBakeLabel"
+        >Total Amount</label>
+        <input
+                id="amountToBake"
+                class="form-control"
+                placeholder="0"
+                type="number"
+                max="999999999.99"
+                min="1"
+                required
+                aria-required="true"
+        >
+
+        <label
+                for="dueDate"
+                class="control-label"
+        >Due Date</label>
+        <input
+                type="date"
+                id="dueDate"
+                required
+                aria-required="true"
+                class="form-control"
+        >
+
+        <label
+                for="assignedEmployeeID"
+        >Assignee</label>
+        <input
+                type="text"
+                id="assignedEmployeeID"
+                maxlength="50"
+                minlength="1"
+                class="form-control"
+                required
+                aria-required="true"
+                placeholder="Type assignee's employee id..."
+                pattern="\w{1,50}"
+                title="Employee id should be 1-50 letters or numbers"
+        >
+        <br>
+        <div align="center">
+            <button
+                type="button"
+                class="form-control"
+                style="width: 50%"
+                id="submitTaskButton"
+            >Submit</button>
+        </div>
+    </form>
+</div>
+
+<!-- TODO: Make this templated except for script(s) needed for this endpoint. -->
+<script src="/js/jsource/jquery.js"></script>
+<script src="/js/jsource/chart.js"></script>
+<script src="/js/jsource/dataTables.js"></script>
+<script src="/js/jsource/jsbootstrap.js"></script>
+<script src="/js/jsource/sweetalert.js"></script>
+<script src="/js/buttons.js"></script>
+<script src="/js/functions.js"></script>
+<!--<script src="/js/main.js"></script>-->
+<script src="/js/settings.js"></script>
+<script src="/js/temp.js"></script>
+<script src="/js/ingredients.js"></script>
+<script src="/js/tasks.js"></script>
+</body>
