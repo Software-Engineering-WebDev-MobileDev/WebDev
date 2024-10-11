@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% set background = 'images/BreadBack.jfif' %}
-{% set title = 'Rolling Scones' %}
+{% set title = 'The Rolling Scones' %}
 {% block content %}
     <!-- Central Card -->
     <div class="d-flex align-items-center justify-content-center">
@@ -89,10 +89,12 @@
                                 <div id="errRegisterPhone" class="emsg"></div>
                             </div>
                         </div>
-                        <div class="form-floating mb-3" > <!--Employee ID-->
-                            <input id="txtRegisterEmployeeId" class="form-control" placeholder="Employee ID">
-                            <label for="txtRegisterEmployeeId" class="form-label text-black" aria-label="Employee ID">Employee ID</label>
-                        <div id="errRegisterEmployeeId" class="emsg"></div>
+                        <div class="col">
+                            <div class="form-floating mb-3" > <!--Employee ID-->
+                                <input id="txtRegisterEmployeeId" class="form-control" placeholder="Employee ID">
+                                <label for="txtRegisterEmployeeId" class="form-label text-black" aria-label="Employee ID">Employee ID</label>
+                            <div id="errRegisterEmployeeId" class="emsg"></div>
+                            </div>
                         </div>
                     </div>
                     <button id="btnRegister" type="button" class="btn btn-primary charcoal-text col-12 mt-4"><strong>Register</strong></button>
@@ -105,44 +107,15 @@
             </div>
         </div>
 
-        <!--About Card-->
-        <div id="divAbout" class="card col-10 col-md-8 col-lg-6 mt-3" style="display: none;">
+        <!--Error Handler Page -->
+        <div id="divErrorPage" class="card col-10 col-md-8 col-lg-6 mt-3" style="display: none;">
             <div class="card-header">
-                <h2 class="text-center">About</h2>
+                <h2 class="text-center font-weight-bold;">Error</h2>
             </div>
 
             <div class="card-body">
-                <div class="text-center">
-                    <span id="btnReturnLogin" class="brown-text" role="button" tabindex="0"><strong>Return</strong></span>
-                </div>
-            </div>
-        </div>
-
-        <!--Dashboard -->
-        <div id="divDashboard" class="card col-10 col-md-8 col-lg-6 mt-3" style="display: none;">
-            <div class="card-header">
-                <h2 class="text-center font-weight-bold;">Dashboard</h2>
-            </div>
-
-            <div class="card-body">
-                <div class="row row-cols-2 mb-3">
-                    <div class="col">
-                        <h3 class="text-center">Hey, no looking yet. We're workin' here.</h3>
-                    </div>
-                </div>
+                        <h3 class="text-center">You shouldn't be here, let the developers know if you make it here.</h3>
             </div>
         </div>
     </div>
     {% endblock %}
-    <script src="/js/jsource/chart.js"></script>
-    <script src="/js/jsource/dataTables.js"></script>
-    <script src="/js/jsource/jsbootstrap.js"></script>
-    <script src="/js/jsource/sweetalert.js"></script>  
-    <script src="/js/buttons.js"></script>
-    <script src="/js/functions.js"></script>
-    <script src="/js/main.js"></script>
-    <script src="/js/settings.js"></script>
-    <script src="/js/temp.js"></script>
-    <script src="/js/ingredients.js"></script>
-</body>
-</html> -->
