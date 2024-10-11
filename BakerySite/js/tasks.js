@@ -106,6 +106,20 @@ async function fetchRecipes() {
     }
 }
 
+async function markComplete(sessionID, taskID) {
+    return fetch('/api/task_complete', {
+        method: "POST",
+        headers: {
+            session_id: sessionID,
+            task_id: taskID
+        }
+    }).then(async (result) => {
+        console.log(await result.json())
+    }).catch((e) => {
+        console.error(e);
+    })
+}
+
 async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     // Clear any previous contents of the task viewer
     taskViewer.innerHTML = '';
@@ -210,7 +224,7 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     taskNotes.minLength = 0;
     taskNotes.className = "form-control";
     if (task["Comments"]) {
-        taskNotes.value = task["Comments"];
+        taskNotes.value = task["Comments"].replace(/&quot;/g, '\'');
     }
     else {
         taskNotes.placeholder = "No notes yet...";
@@ -249,7 +263,21 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     doneButton.style.width = "40%";
     doneButton.style.marginBottom = "1em";
     doneButton.id = "updateTaskButton";
-    doneButton.innerText = "Mark As Done"
+    doneButton.innerText = "Mark As Done";
+    doneButton.addEventListener(
+        'mouseup',
+        async () => {
+            await markComplete(sessionID, task["TaskID"]);
+
+            // Get the task list again
+            taskList = [];
+            await renderTasks();
+
+            taskViewer.hidden = true;
+            addTaskButton.hidden = false;
+            taskBox.hidden = false;
+        }
+    )
     buttonDiv.appendChild(doneButton);
     buttonDiv.appendChild(lineBreak.cloneNode());
     // TODO: Add event listener for done button
@@ -517,7 +545,7 @@ async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeI
                 amountToBake.value,
                 new Date(dueDate.value).toISOString(),
                 assignedEmployeeID.value,
-                taskNotes.value
+                taskNotes.value.replace(/'/g, '&quot;')
             );
 
             if (result !== "error") {
