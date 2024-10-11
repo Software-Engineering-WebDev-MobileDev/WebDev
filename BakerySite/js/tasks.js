@@ -44,6 +44,8 @@ const dueDate = document.getElementById('dueDate');
 // Assigned employee id
 const assignedEmployeeID = document.getElementById('assignedEmployeeID');
 
+const taskNotes = document.getElementById('taskNotes');
+
 // Button to send the task to the backend
 const submitTaskButton = document.getElementById('submitTaskButton');
 
@@ -115,7 +117,6 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     taskViewer.appendChild(titleElement);
 
     // Make the recipe element
-    // TODO: Make this clickable and redirect to the appropriate recipe page
     const recipeLabel = document.createElement('label');
     recipeLabel.htmlFor = "recipeClick";
     recipeLabel.className = "control-label";
@@ -126,6 +127,15 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     recipeRedirectButton.innerText = "Go to recipe";
     recipeRedirectButton.type = "button";
     recipeRedirectButton.className = "form-control";
+    recipeRedirectButton.addEventListener(
+        // mousedown?
+        'mouseup',
+        () => {
+            // TODO: Make this redirect to the appropriate recipe page
+            // window.location = `/recipes?recipe=${task["RecipeID"]}`
+            console.log(`Should be going to /recipes?recipe=${task["RecipeID"]}`)
+        }
+    )
     taskViewer.appendChild(recipeRedirectButton);
     taskViewer.appendChild(lineBreak.cloneNode());
 
@@ -199,9 +209,12 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     taskNotes.maxLength = 255;
     taskNotes.minLength = 0;
     taskNotes.className = "form-control";
-    // TODO: Fetch this
-    // taskNotes.value = task[""];
-    taskNotes.placeholder = "TODO: Fetch this...";
+    if (task["Comments"]) {
+        taskNotes.value = task["Comments"];
+    }
+    else {
+        taskNotes.placeholder = "No notes yet...";
+    }
     taskViewer.appendChild(taskNotes);
     taskViewer.appendChild(lineBreak.cloneNode());
 
@@ -211,7 +224,7 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     buttonDiv.style.display = "flex";
     buttonDiv.style.alignItems = "flex-end";
     buttonDiv.style.flexDirection = "row";
-    buttonDiv.style.justifyContent = "space-evenly";
+    buttonDiv.style.justifyContent = "center";
 
     // Update task button
     const updateButton = document.createElement('button');
@@ -223,6 +236,11 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     updateButton.innerText = "Update Task";
     buttonDiv.appendChild(updateButton);
     // TODO: Add event listener for update button
+
+    // Button spacer (a.k.a., a tab character)
+    const buttonSpacer = document.createElement('p');
+    buttonSpacer.innerHTML = "&emsp;";
+    buttonDiv.appendChild(buttonSpacer);
 
     // Mark task done button
     const doneButton = document.createElement('button');
@@ -283,7 +301,7 @@ async function renderTasks() {
 
         for (
             const heading of [
-                "Recipe Name", "Amount To Bake", "Status", "Assignment Date", "Completion By"
+            "Recipe Name", "Amount To Bake", "Status", "Assignment Date", "Completion By"
         ]) {
             tableHeadEntry = document.createElement('th');
             tableHeadEntry.innerText = heading;
@@ -385,32 +403,63 @@ async function renderTasks() {
     }
 }
 
-async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID) {
+async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID, Comments) {
     if (sessionID) {
-        return fetch("/api/add_task",
-            {
-                method: "POST",
-                headers: {
-                    session_id: sessionID,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    RecipeID: RecipeID,
-                    AmountToBake: AmountToBake,
-                    DueDate: DueDate,
-                    AssignedEmployeeID: AssignedEmployeeID
-                })
-            }).then((response) => {
+        if (Comments.length > 0) {
+            return fetch("/api/add_task",
+                {
+                    method: "POST",
+                    headers: {
+                        session_id: sessionID,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        RecipeID: RecipeID,
+                        AmountToBake: AmountToBake,
+                        DueDate: DueDate,
+                        AssignedEmployeeID: AssignedEmployeeID,
+                        Comments: Comments
+                    })
+                }).then(async (response) => {
                 if (response.status < 400) {
                     return response.json();
                 }
                 else {
+                    console.error(await response.json());
                     return "error"
                 }
-        }).catch((e) => {
-            console.error(e);
-            return "error";
-        });
+            }).catch((e) => {
+                console.error(e);
+                return "error";
+            });
+        }
+        else {
+            return fetch("/api/add_task",
+                {
+                    method: "POST",
+                    headers: {
+                        session_id: sessionID,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        RecipeID: RecipeID,
+                        AmountToBake: AmountToBake,
+                        DueDate: DueDate,
+                        AssignedEmployeeID: AssignedEmployeeID
+                    })
+                }).then(async (response) => {
+                if (response.status < 400) {
+                    return response.json();
+                }
+                else {
+                    console.error(await response.json());
+                    return "error"
+                }
+            }).catch((e) => {
+                console.error(e);
+                return "error";
+            });
+        }
     }
     else {
         return "error";
@@ -451,7 +500,7 @@ async function addTaskButtonHandler(taskBox, addTaskButton) {
     }
 }
 
-async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeID) {
+async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeID, taskNotes) {
     try {
         if (amountToBake.value < 1) {
             Swal.fire("Amount to bake must be greater than 1!");
@@ -467,7 +516,8 @@ async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeI
                 recipeIDForm.options[recipeIDForm.selectedIndex].id,
                 amountToBake.value,
                 new Date(dueDate.value).toISOString(),
-                assignedEmployeeID.value
+                assignedEmployeeID.value,
+                taskNotes.value
             );
 
             if (result !== "error") {
@@ -515,7 +565,7 @@ addTaskButton.addEventListener(
 submitTaskButton.addEventListener(
     'mousedown',
     () => {
-        submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeID)
+        submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeID, taskNotes)
             .then(
                 () => {
                 }
