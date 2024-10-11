@@ -128,6 +128,8 @@ async function renderTasks() {
                 const now = new Date();
                 const whenDue = new Date(task["DueDate"]);
                 const taskEntry = document.createElement('tr');
+                taskEntry.id = task["TaskID"];
+                taskEntry.className = "task-row";
 
                 // Add the recipe name
                 const name = document.createElement('td');
@@ -181,6 +183,13 @@ async function renderTasks() {
                     isDone.style.textAlign = "center";
                     taskEntry.appendChild(isDone)
                 }
+
+                // Add faux row for spacing
+                const fauxRow = document.createElement('tr');
+                const fauxColumn = document.createElement('td');
+                fauxRow.className = "faux-task-row";
+                fauxRow.append(fauxColumn, fauxColumn.cloneNode(true), fauxColumn.cloneNode(true), fauxColumn.cloneNode(true), fauxColumn.cloneNode(true));
+                taskBox.appendChild(fauxRow);
 
                 taskBox.appendChild(taskEntry);
             }
