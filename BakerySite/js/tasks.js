@@ -5,6 +5,10 @@
 // User's session_id to be used
 const sessionID = localStorage.getItem('session_id');
 
+/*
+ * Task list elements
+ */
+
 // Where tasks are placed
 const taskBox = document.getElementById('taskContainer');
 
@@ -40,9 +44,17 @@ const dueDate = document.getElementById('dueDate');
 // Assigned employee id
 const assignedEmployeeID = document.getElementById('assignedEmployeeID');
 
+// Button to send the task to the backend
 const submitTaskButton = document.getElementById('submitTaskButton');
 
+// Back button to return to the task view
 const taskFormBackButton = document.getElementById('taskFormBackButton');
+
+/*
+ * Task viewer
+ */
+
+const taskViewer = document.getElementById('taskViewer');
 
 async function fetchTasks() {
     if (sessionID) {
@@ -90,6 +102,160 @@ async function fetchRecipes() {
     else {
         throw new Error("User is not logged in!");
     }
+}
+
+async function viewTask(task, taskViewer, taskBox, addTaskButton) {
+    // Clear any previous contents of the task viewer
+    taskViewer.innerHTML = '';
+    const lineBreak = document.createElement("br");
+
+    // Make the title
+    const titleElement = document.createElement('h1');
+    titleElement.innerText = `Make: ${task["RecipeName"]}`;
+    taskViewer.appendChild(titleElement);
+
+    // Make the recipe element
+    // TODO: Make this clickable and redirect to the appropriate recipe page
+    const recipeLabel = document.createElement('label');
+    recipeLabel.htmlFor = "recipeClick";
+    recipeLabel.className = "control-label";
+    recipeLabel.innerText = "Recipe";
+    taskViewer.appendChild(recipeLabel);
+
+    const recipeRedirectButton = document.createElement('button');
+    recipeRedirectButton.innerText = "Go to recipe";
+    recipeRedirectButton.type = "button";
+    recipeRedirectButton.className = "form-control";
+    taskViewer.appendChild(recipeRedirectButton);
+    taskViewer.appendChild(lineBreak.cloneNode());
+
+    // Make the recipe amount
+    const recipeAmountLabel = document.createElement('label');
+    recipeAmountLabel.htmlFor = "recipeAmount";
+    recipeAmountLabel.className = "control-label";
+    recipeAmountLabel.innerText = "Total Amount";
+    taskViewer.appendChild(recipeAmountLabel);
+
+    const recipeAmount = document.createElement('input');
+    recipeAmount.id = "recipeAmount";
+    recipeAmount.className = "form-control";
+    recipeAmount.value = task["AmountToBake"];
+    recipeAmount.type = "number";
+    recipeAmount.max = "999999999.99";
+    recipeAmount.min = "1";
+    recipeAmount.required = true;
+    recipeAmount.ariaRequired = "true";
+    taskViewer.appendChild(recipeAmount);
+    taskViewer.appendChild(lineBreak.cloneNode());
+
+    // Make the due date
+    const dueDateLabel = document.createElement('label');
+    dueDateLabel.htmlFor = "recipeDueDate";
+    dueDateLabel.className = "control-label";
+    dueDateLabel.innerText = "Due Date";
+    taskViewer.appendChild(dueDateLabel);
+
+    const dueDate = document.createElement('input');
+    dueDate.id = "recipeDueDate"
+    dueDate.className = "form-control";
+    dueDate.type = "date";
+    dueDate.value = new Date(task["DueDate"]).toISOString().substring(0, 10);
+    dueDate.required = true;
+    dueDate.ariaRequired = "true";
+    taskViewer.appendChild(dueDate);
+    taskViewer.appendChild(lineBreak.cloneNode());
+
+    // Make the assigned employee id
+    const assignedEmployeeIDLabel = document.createElement('label');
+    assignedEmployeeIDLabel.htmlFor = "recipeAssignedEmployeeID";
+    assignedEmployeeIDLabel.className = "control-label";
+    assignedEmployeeIDLabel.innerText = "Assignee";
+    taskViewer.appendChild(assignedEmployeeIDLabel);
+
+    const assignedEmployeeID = document.createElement('input');
+    assignedEmployeeID.id = "recipeAssignedEmployeeID";
+    assignedEmployeeID.className = "form-control";
+    assignedEmployeeID.type = "text";
+    assignedEmployeeID.value = task["EmployeeID"];
+    assignedEmployeeID.maxLength = 50;
+    assignedEmployeeID.minLength = 1;
+    assignedEmployeeID.required = true;
+    assignedEmployeeID.ariaRequired = "true";
+    assignedEmployeeID.pattern = "\\w{1,50}";
+    assignedEmployeeID.title = "Employee id should be 1-50 letters or numbers";
+    taskViewer.appendChild(assignedEmployeeID);
+    taskViewer.appendChild(lineBreak.cloneNode());
+
+    // Make the notes
+    const notesLabel = document.createElement('label');
+    notesLabel.htmlFor = "recipeTaskNotes";
+    notesLabel.className = "control-label";
+    notesLabel.innerText = "Notes:";
+    taskViewer.appendChild(notesLabel);
+
+    const taskNotes = document.createElement('textarea');
+    taskNotes.type = "text";
+    taskNotes.id = "recipeTaskNotes";
+    taskNotes.maxLength = 255;
+    taskNotes.minLength = 0;
+    taskNotes.className = "form-control";
+    // TODO: Fetch this
+    // taskNotes.value = task[""];
+    taskNotes.placeholder = "TODO: Fetch this...";
+    taskViewer.appendChild(taskNotes);
+    taskViewer.appendChild(lineBreak.cloneNode());
+
+    // Div for buttons
+    const buttonDiv = document.createElement('div');
+    buttonDiv.align = "center";
+
+    // Update task button
+    const updateButton = document.createElement('button');
+    updateButton.type = "button";
+    updateButton.className = "form-control btn btn-primary col-12 mt-4";
+    updateButton.style.width = "50%";
+    updateButton.style.marginBottom = "1em";
+    updateButton.id = "updateTaskButton";
+    updateButton.innerText = "Update Task";
+    buttonDiv.appendChild(updateButton);
+    buttonDiv.appendChild(lineBreak.cloneNode());
+    // TODO: Add event listener for update button
+
+    // Mark task done button
+    const doneButton = document.createElement('button');
+    doneButton.type = "button";
+    doneButton.className = "form-control btn btn-primary col-12 mt-4";
+    doneButton.style.width = "50%";
+    doneButton.style.marginBottom = "1em";
+    doneButton.id = "updateTaskButton";
+    doneButton.innerText = "Mark As Done"
+    buttonDiv.appendChild(doneButton);
+    buttonDiv.appendChild(lineBreak.cloneNode());
+    // TODO: Add event listener for done button
+
+    // Back button
+    const backButtonSpan = document.createElement('span');
+    backButtonSpan.id = "taskViewBackButton";
+    backButtonSpan.className = "brown-text";
+    backButtonSpan.role = "button";
+    backButtonSpan.tabIndex = 0;
+    backButtonSpan.innerHTML = "<strong>Back</strong>";
+
+    // Back button callback
+    backButtonSpan.addEventListener(
+        'mouseup',
+        () => {
+            taskViewer.hidden = true;
+            addTaskButton.hidden = false;
+            taskBox.hidden = false;
+        }
+    );
+    buttonDiv.appendChild(backButtonSpan);
+    taskViewer.appendChild(buttonDiv);
+
+    taskViewer.hidden = false;
+    addTaskButton.hidden = true;
+    taskBox.hidden = true;
 }
 
 async function renderTasks() {
@@ -191,8 +357,17 @@ async function renderTasks() {
                 fauxRow.append(fauxColumn, fauxColumn.cloneNode(true), fauxColumn.cloneNode(true), fauxColumn.cloneNode(true), fauxColumn.cloneNode(true));
                 taskBox.appendChild(fauxRow);
 
+                // Make the real row clickable
+                taskEntry.addEventListener(
+                    'mousedown',
+                    () => {
+                        viewTask(task, taskViewer, taskBox, addTaskButton);
+                    }
+                );
+
                 taskBox.appendChild(taskEntry);
             }
+            taskBox.hidden = false;
         }
     }
     catch (e) {

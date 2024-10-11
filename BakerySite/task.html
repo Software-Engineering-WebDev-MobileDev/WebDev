@@ -27,6 +27,7 @@
     <link href="css/dataTables.css" rel="stylesheet"/>
     <link href="css/font.all.css" rel="stylesheet"/>
     <link href="css/style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="preconnect">
 
     <!-- DO NOT REMOVE! -->
     <style>
@@ -56,13 +57,10 @@
     </div>
 
     <div
-            style="
-            display: grid;
-            align-content: center;
-            justify-content: center"
-            class="task-form"
+            style="align-content: center"
+            class="container-fluid task-form"
     >
-        <table id="taskContainer" class="table">
+        <table id="taskContainer" class="table" hidden>
             <!-- Tasks go here -->
         </table>
 
@@ -81,7 +79,7 @@
                     for="recipeIDForm"
                     class="control-label"
                     id="recipeIDFormLabel"
-            >Recipe:</label>
+            >Recipe</label>
             <select
                     class="form-control"
                     id="recipeIDForm"
@@ -97,7 +95,7 @@
                     for="amountToBake"
                     class="control-label"
                     id="amountToBakeLabel"
-            >Total Amount:</label>
+            >Total Amount</label>
             <input
                     id="amountToBake"
                     class="form-control"
@@ -113,7 +111,7 @@
             <label
                     for="dueDate"
                     class="control-label"
-            >Due Date:</label>
+            >Due Date</label>
             <input
                     type="date"
                     id="dueDate"
@@ -125,7 +123,8 @@
 
             <label
                     for="assignedEmployeeID"
-            >Assignee:</label>
+                    class="control-label"
+            >Assignee</label>
             <input
                     type="text"
                     id="assignedEmployeeID"
@@ -140,7 +139,10 @@
             >
             <br>
 
-            <label for="taskNotes">Notes:</label><br>
+            <label
+                    for="taskNotes"
+                    class="control-label"
+            >Notes:</label><br>
             <textarea
                 type="text"
                 id="taskNotes"
@@ -169,6 +171,15 @@
                 </span>
             </div>
         </form>
+
+    </div>
+
+    <div
+            id="taskViewer"
+            class="container-fluid task-form"
+            style="align-content: center"
+            hidden
+    >
 
     </div>
 
