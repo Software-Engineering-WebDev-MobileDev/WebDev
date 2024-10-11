@@ -46,7 +46,7 @@
     cursor: pointer; /* Change cursor to pointer when hovered */
 }
 
-#btnLogin:hover {
+#btnLogin:hover, #taskAddButton:hover, #submitTaskButton:hover, #updateTaskButton:hover {
     background-color: #e5b567; /* Change color on hover */
 }
 
@@ -231,6 +231,9 @@ body, html {
 .task-row {
     border-radius: 0.5rem;
     height: 3em;
+}
+.task-row:hover {
+    background-color: #f5c976; /* Change color on hover */
 }
 /*
  * Faux task row styles.
