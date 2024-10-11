@@ -14,7 +14,7 @@ const {v4} = require('uuid');
 // Database setup:
 const config = require('../config.js');
 const Database = require('../database');
-const { uuid } = require('uuidv4');
+const {uuid} = require('uuidv4');
 const database = new Database(config);
 
 // Used for API routes
@@ -26,19 +26,22 @@ app.use(bodyParser.json());
 // API routes (not worrying about session yet)
 
 app.post('/add_task', async (req, res) => {
-    const taskID = v4();
+    const taskID = database.gen_uuid();
 
     const now = new Date();
     // Format the date into SQL-friendly format (YYYY-MM-DD HH:MM:SS)
     const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
-    
+
     //validate the request
     if (req.body.RecipeID === null || req.body.AmountToBake === null || req.body.AssignedEmployeeID === null) {
         return_400(res, "Bad request");
         return;
     }
 
-    const query = `INSERT INTO tblTasks (TaskID, RecipeID, AmountToBake, DueDate, AssignedEmployeeID) VALUES ('${taskID}', '${req.body.RecipeID}', '${req.body.AmountToBake}', '${req.body.DueDate}', '${req.body.AssignedEmployeeID}')`;
+    const query = `INSERT INTO tblTasks (TaskID, RecipeID, AmountToBake, DueDate, AssignedEmployeeID)
+                   VALUES ('${taskID}', '${req.body.RecipeID}', '${req.body.AmountToBake}', '${req.body.DueDate}',
+                           '${req.body.AssignedEmployeeID}')`;
+    console.log(query)
     database.executeQuery(query).then((result) => {
         res.status(200).send({
             status: "success",
@@ -54,7 +57,10 @@ app.post('/add_task', async (req, res) => {
 });
 
 app.get("/tasks", async (req, res) => {
-    const query = `SELECT * FROM tblTasks`;
+    const query = `SELECT TaskID, tT.RecipeID, RecipeName, AmountToBake, Status, AssignmentDate, DueDate
+                   FROM tblTasks AS tT
+                            INNER JOIN tblRecipes AS tR ON tT.RecipeID = tR.RecipeID
+                   ORDER BY DueDate`;
     const sessionid = req.headers['session_id'];
 
     database.executeQuery(query).then((result) => {
@@ -98,8 +104,10 @@ app.get("/task/:taskID", async (req, res) => {
         return;
     }
     const taskID = req.params.taskID;
-    const query = `SELECT * FROM tblTasks WHERE TaskID = '${taskID}'`;
-    
+    const query = `SELECT *
+                   FROM tblTasks
+                   WHERE TaskID = '${taskID}'`;
+
     const sessionid = req.headers['session_id'];
     database.executeQuery(query).then((result) => {
         res.status(200).send({
@@ -121,10 +129,11 @@ app.delete("/delete_task/:taskID", async (req, res) => {
     }
     const taskID = req.params.taskID;
     const query = `
-    DELETE FROM tblTasks
-    WHERE TaskID = '${taskID}';
-  `;
-    
+        DELETE
+        FROM tblTasks
+        WHERE TaskID = '${taskID}';
+    `;
+
     const sessionid = req.headers['session_id'];
     database.executeQuery(query).then((result) => {
         res.status(200).send({
@@ -144,17 +153,16 @@ app.put("/update_task/:taskID", async (req, res) => {
     const now = new Date();
     // Format the date into SQL-friendly format (YYYY-MM-DD HH:MM:SS)
     const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
-    
+
     const query = `
-    UPDATE tblTasks
-    SET 
-        RecipeID = '${req.body.RecipeID}', 
-        AmountToBake = '${req.body.AmountToBake}', 
-        Status = '${req.body.Status}', 
-        DueDate = '${req.body.DueDate}', 
-        CompletionDate = '${req.body.CompletionDate}', 
-        AssignedEmployeeID = '${req.body.AssignedEmployeeID}'
-    WHERE TaskID = '${taskID}'
+        UPDATE tblTasks
+        SET RecipeID           = '${req.body.RecipeID}',
+            AmountToBake       = '${req.body.AmountToBake}',
+            Status             = '${req.body.Status}',
+            DueDate            = '${req.body.DueDate}',
+            CompletionDate     = '${req.body.CompletionDate}',
+            AssignedEmployeeID = '${req.body.AssignedEmployeeID}'
+        WHERE TaskID = '${taskID}'
     `;
 
     database.executeQuery(query).then((result) => {
