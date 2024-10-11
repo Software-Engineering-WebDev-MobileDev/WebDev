@@ -41,8 +41,12 @@
      So, TODO: Nav bar and such
      -->
 
-    <div style="align-content: center">
-        <label for="taskAddButton"></label>
+    <div
+            style="align-content: center"
+    >
+        <label
+                for="taskAddButton"
+        ></label>
         <button
                 class="btn btn-primary col-12 mt-4"
                 id="taskAddButton"
@@ -51,8 +55,14 @@
         >Add a task</button>
     </div>
 
-    <div>
-        <table id="taskContainer" class="table" valign="center">
+    <div
+            style="
+            display: grid;
+            align-content: center;
+            justify-content: end"
+            class="task-form"
+    >
+        <table id="taskContainer" class="table">
             <!-- Tasks go here -->
         </table>
     </div>
