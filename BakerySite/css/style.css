@@ -219,6 +219,7 @@ body, html {
 @media (min-width: 768px) {
     .task-form {
         width: 80%;
+        justify-content: center;
     }
 }
 #recipeIDForm, #amountToBake, #dueDate, #assignedEmployeeID, #taskNotes {
