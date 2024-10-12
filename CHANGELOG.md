@@ -7,12 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## TO-DO
 - Make it so that entering the wrong user or password informs the user of this problem
-- Use a more secure way of changing pages, ~~as well as using the return and homepage functionality~~
+- ~~Use a more secure way of changing pages, as well as using the return and homepage functionality~~
 - Implement the email in use checker
 - Make an error for an already in-use employee ID
 - Make a "main" email and phone number as well as additional ones you can add in account
 - Employee ID needs requirements
-- Fix the Employee ID registration appearance, it's too close to the left
+- ~~Fix the Employee ID registration appearance, it's too close to the left~~
 - Make a confirmation option for the clear button so people don't accidentally hit it, possibly make it smaller
 - Integrate templating into the tasks endpoint
 
@@ -42,6 +42,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Made recipe routes generate the UUID correctly so that task routes' validation allows recipe ids that are in the database.
 
+## [0.2.1] - 2024-10-10
+
+### Changed
+- Dashboard has been changed to an Error page as it was not needed
+- Hamburger Button doesn't appear until logged in
+- The Ingredients page is now called "Inventory" within the site itself
+
+### Fixed
+- Employee ID now properly is aligned on the registration page
+
+### Removed
+- About Page
+- About Button Functionality
+
 ## 2024-10-09
 
 ### Added
@@ -52,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched all instances of sessionStorage to localStorage
 - Commented out checkEmail until it works
 - Switched all instances of previous sessionID to session_id to work with new backend
+- Phone Regex is more lax, now able to only be 10 digits instead of just the strict requirements before
 
 ### Fixed
 - Multiple lines of code in main.js that had no purpose (like validatePassword which doesn't exist)
@@ -77,7 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Register and Return buttons are now javascript based instead of hrefs
 - About page return button modified the same way as the previous two
 
-## Fixed
+### Fixed
 - TypeError related to non-existent addEventListener on txtLoginEmail
 - CSP Violations
 
@@ -95,7 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - FINALLY connected our backend to frontend
 - Both Register and Login functionality works with the backend
 
-## Fixed
+### Fixed
 - Website vulnerabilities related to inline event handlers, moved from HTML to JS
 
 ## 2024-10-01
@@ -123,7 +138,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Password Requirements now update the moment you meet them, rather than one input after
 - Old backend posts to new backend
 
-## Broken
+### Broken
 - ~~Currently login and registration throw a 400 error, so creating a user or logging in is impossible.~~
 
 ## 2024-09-19
@@ -199,7 +214,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Contents previously in emailstorage.js are now in functions.js
 - Reordered js src to have the source files above our working code
 
-## Fixed
+### Fixed
 - Website functionality break
 - Hamburger button icon break
 - Issue where the email was not storing upon logging out

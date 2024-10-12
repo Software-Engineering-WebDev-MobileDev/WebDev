@@ -1,4 +1,4 @@
-$('#btnAbout').on('click',function(){
+/*$('#btnAbout').on('click',function(){
    $('#divNavButtons').slideToggle();
     //Slide Login or Register card before sliding About card down
     var userLoc;
@@ -18,14 +18,13 @@ $('#btnAbout').on('click',function(){
     setUserLocation(userLoc);
     $('#divAbout').slideDown();
 })
-
+*/
 $('#btnReturnLogin').on('click',function(){
-    $('#divAbout').slideUp();
     userLoc = localStorage.getItem('userLoc');
     console.log(userLoc);
     switch (userLoc) {
-        case 'dashboard':
-            $('#divDashboard').slideDown();
+        case 'errorPage':
+            $('#divErrorPage').slideDown();
             break;
         case 'registration':
             $('#divRegistration').slideDown;
@@ -60,17 +59,18 @@ $('#btnLogin').on('click',function(){
             success: function(result) {
                 console.log(result);
 
-                userLoc = 'dashboard'
+                userLoc = 'errorpage'
                 setUserLocation(userLoc);
-                $("#btnDashboard").show()
+                $("#btnHamburger").show();
+                $("#btnDashboard").show();
                 $('#btnLogout').show();
-                $("#btnAccount").show()
-                $("#btnIngredient").show()
-                $("#btnRecipe").show()
-                $("#btnTask").show()
+                $("#btnAccount").show();
+                $("#btnIngredient").show();
+                $("#btnRecipe").show();
+                $("#btnTask").show();
                 //$('#divNavbar').slideUp();
                 $('#divLogin').slideUp(function(){
-                    $('#divDashboard').slideDown();
+                    $('#divErrorPage').slideDown();
                 
                 });
                 localStorage.setItem('session_id', result['session_id'])
@@ -92,7 +92,7 @@ $(document).ready(function () {
     let strEmail = $('#txtRegisterEmail').val();
     let strPhone = $('#numRegisterPhone').val();
     let strEmployeeId = $('#txtRegisterEmployeeId').val();
-    const phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
+    const phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/ || /^(\d{3}-\d{3}-\d{4}|\d{10})$/;
     const emailRegex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
 
     // Add inline validation for other fields
@@ -122,7 +122,7 @@ $(document).ready(function () {
     });
 
     $('#numRegisterPhone').on('input blur', function () {
-        validateField(this, phoneRegex.test($(this).val()), "Phone number is not valid, please use the format xxx-xxx-xxxx.");
+        validateField(this, phoneRegex.test($(this).val()), "Phone number is not valid, please use the format xxx-xxx-xxxx or xxxxxxxxxx.");
     });
 
     $('#txtRegisterEmployeeId').on('input blur', function () {
@@ -158,11 +158,11 @@ $(document).ready(function () {
                 console.log(result);
                 
 
-                //show dashboard
+                //show Error Page
                 //$('#divNavbar').slideUp();
                 $('#divRegister').slideUp(function(){
-                $('#divDashboard').slideDown();
-                userLoc = 'dashboard'
+                $('#divErrorPage').slideDown();
+                userLoc = 'errorpage'
                 setUserLocation(userLoc);
                 });
                 var observationDateTime = getTime();
