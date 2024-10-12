@@ -53,6 +53,7 @@
 /* Navigation Bar Style */
 .navbar-custom {
     background-color: #f5c976; /* Set the background color */
+    padding: 10px;
 }
 
 /* Hamburger Navigation Button Style */
@@ -60,6 +61,46 @@
     background-color: #f5c976; /* Button background color */
     border: none; /* Remove border if needed */
     color: #2C2C2C; /* Text color (icon color) */
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.brand-text {
+    font-size: 1.5em;
+    color: #4b2e1e; /* Dark brown color */
+    margin-left: 10px;
+    font-family: 'Pacifico', cursive;
+}
+
+/* Navbar list items */
+.navbar-nav {
+    list-style: none;
+    display: flex;
+    margin-left: auto;
+}
+
+.nav-item {
+    margin-left: 20px;
+}
+
+.nav-link {
+    font-size: 1.2em;
+    color: #4b2e1e; /* Dark brown color */
+    text-decoration: none;
+    font-family: 'Pacifico', cursive;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #825a3d; /* Slightly lighter brown on hover */
+}
+
+/* Hamburger icon styling */
+.navbar-toggler {
+    border: none;
 }
 
 #btnHamburger:hover {
