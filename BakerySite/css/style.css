@@ -23,7 +23,7 @@
 
 /* Login Form Style */
 
-#divLogin, #taskFormContainer, #taskViewer, .task-row {
+#divLogin {
     background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
     border-radius: 0.25rem; 
     padding: 1.5rem; 
@@ -32,8 +32,8 @@
     background-color: #fff; /* Ensure input fields remain fully opaque */
 }
 
-/* Login Button, Task Add Button, and Task Submit Button Styles */
-#btnLogin, #taskAddButton, #submitTaskButton, #updateTaskButton {
+/* Login Button Style */
+#btnLogin {
     background-color: #f5c976; /* Set the background color */
     color: #2C2C2C; /* Set the text color */
     border: none; /* Remove the border */
@@ -46,7 +46,7 @@
     cursor: pointer; /* Change cursor to pointer when hovered */
 }
 
-#btnLogin:hover, #taskAddButton:hover, #submitTaskButton:hover, #updateTaskButton:hover {
+#btnLogin:hover {
     background-color: #e5b567; /* Change color on hover */
 }
 
@@ -249,37 +249,4 @@ body, html {
     height: 50px;
     background: linear-gradient(45deg, #ccc, #eee);
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-}
-
-/* Task form styles */
-@media (max-width: 767px) {
-    .task-form {
-        width: 100%;
-    }
-}
-@media (min-width: 768px) {
-    .task-form {
-        width: 80%;
-        justify-content: center;
-    }
-}
-#recipeIDForm, #amountToBake, #dueDate, #assignedEmployeeID, #taskNotes {
-    border-radius: 0.25rem;
-    padding-bottom: 0.5rem;
-}
-
-/* Task row styles */
-.task-row {
-    border-radius: 0.5rem;
-    height: 3em;
-}
-.task-row:hover {
-    background-color: #f5c976; /* Change color on hover */
-}
-/*
- * Faux task row styles.
- * This controls the spacing between tasks
- */
-.faux-task-row {
-    height: 1.5em;
 }
