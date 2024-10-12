@@ -58,6 +58,11 @@ const taskFormBackButton = document.getElementById('taskFormBackButton');
 
 const taskViewer = document.getElementById('taskViewer');
 
+/**
+ * Gets a list of all the "Pending" tasks from the API
+ * @returns {Promise<Response | [[{error: string}]]>} Returns the JSON response object from the API or "error"
+ * @throws {Error} if the user is not logged in
+ */
 async function fetchTasks() {
     if (sessionID) {
         return fetch("/api/tasks",
@@ -82,6 +87,12 @@ async function fetchTasks() {
     }
 }
 
+/**
+ * Gets a list of recipes from the API
+ * @returns {Promise<Response | [{error: string}]>} Returns the JSON response object from the API or "error"
+ * if there was an error.
+ * @throws {Error} if the user is not logged in
+ */
 async function fetchRecipes() {
     if (sessionID) {
         return fetch("/api/recipes",
@@ -106,6 +117,12 @@ async function fetchRecipes() {
     }
 }
 
+/**
+ * Marks a task as completed.
+ * @param sessionID {String} the session id to use for the API.
+ * @param taskID {String} the task id to mark as completed.
+ * @returns {Promise<Response>} Nothing, await if needed.
+ */
 async function markComplete(sessionID, taskID) {
     return fetch('/api/task_complete', {
         method: "POST",
@@ -113,13 +130,20 @@ async function markComplete(sessionID, taskID) {
             session_id: sessionID,
             task_id: taskID
         }
-    }).then(async (result) => {
-        console.log(await result.json())
+    }).then(() => {
     }).catch((e) => {
         console.error(e);
     })
 }
 
+/**
+ * Callback function for rendering the task view interface.
+ * @param task {Object} the task object (from the API) to render.
+ * @param taskViewer {HTMLElement} the taskViewer div to render the interface in.
+ * @param taskBox {HTMLElement} the main taskBox to hide after creating the page.
+ * @param addTaskButton {HTMLElement} the addTaskButton to hide after creating the page.
+ * @returns {Promise<void>} Nothing, await if needed.
+ */
 async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     // Clear any previous contents of the task viewer
     taskViewer.innerHTML = '';
@@ -311,22 +335,32 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     taskBox.hidden = true;
 }
 
+/**
+ * Fetches and then renders the tasks in the main page.
+ * @returns {Promise<void>} Nothing, await if needed.
+ */
 async function renderTasks() {
     try {
+        // Text color of the overdue tasks
         const overDueTaskColor = "#c00";
+        // If the taskList is empty (or has been emptied), fetch it again
         if (taskList.length === 0) {
             taskList = await fetchTasks();
         }
+        // If something failed, send the user back to the login page
         if (taskList["status"] !== "success") {
             // window.location.href = "/";
         }
+        // Clear the taskBox before filling it again
         taskBox.innerHTML = '';
 
+        // Create the table head with each column name.
         const tableHeadClass = document.createElement('thead');
         tableHeadClass.className = "thead-dark";
         const tableHead = document.createElement('tr');
         let tableHeadEntry;
 
+        // For loop so the code isn't as WET
         for (
             const heading of [
             "Recipe Name", "Amount To Bake", "Status", "Assignment Date", "Completion By"
@@ -338,15 +372,20 @@ async function renderTasks() {
             tableHead.appendChild(tableHeadEntry);
         }
 
+        // Add the head to the table
         tableHeadClass.appendChild(tableHead);
 
         taskBox.appendChild(tableHeadClass);
 
+        // Make sure that there's data to render
         if (taskList["recipes"] instanceof Array) {
-
+            // Don't make this each time in the for loop
+            const now = new Date();
+            // Render rows for each task
             for (const task of taskList["recipes"]) {
-                const now = new Date();
+                // Date of the task to check against now
                 const whenDue = new Date(task["DueDate"]);
+                // Make the row for this task
                 const taskEntry = document.createElement('tr');
                 taskEntry.id = task["TaskID"];
                 taskEntry.className = "task-row";
@@ -387,6 +426,7 @@ async function renderTasks() {
                 }
                 taskEntry.appendChild(assignmentDate);
 
+                // Just in case the SQL query gets tampered with, check for this.
                 if (!("CompletionDate" in task)) {
                     // Add the due date
                     const dueDate = document.createElement('td');
@@ -397,6 +437,7 @@ async function renderTasks() {
                     }
                     taskEntry.appendChild(dueDate);
                 }
+                // Eh, render "Completed" if it's here
                 else {
                     const isDone = document.createElement('td');
                     isDone.innerText = "Completed";
@@ -419,8 +460,10 @@ async function renderTasks() {
                     }
                 );
 
+                // Add the entry to the list
                 taskBox.appendChild(taskEntry);
             }
+            // Show the task box
             taskBox.hidden = false;
         }
     }
@@ -431,8 +474,20 @@ async function renderTasks() {
     }
 }
 
+/**
+ * Add a task to the database.
+ * @param RecipeID {String} The id of the recipe associated with this task.
+ * @param AmountToBake {String|Number} The amount of the recipe to bake.
+ * String or number, it'll work itself out around the backend or database.
+ * @param DueDate {String} the ISO string of the selected due date.
+ * @param AssignedEmployeeID {String} the id of the employee this task is for.
+ * @param Comments {String} the *sanitized* comments on this task.
+ * Basically, replace quotes with the appropriate HTML entity.
+ * @returns {Promise<Response|string|string>} returns "error" if an error happened.
+ */
 async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID, Comments) {
     if (sessionID) {
+        // If there are comments, send them in the headers
         if (Comments.length > 0) {
             return fetch("/api/add_task",
                 {
@@ -461,6 +516,7 @@ async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID, Comm
                 return "error";
             });
         }
+        // Otherwise, just yeet the other stuff at the API
         else {
             return fetch("/api/add_task",
                 {
@@ -494,16 +550,26 @@ async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID, Comm
     }
 }
 
+/**
+ * Callback event handler for the "Add a task" button of the main page.
+ * @param taskBox {HTMLElement} The taskBox to be hidden once relevant data is fetched.
+ * @param addTaskButton {HTMLElement} The button this is for, but only to hide it.
+ * @returns {Promise<void>} Nothing, but await if necessary.
+ */
 async function addTaskButtonHandler(taskBox, addTaskButton) {
     try {
+        // If there are not recipes cached already, grab those
         if (recipeList.length === 0) {
             recipeList = await fetchRecipes();
         }
 
         // Clear the dropdown if anything was there
         recipeIDForm.innerHTML = '';
+        // Boolean to mark the first recipe as selected
         let selected = true;
+        // Add the recipes to the HTML form
         recipeList["recipes"].forEach((recipe) => {
+            // Create the option
             const recipeOption = document.createElement('option');
             recipeOption.id = recipe["RecipeID"];
             recipeOption.innerText = recipe["RecipeName"]
@@ -511,6 +577,7 @@ async function addTaskButtonHandler(taskBox, addTaskButton) {
                 recipeOption.selected = true;
                 selected = false;
             }
+            // Add that option to the list of options
             recipeIDForm.appendChild(recipeOption);
         });
 
@@ -528,8 +595,20 @@ async function addTaskButtonHandler(taskBox, addTaskButton) {
     }
 }
 
+/**
+ * Callback function for submitting a new task to the API.
+ * @param recipeIDForm {HTMLFormElement} The form element for the selected recipe.
+ * @param amountToBake {HTMLFormElement} The form element for the amount to bake.
+ * @param dueDate {HTMLFormElement} The form element for the date that the task is due.
+ * @param assignedEmployeeID {HTMLFormElement} The form element for the assigned employee's id
+ * @param taskNotes {HTMLTextAreaElement} The textarea element for the notes of this task.
+ * @returns {Promise<void>} Nothing, await if needed.
+ */
 async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeID, taskNotes) {
     try {
+        /*
+         * Little bit of validation
+         */
         if (amountToBake.value < 1) {
             Swal.fire("Amount to bake must be greater than 1!");
         }
@@ -540,14 +619,21 @@ async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeI
             Swal.fire("That's not a valid employee id format! Check your input and try again. Employee id should be 1-50 letters or numbers");
         }
         else {
+            // Send the API what the user has entered.
             let result = await addTask(
+                // Grab the id of the selected option
                 recipeIDForm.options[recipeIDForm.selectedIndex].id,
+                // Value of the number form
                 amountToBake.value,
+                // Convert the HTML date value to an ISO string
                 new Date(dueDate.value).toISOString(),
+                // Grab the employee's id
                 assignedEmployeeID.value,
+                // Get the notes and replace quotes with quote entities.
                 taskNotes.value.replace(/'/g, '&quot;')
             );
 
+            // Check for an error, rendering the task page if no error was returned
             if (result !== "error") {
                 // Get the task list again
                 taskList = [];
@@ -561,14 +647,17 @@ async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeI
                 addTaskButton.hidden = false;
             }
             else {
+                // Hey, user, you've done messed up
                 Swal.fire("Invalid task!");
             }
         }
     }
     catch (e) {
+        // Converting the date can throw an error, so catch that in particular
         if (e.message.startsWith("Invalid time")) {
             Swal.fire("Please enter a valid date")
         }
+        // Otherwise, assume the session is invalid
         else {
             console.error(e);
             // Return to home if the user is not logged in
@@ -577,9 +666,11 @@ async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeI
     }
 }
 
+// Initial task rendering with a callback to make WebStorm happy.
 renderTasks().then(() => {
 });
 
+// Add an event listener for the "Add a task" button to change pages
 addTaskButton.addEventListener(
     'mousedown',
     () => {
@@ -590,6 +681,8 @@ addTaskButton.addEventListener(
             );
     }
 );
+
+// Add an event listener for the hidden "Submit" button for tasks
 submitTaskButton.addEventListener(
     'mousedown',
     () => {
@@ -601,6 +694,9 @@ submitTaskButton.addEventListener(
     }
 );
 
+/* Add an event listener for the back button that shows the hidden task list.
+ * This does not require refreshing the list because the user added nothing.
+ */
 taskFormBackButton.addEventListener(
     'mouseup',
     () => {
