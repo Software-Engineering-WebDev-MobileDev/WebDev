@@ -59,7 +59,7 @@ app.post('/create_account', async (req, res) => {
         else if (!last_name.match(/^[A-Za-z\-]+$/) || last_name.length > 64) {
             return_400(res, "Invalid last_name contents");
         }
-        else if (!employee_id.match(/^[A-Za-z0-9]+$/) || employee_id.length > 50) {
+        else if (!employee_id.match(/^[A-Za-z0-9]{1,50}$/) || employee_id.length > 50) {
             return_400(res, "Invalid employee_id contents");
         }
         // Undefined check

@@ -11,6 +11,9 @@ const database = new Database(config);
 // Used for API routes
 const app = express.Router();
 
+// Max that the database will hold
+const decimal_10_whole_2_fraction = 999_999_999.99;
+
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 
@@ -189,7 +192,7 @@ app.post('/inventory_item', (req, res) => {
         else if (!name.match(/^[\w\s.,*/]{1,50}$/)) {
             return_400(res, "Invalid name characters or length");
         }
-        else if (reorder_amount > 9_999_999_999.99) {
+        else if (reorder_amount > decimal_10_whole_2_fraction) {
             return_400(res, "reorder_amount too large");
         }
         else if (reorder_amount < 0) {
@@ -331,7 +334,7 @@ app.put('/inventory_item', (req, res) => {
         else if (!name.match(/^[\w\s.,*/]{1,50}$/)) {
             return_400(res, "Invalid name characters or length");
         }
-        else if (reorder_amount > 9_999_999_999.99) {
+        else if (reorder_amount > decimal_10_whole_2_fraction) {
             return_400(res, "reorder_amount too large");
         }
         else if (reorder_amount < 0) {
@@ -563,10 +566,10 @@ app.post('/inventory_change', (req, res) => {
         else if (!isNumber(change_amount)) {
             return_400(res, "change_amount must be a number")
         }
-        else if (change_amount > 9_999_999_999.99) {
+        else if (change_amount > decimal_10_whole_2_fraction) {
             return_400(res, "change_amount too large");
         }
-        else if (change_amount < -9_999_999_999.99) {
+        else if (change_amount < -decimal_10_whole_2_fraction) {
             return_400(res, "change_amount too small");
         }
         else if (expiration_date !== undefined && (test_date.toString() === "Invalid Date" || isNaN(test_date.getTime()) || test_date.toISOString() !== expiration_date)) {
@@ -1084,7 +1087,7 @@ app.post('/purchase_order', (req, res) => {
         else if (test_date2.toString() === "Invalid Date" || isNaN(test_date2.getTime()) || test_date2.toISOString() !== payable_date) {
             return_400(res, "Invalid payable_date format. It should be in ISO 8601 format");
         }
-        else if (order_quantity > 9_999_999_999.99) {
+        else if (order_quantity > decimal_10_whole_2_fraction) {
             return_400(res, "Order quantity too large");
         }
         else if (order_quantity < 0) {
@@ -1093,10 +1096,10 @@ app.post('/purchase_order', (req, res) => {
         else if (!vendor.match(/^[\w\s.,*/]{0,255}$/)) {
             return_400(res, "Invalid vendor string");
         }
-        else if (payable_amount > 9_999_999_999.99) {
+        else if (payable_amount > decimal_10_whole_2_fraction) {
             return_400(res, "payable_amount too large");
         }
-        else if (payable_amount < -9_999_999_999.99) {
+        else if (payable_amount < -decimal_10_whole_2_fraction) {
             return_400(res, "payable_amount too small");
         }
         else {

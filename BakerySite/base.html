@@ -62,7 +62,7 @@
     {% block content %}{% endblock %}
 
     <!--START OF JAVASCRIPT-->
-
+    {% block js %}
     <script src="/js/jsource/jquery.js"></script>
     <script src="/js/jsource/chart.js"></script>
     <script src="/js/jsource/dataTables.js"></script>
@@ -74,5 +74,6 @@
     <script src="/js/settings.js"></script>
     <script src="/js/temp.js"></script>
     <script src="/js/ingredients.js"></script>
+    {% endblock %}
 </body>
 </html>

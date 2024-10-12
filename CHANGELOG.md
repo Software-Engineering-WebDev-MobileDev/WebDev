@@ -21,6 +21,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2024-10-11
+
+### Added
+- Tasks page content
+  - Task overview page
+  - Individual task details
+  - Task adding
+  - Task updates
+  - Task completion button
+  - Practically all client-side rendered
+- Added input validation to task routes
+- Added session id requirement to task routes
+
+### Changed
+- Made task routes return needed data
+- Possibly broke things by making task routes require more data.
+
+### Fixed
+- Made recipe routes generate the UUID correctly so that task routes' validation allows recipe ids that are in the database.
+
 ## 2024-10-10
 - Create Templates using Nunjucks
 - Templatize account, index, ingredient_view, ingredient, recipe, task pages

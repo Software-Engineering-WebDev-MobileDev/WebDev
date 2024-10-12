@@ -189,6 +189,10 @@ console.log(`HTML files found: ${html_file_list}`);
 if (process.env.NODE_ENV.trim() === 'development') {
     console.log("Development environment detected. Setting up renderers...");
     html_file_list.forEach((file) => {
+        // Setup index rendering for the dev environment
+        app.get(`/`, (req, res) => {
+            res.render(`../BakerySite/index.html`);
+        });
         if (file.endsWith(".html")) {
             console.log(`Setting up renderer for ${file}`);
             // Version with `.html`

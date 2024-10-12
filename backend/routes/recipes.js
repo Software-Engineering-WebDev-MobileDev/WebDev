@@ -14,7 +14,6 @@ const {v4} = require('uuid');
 // Database setup:
 const config = require('../config.js');
 const Database = require('../database');
-const { uuid } = require('uuidv4');
 const database = new Database(config);
 
 // Used for API routes
@@ -113,7 +112,7 @@ app.delete("/delete_recipe/:recipeID", async (req, res) => {
 
 //add a recipe
 app.post('/add_recipe', async (req, res) => {
-    const recipeID = v4();
+    const recipeID = database.gen_uuid();
 
     const now = new Date();
     // Format the date into SQL-friendly format (YYYY-MM-DD HH:MM:SS)
