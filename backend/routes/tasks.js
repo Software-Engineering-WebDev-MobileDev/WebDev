@@ -59,8 +59,7 @@ app.post('/add_task', async (req, res) => {
                 "Invalid comments supplied. Make sure you're validating that correctly before sending it."
             );
         }
-        // TODO: Drop tables and revalidate with hyphen removed from the regex and length changed to 32
-        else if (!recipe_id.match(/^[\w-]{0,36}$/)) {
+        else if (!recipe_id.match(/^\w{0,32}$/)) {
             return_400(res, "Invalid RecipeID supplied");
         }
         else if (amount_to_bake > decimal_10_whole_2_fraction) {
@@ -346,8 +345,7 @@ app.put("/update_task/:taskID", async (req, res) => {
             "Invalid comments supplied. Make sure you're validating that correctly before sending it."
         );
     }
-    // TODO: Drop tables and revalidate with hyphen removed from the regex and length changed to 32
-    else if (!recipe_id.match(/^[\w-]{0,36}$/)) {
+    else if (!recipe_id.match(/^\w{0,32}$/)) {
         return_400(res, "Invalid RecipeID supplied");
     }
     else if (amount_to_bake > decimal_10_whole_2_fraction) {
@@ -473,8 +471,7 @@ app.post('/task_complete', (req, res) => {
                 }
             );
         }
-        // TODO: Drop tables and revalidate with hyphen removed from the regex and length changed to 32
-        else if (!task_id.match(/^[\w-]{0,36}$/)) {
+        else if (!task_id.match(/^\w{0,32}$/)) {
             return_400(res, "Invalid task_id supplied");
         }
         else {
