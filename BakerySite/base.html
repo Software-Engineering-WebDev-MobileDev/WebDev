@@ -25,8 +25,7 @@
     <link href="css/bootstrap-icons.css" rel="stylesheet"/>
     <link href="css/dataTables.css" rel="stylesheet"/>
     <link href="css/font.all.css" rel="stylesheet"/>
-    <link href="css/style.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/ingredients_icons.css">
+    <link href="css/style.css" rel="stylesheet">
    
 </head>
 <body background={{ background }} style="background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
@@ -35,20 +34,19 @@
         <div class="container-fluid col-6">
             <a class="navbar-brand charcoal-text fs-1" href="index.html">
                 <img src="images/BreadIcon.png" alt="BakerySite logo" width="50" height="50">
-                <strong>Rolling Scones</strong>
+                <strong>The Rolling Scones</strong>
             </a>
         </div>
       <!--Navigation Button-->
       <div class="col-6 d-flex justify-content-end">
-        <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle" type="button" style="display: none;" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="bi-list fs-1"> </i>
         </button>
     
         <ul id="dropDownMenu" class="dropdown-menu dropdown-menu-end">
-            <li><button id="btnAbout" class="dropdown-item position-relative" type="button">About</button></li>
             <li><button id="btnAccount" class="dropdown-item position-relative" type="button" style="display: none;">Account</button></li>
-            <li><button id="btnDashboard" class="dropdown-item position-relative" type="button" style="display: none;">Dashboard</button></li>
-            <li><button id="btnIngredient" class="dropdown-item position-relative" type="button" style="display: none;">Ingredient</button></li>
+            <!--<li><button id="btnErrorPage" class="dropdown-item position-relative" type="button" style="display: none;">Dashboard</button></li>-->
+            <li><button id="btnIngredient" class="dropdown-item position-relative" type="button" style="display: none;">Inventory</button></li>
             <li><button id="btnRecipe" class="dropdown-item position-relative" type="button" style="display: none;">Recipe</button></li>
             <li><button id="btnTask" class="dropdown-item position-relative" type="button" style="display: none;">Task</button></li>
             <li><button id="btnLogout" class="dropdown-item position-relative" type="button" style="display: none;">Logout</button></li>        
@@ -59,9 +57,9 @@
     <style>
         .err { background: #ffe6ee; border: 1px solid #b1395f; }
         .emsg { color: #c12020; font-weight: bold; }
-    </style>   
+    </style>    
 
-{% block content %}{% endblock %}
+    {% block content %}{% endblock %}
 
     <!--START OF JAVASCRIPT-->
 

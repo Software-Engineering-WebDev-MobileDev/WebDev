@@ -31,3 +31,54 @@ $(document).ready(function() {
         $(this).parent().remove();  
     });
 });
+
+// Load ingredients from server
+$(document).ready(function() {
+    // Check if SessionID exists in localStorage
+    var sessionID = localStorage.getItem('SessionID');
+    console.log('Ing-Retrieved SessionID:', sessionID); // Log the session ID
+    if (sessionID) {
+        sessionStorage.setItem('SessionID', sessionID);
+
+        
+        $.ajax({
+            url: '/ingredients',
+            method: 'GET',
+            headers: {
+                'session_id': sessionID
+            },
+            success: function(response) {
+                console.log("inside success");
+                if (response.status === "success") {
+                    const ingredients = response.content;
+                    let cardContainer = $('#ingredient-cards');
+                    // create cards for each ingredient
+                    ingredients.forEach(ingredient => {
+                        let card = `
+                            <div class="col-md-4 mb-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${ingredient.Name}</h5>
+                                        <p class="card-text">
+                                            Quantity: ${ingredient.Quantity} ${ingredient.UnitOfMeasure}<br>
+                                            Shelf Life: ${ingredient.ShelfLife} ${ingredient.ShelfLifeUnit}<br>
+                                            Reorder Amount: ${ingredient.ReorderAmount} ${ingredient.ReorderUnit}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        cardContainer.append(card);
+                    });
+                } else {
+                    console.log(response.reason);
+                }
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+    } else {
+        console.log('SessionID not found in localStorage');
+    }
+});
