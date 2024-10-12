@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Employee ID needs requirements
 - Fix the Employee ID registration appearance, it's too close to the left
 - Make a confirmation option for the clear button so people don't accidentally hit it, possibly make it smaller
+- Integrate templating into the tasks endpoint
 
 ## Backend
 - ~~Inventory Routes~~
@@ -21,18 +22,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2024-10-11
+
+### Added
+- Tasks page content
+  - Task overview page
+  - Individual task details
+  - Task adding
+  - Task updates
+  - Task completion button
+- Added input validation to task routes
+- Added session id requirement to task routes
+
+### Changed
+- Made task routes return needed data
+- Possibly broke things by making task routes require more data. 
+
+### Fixed
+- Made recipe routes generate the UUID correctly so that task routes' validation allows recipe ids that are in the database.
+
 ## 2024-10-09
 
-## Added
+### Added
 - New code added to indicate what page the user is on
 - Refreshing now keeps you on the page you are supposed to be
 
-## Changed
-- Switched all instaces of sessionStorage to localStorage
+### Changed
+- Switched all instances of sessionStorage to localStorage
 - Commented out checkEmail until it works
 - Switched all instances of previous sessionID to session_id to work with new backend
 
-## Fixed
+### Fixed
 - Multiple lines of code in main.js that had no purpose (like validatePassword which doesn't exist)
 
 ## 2024-10-08
