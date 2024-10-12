@@ -2,19 +2,18 @@ init_values();
 
 $(document).ready(function() {
     // Check if SessionID exists in localStorage
-    var sessionID = localStorage.getItem('session_id');
+    var sessionID = localStorage.getItem('SessionID');
     if (sessionID) {
-        //localStorage.setItem('session_id', sessionID);
+        sessionStorage.setItem('SessionID', sessionID);
         
         $('#divLogin').hide();
-        $('#btnHamburger').show();
-        $('#divErrorPage').slideDown();
-        $("#btnLogout").show();
-        $("#btnAccount").show();
-        $("#btnDashboard").show();
-        $("#btnIngredient").show();
-        $("#btnRecipe").show();
-        $("#btnTask").show();
+        $('#divDashboard').slideDown();
+        $("#btnLogout").show()
+        $("#btnAccount").show()
+        $("#btnDashboard").show()
+        $("#btnIngredient").show()
+        $("#btnRecipe").show()
+        $("#btnTask").show()
         UpdateDivEnvironment();
         updateEggInfo();
         fillTable();
@@ -56,7 +55,7 @@ document.getElementById('txtLoginUsername').addEventListener('focusout', functio
 });
 
 document.getElementById('txtLoginPassword').addEventListener('input', function() {
-  checkPasswordRequirements(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
+  validatePassword(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
 });
 
 document.getElementById('txtRegisterUsername').addEventListener('focusout', function() {
@@ -64,11 +63,11 @@ document.getElementById('txtRegisterUsername').addEventListener('focusout', func
 });
 
 document.getElementById('txtRegisterPassword').addEventListener('input', function() {
-  checkPasswordRequirements(document.getElementById('txtRegisterPassword'), document.getElementById('passwordRequirements'));
+  validatePassword(document.getElementById('txtRegisterPassword'), document.getElementById('passwordRequirements'));
 });
 
 document.getElementById('txtRegisterEmail').addEventListener('focusout', function() {
-  check(document.getElementById('txtRegisterEmail'), document.getElementById('errRegisterEmail'));
+  checkEmail(document.getElementById('txtRegisterEmail'), document.getElementById('errRegisterEmail'));
 });
 
 document.getElementById('txtRegisterFirstName').addEventListener('focusout', function() {
@@ -76,7 +75,7 @@ document.getElementById('txtRegisterFirstName').addEventListener('focusout', fun
 });
 
 document.getElementById('txtRegisterLastName').addEventListener('focusout', function() {
-  check(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastName'));
+  checkEmail(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastName'));
 });
 
 // Get the modal
@@ -99,53 +98,3 @@ if (event.target == modal) {
 modal.style.display = "none";
 }
 }
-
-sessionStorage.setItem('refresh', true);
-
-if (sessionStorage.getItem('refresh')) 
-{
-  console.log('yes');
-}
-else{
-  sesssionStorage.setItem('refresh', true)
-  switch (userLoc) {
-    case 'errorpage':
-    case 'registration':
-    case 'login':
-        window.location.href = 'index.html'
-        console.log(userLoc);
-        setUserLocation(userLoc);
-        break;
-    case 'ingredient':
-        window.location.href = 'ingredient.html'
-        console.log(userLoc);
-        setUserLocation(userLoc);
-        break;
-    case 'account':          
-        window.location.href = 'account.html'
-        console.log(userLoc);
-        setUserLocation(userLoc);
-        break;
-    case 'dashboard':          
-        window.location.href = 'dashboard.html'
-        console.log(userLoc);
-        setUserLocation(userLoc);
-        break;
-    case 'recipe':          
-        window.location.href = 'recipe.html'
-        console.log(userLoc);
-        setUserLocation(userLoc);
-        break;
-    case 'task':          
-        window.location.href = 'task.html'
-        console.log(userLoc);
-        setUserLocation(userLoc);
-        break;
-    default:
-        break;
-}
-}
-
-
-
-
