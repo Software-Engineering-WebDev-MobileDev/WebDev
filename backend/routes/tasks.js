@@ -140,39 +140,37 @@ app.get("/tasks", async (req, res) => {
                             LEFT JOIN tblTaskComments AS tTC ON tT.TaskID = tTC.TaskID
                    WHERE Status <> 'Completed'
                    ORDER BY DueDate`;
-    const sessionid = req.headers['session_id'];
+    const session_id = req.headers['session_id'];
 
-    database.executeQuery(query).then((result) => {
-        res.status(200).send({
-            status: "success",
-            recipes: result.recordset
+    if (session_id === undefined) {
+        res.status(403).send(
+            {
+                status: "error",
+                reason: "Missing session_id in headers"
+            }
+        );
+    }
+    else {
+        database.sessionToEmployeeID(session_id).then((employee_id) => {
+            if (employee_id) {
+                database.executeQuery(query).then((result) => {
+                    res.status(200).send({
+                        status: "success",
+                        recipes: result.recordset
+                    });
+                }).catch((e) => {
+                    console.log(e);
+                    return_500(res);
+                });
+            }
+            else {
+                return_498(res);
+            }
+        }).catch((e) => {
+            console.error(e);
+            return_500(res);
         });
-    }).catch((e) => {
-        console.log(e);
-        return_500(res);
-    });
-
-    // database.sessionToEmployeeID(sessionid).then((employeeID) => {
-    //     if (employeeID){
-    //         database.executeQuery(query).then((result) => {
-    //             res.status(200).send({
-    //                 status: "success",
-    //                 users: result.recordset
-    //             });
-    //             //log results
-    //             console.log(result);
-    //         }).catch((e) => {
-    //             console.log(e);
-    //             return_500(res);
-    //         });
-    //     }
-    //     else{
-    //         return_498(res);
-    //     }
-    // }).catch((e) => {
-    //     console.log(e);
-    //     return_500(res);
-    // });
+    }
 });
 
 app.get("/task/:taskID", async (req, res) => {
