@@ -23,7 +23,6 @@ const app = express.Router();
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 
-// API routes (not worrying about session yet)
 
 app.post('/add_task', async (req, res) => {
     const sessionID = req.headers["session_id"];
@@ -35,7 +34,6 @@ app.post('/add_task', async (req, res) => {
     const commentID = database.gen_uuid();
     const dueDate = req.body["DueDate"];
 
-    console.log(req.body)
     const test_date = new Date(dueDate);
 
     if (sessionID === undefined) {
@@ -105,14 +103,19 @@ app.post('/add_task', async (req, res) => {
                         });
                     }
                     else {
-                        res.status(200).send({
+                        res.status(201).send({
                             status: "success",
                             taskID: taskID
                         });
                     }
                 }).catch((e) => {
-                    console.error(e);
-                    return_500(res);
+                    if (e.message.startsWith("The INSERT statement conflicted with the FOREIGN KEY constraint \"FK__tblTasks__Recipe")) {
+                        return_400(res, "Invalid RecipeID");
+                    }
+                    else {
+                        console.error(e);
+                        return_500(res);
+                    }
                 });
             }
             else {
@@ -174,27 +177,45 @@ app.get("/tasks", async (req, res) => {
 });
 
 app.get("/task/:taskID", async (req, res) => {
-    if (!req.params.taskID) {
-        return_400(res, "Bad request");
-        return;
-    }
+    const session_id = req.headers['session_id'];
     const taskID = req.params.taskID;
-    const query = `SELECT *
-                   FROM tblTasks
-                   WHERE TaskID = '${taskID}'`;
 
-    const sessionid = req.headers['session_id'];
-    database.executeQuery(query).then((result) => {
-        res.status(200).send({
-            status: "success",
-            recipe: result.recordset
-        });
-        //log results
-        console.log(result);
-    }).catch((e) => {
-        console.log(e);
-        return_500(res);
-    });
+    if (!req.params.taskID) {
+        return_400(res, "Missing taskID");
+    }
+    else if (session_id === undefined) {
+        res.status(403).send(
+            {
+                status: "error",
+                reason: "Missing session_id in headers"
+            }
+        );
+    }
+    else if (!taskID.match(/^\w{0,32}$/)) {
+        return_400(res, "Invalid taskID format")
+    }
+    else {
+        const query = `SELECT *
+                       FROM tblTasks
+                       WHERE TaskID = '${taskID}'`;
+
+        database.sessionToEmployeeID(session_id).then((employee_id) => {
+            if (employee_id) {
+                database.executeQuery(query).then((result) => {
+                    res.status(200).send({
+                        status: "success",
+                        recipe: result.recordset
+                    });
+                }).catch((e) => {
+                    console.log(e);
+                    return_500(res);
+                });
+            }
+            else {
+                return_498(res);
+            }
+        })
+    }
 });
 
 app.delete("/delete_task/:taskID", async (req, res) => {
@@ -272,7 +293,7 @@ app.post('/task_complete', (req, res) => {
                     database.executeQuery(
                         `UPDATE tblTasks SET Status = 'Completed' WHERE TaskID = '${task_id}'; 
                              INSERT INTO tblTaskStatusAudit (StatusAuditID, TaskID, OldStatus, NewStatus, StatusChangedByEmployeeID) VALUES ('${database.gen_uuid()}', '${task_id}', 'Pending', 'Completed', '${employee_id}')`
-                    ).then((result) => {
+                    ).then(() => {
                         res.status(200).send(
                             {
                                 status: "success"
