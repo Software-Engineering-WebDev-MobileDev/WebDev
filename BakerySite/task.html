@@ -1,45 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <!-- Should replace this with the templated version of it -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rolling Scones</title>
+{% extends 'base.html' %}
+{% set title = 'Tasks' %}
+{% set background = '' %}
+{% block content %}
+<div id="contentContainer"></div>
 
-    <style>
-        /* Chrome, Safari, Edge, Opera */
-        .settings-box input::-webkit-outer-spin-button,
-        .settings-box input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        /* Firefox */
-        .settings-box input[type=number] {
-            -moz-appearance: textfield;
-        }
-    </style>
-
-    <link href="images/BreadIcon.png" rel="icon" type="image/png"/><!--favicon next to website title-->
-    <link href="css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="css/animate.min.css" rel="stylesheet"/>
-    <link href="css/bootstrap-icons.css" rel="stylesheet"/>
-    <link href="css/dataTables.css" rel="stylesheet"/>
-    <link href="css/font.all.css" rel="stylesheet"/>
-    <link href="css/style.css" rel="stylesheet">
-
-    <!-- Probably should add this to the base template based on Lighthouse results. -->
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap" rel="preconnect">
-</head>
-<body>
-    <!--
-     Definitely will need to add the nav bar and whatever else from the main page that Gage has added.
-     So, TODO: Nav bar and such
-     -->
-
-    <div id="contentContainer"></div>
-
-    <script src="js/jsource/sweetalert.js"></script>
-    <script src="js/tasks.js" async="async"></script>
-
-</body>
+<script src="js/jsource/sweetalert.js"></script>
+<script src="js/tasks.js" async="async"></script>
+{% endblock %}
+{% block js %}
+{% endblock %}
