@@ -39,13 +39,9 @@
     <!-- Navbar (hidden on login page, visible after login) -->
     <nav class="navbar navbar-expand-md navbar-custom" style="display:none;" id="navMain">
         <div class="container-fluid">
-            <a class="navbar-brand" href="tasks.html">
+            <a class="navbar-brand" href="task.html">
                 <img src="images/BreadIcon.png" alt="Bakery Logo" width="50" height="50">
-<<<<<<< Updated upstream
-                Rolling Scones
-=======
                 <strong style="font-size: 1.5em"> The Rolling Scones </strong>   
->>>>>>> Stashed changes
             </a>
             <!-- Hamburger icon for small screens -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,10 +57,10 @@
                         <a class="nav-link" href="ingredient.html">Inventory</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="recipe.html">Recipe</a>
+                        <a class="nav-link" href="recipe.html">Recipes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="task.html">Task</a>
+                        <a class="nav-link" href="task.html">Tasks</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" id="btnLogout" href="#">Logout</a>
@@ -75,7 +71,7 @@
     </nav>
 
     <!-- Login Form -->
-    <div class="d-flex align-items-center justify-content-center">
+    <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
         <div id="divLogin" class="card col-10 col-md-8 col-lg-6 mt-3" style="display:block;">
             <div class="card-header">
                 <h2 class="text-center brown-text"><strong>The Rolling Scones</strong></h2>
@@ -91,7 +87,7 @@
                         <label for="txtLoginPassword" class="form-label text-black">Password</label>
                     </div>
                     <!-- Error message -->
-                    <div class="error-message" id="loginErrorMessage">Invalid login credentials! Please try again.</div>
+                    <div id="loginErrorMessage" class="emsg" style="display:none; color:red; font-weight:bold;"></div>
                     <button id="btnLogin" type="button" class="btn btn-primary col-12 mt-4"><strong>Login</strong></button>
                     <div class="text-center mt-4">
                         <span id="btnToggle" class="brown-text" role="button" tabindex="0"><strong>Don't have an account? Register here!</strong></span>
