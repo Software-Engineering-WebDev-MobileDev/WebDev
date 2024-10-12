@@ -5,6 +5,203 @@
 // User's session_id to be used
 const sessionID = localStorage.getItem('session_id');
 
+/**
+ * Renders the "Add a task" page.
+ * @returns {HTMLDivElement} The div of the "Add a task" page to be appended to the content container.
+ */
+function renderAddTask() {
+    /*
+     * Make the task table
+     */
+    let currentDiv
+    currentDiv = document.createElement('div');
+    currentDiv.style.alignContent = "center";
+    currentDiv.className = "container-fluid task-form";
+    const tableTaskContainer = document.createElement('table');
+    tableTaskContainer.id = "taskContainer";
+    tableTaskContainer.className = "table";
+    tableTaskContainer.hidden = true;
+    currentDiv.appendChild(tableTaskContainer);
+    contentContainer.appendChild(currentDiv);
+
+    /*
+     * Make the task addition form
+     */
+
+    currentDiv = document.createElement('div');
+    currentDiv.id = "taskFormContainer";
+    currentDiv.className = "container-fluid task-form";
+    currentDiv.hidden = true;
+    currentDiv.style.alignContent = "center";
+
+    // Heading
+    const tFCHeading = document.createElement('h1');
+    tFCHeading.style.fontWeight = "bold";
+    tFCHeading.innerText = "Create Task";
+    currentDiv.appendChild(tFCHeading);
+
+    const tFCForm = document.createElement('form');
+
+    // Recipe ID label
+    const tFCRecipeIDLabel = document.createElement('label');
+    tFCRecipeIDLabel.htmlFor = "recipeIDForm";
+    tFCRecipeIDLabel.className = "control-label";
+    tFCRecipeIDLabel.id = "recipeIDFormLabel";
+    tFCRecipeIDLabel.innerText = "Recipe";
+    tFCForm.appendChild(tFCRecipeIDLabel);
+
+    // Recipe ID Select
+    const tFCRecipeIDSelect = document.createElement('select');
+    tFCRecipeIDSelect.className = "form-control";
+    tFCRecipeIDSelect.id = "recipeIDForm";
+    tFCRecipeIDSelect.name = "recipeIDForm";
+    tFCRecipeIDSelect.required = true;
+    tFCRecipeIDSelect.ariaRequired = "true";
+    tFCForm.appendChild(tFCRecipeIDSelect);
+    tFCForm.appendChild(document.createElement('br'));
+
+    // Amount to bake label
+    const tFCAmountToBakeLabel = document.createElement('label');
+    tFCAmountToBakeLabel.htmlFor = "amountToBake";
+    tFCAmountToBakeLabel.className = "control-label";
+    tFCAmountToBakeLabel.id = "amountToBakeLabel";
+    tFCAmountToBakeLabel.innerText = "Total Amount";
+    tFCForm.appendChild(tFCAmountToBakeLabel);
+
+    // Amount to bake input
+    const tFCAmountToBakeInput = document.createElement('input');
+    tFCAmountToBakeInput.id = "amountToBake";
+    tFCAmountToBakeInput.className = "form-control";
+    tFCAmountToBakeInput.type = "number";
+    tFCAmountToBakeInput.placeholder = "0";
+    tFCAmountToBakeInput.min = "1";
+    tFCAmountToBakeInput.max = "999999999";
+    tFCAmountToBakeInput.required = true;
+    tFCAmountToBakeInput.ariaRequired = "true";
+    tFCForm.appendChild(tFCAmountToBakeInput);
+    tFCForm.appendChild(document.createElement('br'));
+
+    // Due date label
+    const tFCDueDateLabel = document.createElement('label');
+    tFCDueDateLabel.htmlFor = "dueDate";
+    tFCDueDateLabel.className = "control-label";
+    tFCDueDateLabel.innerText = "Due Date";
+    tFCForm.appendChild(tFCDueDateLabel);
+
+    // Due date input
+    const tFCDueDateInput = document.createElement('input');
+    tFCDueDateInput.type = "date";
+    tFCDueDateInput.id = "dueDate";
+    tFCDueDateInput.className = "form-control";
+    tFCDueDateInput.required = true;
+    tFCDueDateInput.ariaRequired = "true";
+    tFCForm.appendChild(tFCDueDateInput);
+    tFCForm.appendChild(document.createElement('br'));
+
+    // Assignee label
+    const tFCAssigneeLabel = document.createElement('label');
+    tFCAssigneeLabel.htmlFor = "assignedEmployeeID";
+    tFCAssigneeLabel.className = "control-label";
+    tFCAssigneeLabel.innerText = "Assignee";
+    tFCForm.appendChild(tFCAssigneeLabel);
+
+    // Assignee form
+    const tFCAssigneeForm = document.createElement('input');
+    tFCAssigneeForm.type = "text";
+    tFCAssigneeForm.id = "assignedEmployeeID";
+    tFCAssigneeForm.minLength = 1;
+    tFCAssigneeForm.maxLength = 50;
+    tFCAssigneeForm.className = "form-control";
+    tFCAssigneeForm.placeholder = "Type assignee's employee id...";
+    tFCAssigneeForm.pattern = "\\w{1,50}";
+    tFCAssigneeForm.title = "Employee id should be 1-50 letters or numbers";
+    tFCAssigneeForm.required = true;
+    tFCAssigneeForm.ariaRequired = "true";
+    tFCForm.appendChild(tFCAssigneeForm);
+    tFCForm.appendChild(document.createElement('br'));
+
+    // Task notes label
+    const tFCNotesLabel = document.createElement('label');
+    tFCNotesLabel.htmlFor = "taskNotes";
+    tFCNotesLabel.className = "control-label";
+    tFCNotesLabel.innerText = "Notes:";
+    tFCForm.appendChild(tFCNotesLabel);
+    tFCForm.appendChild(document.createElement('br'));
+
+    // Task notes textarea element
+    const tFCNotesTA = document.createElement('textarea');
+    tFCNotesTA.type = "text";
+    tFCNotesTA.id = "taskNotes";
+    tFCNotesTA.minLength = 0;
+    tFCNotesTA.maxLength = 2 ** 31 - 1;
+    tFCNotesTA.className = "form-control";
+    tFCNotesTA.placeholder = "Enter any notes for this task...";
+    tFCForm.appendChild(tFCNotesTA);
+    tFCForm.appendChild(document.createElement('br'));
+
+    // Button div
+    const tFCButtonDiv = document.createElement('div');
+    tFCButtonDiv.align = "center";
+
+    // Submit button
+    const tFCSubmit = document.createElement('button');
+    tFCSubmit.type = "button";
+    tFCSubmit.className = "form-control btn btn-primary col-12 mt-4";
+    tFCSubmit.style.width = "50%";
+    tFCSubmit.style.marginBottom = "1em";
+    tFCSubmit.id = "submitTaskButton";
+    tFCSubmit.innerText = "Submit";
+    tFCButtonDiv.appendChild(tFCSubmit);
+    tFCButtonDiv.appendChild(document.createElement('br'));
+
+    // Back button
+    const tFCBackButton = document.createElement('span');
+    tFCBackButton.id = "taskFormBackButton";
+    tFCBackButton.className = "brown-text";
+    tFCBackButton.role = "button";
+    tFCBackButton.tabIndex = 0;
+    tFCBackButton.innerHTML = "<strong>Back</strong>";
+    tFCButtonDiv.appendChild(tFCBackButton);
+
+
+    currentDiv.appendChild(tFCForm);
+    currentDiv.appendChild(tFCButtonDiv);
+    return currentDiv;
+}
+
+/*
+ * Render the initial page
+ */
+const contentContainer = document.getElementById('contentContainer');
+
+// Create the task add button
+let currentDiv = document.createElement('div');
+currentDiv.style.alignContent = "center";
+
+// Then make the button
+const tABButton = document.createElement('button');
+tABButton.className = "btn btn-primary col-12 mt-4";
+tABButton.id = "taskAddButton";
+tABButton.name = "taskAddButton";
+tABButton.type = "button";
+tABButton.innerText = "Add a task";
+currentDiv.appendChild(tABButton)
+contentContainer.appendChild(currentDiv);
+
+// Render the add task page
+contentContainer.appendChild(renderAddTask());
+
+// Finally, add the task viewer div
+const tVDiv = document.createElement('div');
+tVDiv.id = "taskViewer";
+tVDiv.className = "container-fluid task-form";
+tVDiv.style.alignContent = "center";
+tVDiv.hidden = true;
+tVDiv.ariaHidden = "true";
+
+contentContainer.appendChild(tVDiv)
+
+
 /*
  * Task list elements
  */
@@ -805,7 +1002,7 @@ async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID, Comm
  */
 async function addTaskButtonHandler(taskBox, addTaskButton) {
     try {
-        // If there are not recipes cached already, grab those
+        // If there are no recipes cached already, grab those
         if (recipeList.length === 0) {
             recipeList = await fetchRecipes();
         }
