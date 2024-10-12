@@ -77,7 +77,7 @@ app.get("/users_email", (req, res) => {
                 }
             );
         }
-        else if (!employee_id.match(/[0-9A-Za-z]{0,32}/)) {
+        else if (!employee_id.match(/[0-9A-Za-z]{0,50}/)) {
             return_400(res, "Employee is not valid");
         }
         else {
@@ -304,7 +304,7 @@ app.get('/users_phone', (req, res) => {
                 }
             );
         }
-        else if (!employee_id.match(/[0-9A-Za-z]{0,32}/)) {
+        else if (!employee_id.match(/[0-9A-Za-z]{0,50}/)) {
             return_400(res, "Employee is not valid");
         }
         else {

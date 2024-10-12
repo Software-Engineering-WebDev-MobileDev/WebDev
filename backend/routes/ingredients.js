@@ -185,7 +185,7 @@ app.post("/ingredient", (req, res) => {
         // Make sure that relevant sentence-like info can be inserted into the DB without SQL injection
         const sentence_regex = /^[\w\s,.!?'"(){}\[\]:-=]{1,50}(?!--|;)$/;
         // The biggest floating point number that will be stored by the database
-        const decimal_10whole_2fraction_max = 9_999_999_999.99;
+        const decimal_10whole_2fraction_max = 999_999_999.99;
 
         if (session_id === undefined) {
             return_400(res, "Missing session_id in headers");
