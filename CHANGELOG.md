@@ -31,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Task adding
   - Task updates
   - Task completion button
+  - Practically all client-side rendered
 - Added input validation to task routes
 - Added session id requirement to task routes
 
@@ -74,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Username or Email is now just Username on the login page
 - Register and Return buttons are now javascript based instead of hrefs
-- About page return button modified the same way as previous two
+- About page return button modified the same way as the previous two
 
 ## Fixed
 - TypeError related to non-existent addEventListener on txtLoginEmail
