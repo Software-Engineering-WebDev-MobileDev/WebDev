@@ -137,6 +137,160 @@ async function markComplete(sessionID, taskID) {
 }
 
 /**
+ * Update a task with the API.
+ * @param taskID {String} The id of the task to be updated.
+ * @param RecipeID {String} The id of the recipe associated with this task.
+ * @param AmountToBake {HTMLInputElement} The HTML input element for the amount to bake.
+ * @param Status {String} The current status of the task.
+ * @param DueDate {HTMLInputElement} The HTML date input element for the due date.
+ * @param AssignedEmployeeID {HTMLInputElement} The HTML input element for the assigned employee's id.
+ * @param Comments {HTMLTextAreaElement} The HTML text area element for the notes related to this task.
+ * @param CommentID {String|undefined} The comment id (if any) associated with this task.
+ * @returns {Promise<Response|string|string>}
+ */
+async function updateTask(taskID, RecipeID, AmountToBake, Status, DueDate, AssignedEmployeeID, Comments, CommentID) {
+    /*
+     * Little bit of validation
+     */
+    if (AmountToBake.value < 1) {
+        Swal.fire("Amount to bake must be greater than 1!");
+        return "error";
+    }
+    else if (AmountToBake.value > 999_999_999) {
+        Swal.fire("That's way too much to bake, friend. Try a value lower than 999,999,999");
+        return "error";
+    }
+    else if (!AssignedEmployeeID.value.match(/\w{1,50}/)) {
+        Swal.fire("That's not a valid employee id format! Check your input and try again. Employee id should be 1-50 letters or numbers");
+        return "error";
+    }
+    else if (sessionID) {
+        // If there are comments and an ID, send them in the body
+        if (Comments.value.length > 0 && CommentID) {
+            return fetch(`/api/update_task/${taskID}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        session_id: sessionID,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        RecipeID: RecipeID,
+                        AmountToBake: AmountToBake.value,
+                        DueDate: new Date(DueDate.value).toISOString(),
+                        AssignedEmployeeID: AssignedEmployeeID.value,
+                        Comments: Comments.value.replace(/'/g, '&quot;'),
+                        CommentID: CommentID,
+                        Status: Status
+                    })
+                }).then(async (response) => {
+                if (response.status < 400) {
+                    return response.json();
+                }
+                else {
+                    console.error(await response.json());
+                    return "error"
+                }
+            }).catch((e) => {
+                console.error(e);
+                return "error";
+            });
+        }
+        // If the comments are new, indicate that by omission of the id
+        else if (Comments.value.length > 0) {
+            return fetch(`/api/update_task/${taskID}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        session_id: sessionID,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        RecipeID: RecipeID,
+                        AmountToBake: AmountToBake.value,
+                        DueDate: new Date(DueDate.value).toISOString(),
+                        AssignedEmployeeID: AssignedEmployeeID.value,
+                        Comments: Comments.value.replace(/'/g, '&quot;'),
+                        Status: Status
+                    })
+                }).then(async (response) => {
+                if (response.status < 400) {
+                    return response.json();
+                }
+                else {
+                    console.error(await response.json());
+                    return "error"
+                }
+            }).catch((e) => {
+                console.error(e);
+                return "error";
+            });
+        }
+        else if (CommentID) {
+            return fetch(`/api/update_task/${taskID}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        session_id: sessionID,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        RecipeID: RecipeID,
+                        AmountToBake: AmountToBake.value,
+                        DueDate: new Date(DueDate.value).toISOString(),
+                        AssignedEmployeeID: AssignedEmployeeID.value,
+                        CommentID: CommentID,
+                        Status: Status
+                    })
+                }).then(async (response) => {
+                if (response.status < 400) {
+                    return response.json();
+                }
+                else {
+                    console.error(await response.json());
+                    return "error"
+                }
+            }).catch((e) => {
+                console.error(e);
+                return "error";
+            });
+        }
+        // Otherwise, just yeet the other stuff at the API
+        else {
+            return fetch(`/api/update_task/${taskID}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        session_id: sessionID,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        RecipeID: RecipeID,
+                        AmountToBake: AmountToBake.value,
+                        DueDate: new Date(DueDate.value).toISOString(),
+                        AssignedEmployeeID: AssignedEmployeeID.value,
+                        Status: Status
+                    })
+                }).then(async (response) => {
+                if (response.status < 400) {
+                    return response.json();
+                }
+                else {
+                    console.error(await response.json());
+                    return "error"
+                }
+            }).catch((e) => {
+                console.error(e);
+                return "error";
+            });
+        }
+    }
+    else {
+        return "error";
+    }
+}
+
+/**
  * Callback function for rendering the task view interface.
  * @param task {Object} the task object (from the API) to render.
  * @param taskViewer {HTMLElement} the taskViewer div to render the interface in.
@@ -244,7 +398,7 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     const taskNotes = document.createElement('textarea');
     taskNotes.type = "text";
     taskNotes.id = "recipeTaskNotes";
-    taskNotes.maxLength = 255;
+    taskNotes.maxLength = 2 ** 31 - 1;
     taskNotes.minLength = 0;
     taskNotes.className = "form-control";
     if (task["Comments"]) {
@@ -272,8 +426,35 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     updateButton.style.marginBottom = "1em";
     updateButton.id = "updateTaskButton";
     updateButton.innerText = "Update Task";
+    updateButton.addEventListener(
+        'mousedown',
+        async () => {
+            let result = await updateTask(
+                task["TaskID"],
+                task["RecipeID"],
+                document.getElementById('recipeAmount'),
+                task["Status"],
+                document.getElementById('recipeDueDate'),
+                document.getElementById('recipeAssignedEmployeeID'),
+                document.getElementById('recipeTaskNotes'),
+                task["CommentID"]);
+
+            if (result !== "error") {
+                // Get the task list again
+                taskList = [];
+                await renderTasks();
+
+                taskViewer.hidden = true;
+                addTaskButton.hidden = false;
+                taskBox.hidden = false;
+            }
+            else {
+                // Hey, user, you've done messed up
+                Swal.fire("Invalid task!");
+            }
+        }
+    )
     buttonDiv.appendChild(updateButton);
-    // TODO: Add event listener for update button
 
     // Button spacer (a.k.a., a tab character)
     const buttonSpacer = document.createElement('p');
@@ -304,7 +485,6 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     )
     buttonDiv.appendChild(doneButton);
     buttonDiv.appendChild(lineBreak.cloneNode());
-    // TODO: Add event listener for done button
 
     // Back button
     const backButtonDiv = document.createElement('div');
@@ -487,7 +667,7 @@ async function renderTasks() {
  */
 async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID, Comments) {
     if (sessionID) {
-        // If there are comments, send them in the headers
+        // If there are comments, send them in the body
         if (Comments.length > 0) {
             return fetch("/api/add_task",
                 {
