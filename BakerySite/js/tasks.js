@@ -184,16 +184,26 @@ async function updateTask(taskID, RecipeID, AmountToBake, Status, DueDate, Assig
                         Status: Status
                     })
                 }).then(async (response) => {
-                if (response.status < 400) {
-                    return response.json();
+                    if (response.status < 400) {
+                        return response.json();
+                    }
+                    else if (response.status === 400) {
+                        let result = await response.json();
+                        return result["reason"];
+                    }
+                    else {
+                        console.error(await response.json());
+                        return "error"
+                    }
+            }).catch(async (e) => {
+                if (e.status === 400) {
+                    let result = await e.json();
+                    return result["reason"];
                 }
                 else {
-                    console.error(await response.json());
-                    return "error"
+                    console.error(e);
+                    return "error";
                 }
-            }).catch((e) => {
-                console.error(e);
-                return "error";
             });
         }
         // If the comments are new, indicate that by omission of the id
@@ -214,17 +224,27 @@ async function updateTask(taskID, RecipeID, AmountToBake, Status, DueDate, Assig
                         Status: Status
                     })
                 }).then(async (response) => {
-                if (response.status < 400) {
-                    return response.json();
-                }
-                else {
-                    console.error(await response.json());
-                    return "error"
-                }
-            }).catch((e) => {
-                console.error(e);
-                return "error";
-            });
+                    if (response.status < 400) {
+                        return response.json();
+                    }
+                    else if (response.status === 400) {
+                        let result = await response.json();
+                        return result["reason"];
+                    }
+                    else {
+                        console.error(await response.json());
+                        return "error"
+                    }
+                }).catch(async (e) => {
+                    if (e.status === 400) {
+                        let result = await e.json();
+                        return result["reason"];
+                    }
+                    else {
+                        console.error(e);
+                        return "error";
+                    }
+                });
         }
         else if (CommentID) {
             return fetch(`/api/update_task/${taskID}`,
@@ -243,17 +263,27 @@ async function updateTask(taskID, RecipeID, AmountToBake, Status, DueDate, Assig
                         Status: Status
                     })
                 }).then(async (response) => {
-                if (response.status < 400) {
-                    return response.json();
-                }
-                else {
-                    console.error(await response.json());
-                    return "error"
-                }
-            }).catch((e) => {
-                console.error(e);
-                return "error";
-            });
+                    if (response.status < 400) {
+                        return response.json();
+                    }
+                    else if (response.status === 400) {
+                        let result = await response.json();
+                        return result["reason"];
+                    }
+                    else {
+                        console.error(await response.json());
+                        return "error"
+                    }
+                }).catch(async (e) => {
+                    if (e.status === 400) {
+                        let result = await e.json();
+                        return result["reason"];
+                    }
+                    else {
+                        console.error(e);
+                        return "error";
+                    }
+                });
         }
         // Otherwise, just yeet the other stuff at the API
         else {
@@ -272,16 +302,26 @@ async function updateTask(taskID, RecipeID, AmountToBake, Status, DueDate, Assig
                         Status: Status
                     })
                 }).then(async (response) => {
-                if (response.status < 400) {
-                    return response.json();
+                    if (response.status < 400) {
+                        return response.json();
+                    }
+                    else if (response.status === 400) {
+                        let result = await response.json();
+                        return result["reason"];
+                    }
+                    else {
+                        console.error(await response.json());
+                        return "error"
+                    }
+            }).catch(async (e) => {
+                if (e.status === 400) {
+                    let result = await e.json();
+                    return result["reason"];
                 }
                 else {
-                    console.error(await response.json());
-                    return "error"
+                    console.error(e);
+                    return "error";
                 }
-            }).catch((e) => {
-                console.error(e);
-                return "error";
             });
         }
     }
@@ -306,6 +346,7 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     // Make the title
     const titleElement = document.createElement('h1');
     titleElement.innerText = `Make: ${task["RecipeName"]}`;
+    titleElement.style.fontWeight = "bold";
     taskViewer.appendChild(titleElement);
 
     // Make the recipe element
@@ -439,7 +480,17 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
                 document.getElementById('recipeTaskNotes'),
                 task["CommentID"]);
 
-            if (result !== "error") {
+            if (result === "error") {
+                // Hey, user, you've done messed up
+                Swal.fire("Invalid task!");
+            }
+            else if (result === "Invalid employee id") {
+                Swal.fire("Invalid assignee!");
+            }
+            else if (result === "Invalid recipe id") {
+                Swal.fire("Invalid recipe!");
+            }
+            else {
                 // Get the task list again
                 taskList = [];
                 await renderTasks();
@@ -447,10 +498,6 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
                 taskViewer.hidden = true;
                 addTaskButton.hidden = false;
                 taskBox.hidden = false;
-            }
-            else {
-                // Hey, user, you've done messed up
-                Swal.fire("Invalid task!");
             }
         }
     )
@@ -684,16 +731,26 @@ async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID, Comm
                         Comments: Comments
                     })
                 }).then(async (response) => {
-                if (response.status < 400) {
-                    return response.json();
+                    if (response.status < 400) {
+                        return response.json();
+                    }
+                    else if (response.status === 400) {
+                        let result = await response.json();
+                        return result["reason"];
+                    }
+                    else {
+                        console.error(await response.json());
+                        return "error"
+                    }
+            }).catch(async (e) => {
+                if (e.status === 400) {
+                    let result = await e.json();
+                    return result["reason"];
                 }
                 else {
-                    console.error(await response.json());
-                    return "error"
+                    console.error(e);
+                    return "error";
                 }
-            }).catch((e) => {
-                console.error(e);
-                return "error";
             });
         }
         // Otherwise, just yeet the other stuff at the API
@@ -712,16 +769,26 @@ async function addTask(RecipeID, AmountToBake, DueDate, AssignedEmployeeID, Comm
                         AssignedEmployeeID: AssignedEmployeeID
                     })
                 }).then(async (response) => {
-                if (response.status < 400) {
-                    return response.json();
+                    if (response.status < 400) {
+                        return response.json();
+                    }
+                    else if (response.status === 400) {
+                        let result = await response.json();
+                        return result["reason"];
+                    }
+                    else {
+                        console.error(await response.json());
+                        return "error"
+                    }
+            }).catch(async (e) => {
+                if (e.status === 400) {
+                    let result = await e.json();
+                    return result["reason"];
                 }
                 else {
-                    console.error(await response.json());
-                    return "error"
+                    console.error(e);
+                    return "error";
                 }
-            }).catch((e) => {
-                console.error(e);
-                return "error";
             });
         }
     }
@@ -814,7 +881,17 @@ async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeI
             );
 
             // Check for an error, rendering the task page if no error was returned
-            if (result !== "error") {
+            if (result === "error") {
+                // Hey, user, you've done messed up
+                Swal.fire("Invalid task!");
+            }
+            else if (result === "Invalid employee id") {
+                Swal.fire("Invalid assignee!");
+            }
+            else if (result === "Invalid recipe id") {
+                Swal.fire("Invalid recipe!");
+            }
+            else {
                 // Get the task list again
                 taskList = [];
                 await renderTasks();
@@ -825,10 +902,6 @@ async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeI
                 // Show the rest of the interface
                 taskBox.hidden = false;
                 addTaskButton.hidden = false;
-            }
-            else {
-                // Hey, user, you've done messed up
-                Swal.fire("Invalid task!");
             }
         }
     }
@@ -874,7 +947,8 @@ submitTaskButton.addEventListener(
     }
 );
 
-/* Add an event listener for the back button that shows the hidden task list.
+/*
+ * Add an event listener for the back button that shows the hidden task list.
  * This does not require refreshing the list because the user added nothing.
  */
 taskFormBackButton.addEventListener(

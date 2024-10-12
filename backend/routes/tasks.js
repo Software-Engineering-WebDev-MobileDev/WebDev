@@ -110,7 +110,10 @@ app.post('/add_task', async (req, res) => {
                         }
                     }).catch((e) => {
                         if (e.message.startsWith("The INSERT statement conflicted with the FOREIGN KEY constraint \"FK__tblTasks__Recipe")) {
-                            return_400(res, "Invalid RecipeID");
+                            return_400(res, "Invalid recipe id");
+                        }
+                        if (e.message.startsWith("The INSERT statement conflicted with the FOREIGN KEY constraint \"FK__tblTasks__Assign")) {
+                            return_400(res, "Invalid employee id");
                         }
                         else {
                             console.error(e);
@@ -438,8 +441,16 @@ app.put("/update_task/:taskID", async (req, res) => {
                         return_500(res, "Something went wrong on that update. Try creating the task?")
                     }
                 }).catch((e) => {
-                    console.error(e);
-                    return_500(res);
+                    if (e.message.startsWith("The UPDATE statement conflicted with the FOREIGN KEY constraint \"FK__tblTasks__Assign")) {
+                        return_400(res, "Invalid employee id");
+                    }
+                    else if (e.message.startsWith("The UPDATE statement conflicted with the FOREIGN KEY constraint \"FK__tblTasks__Recipe")) {
+                        return_400(res, "Invalid recipe id");
+                    }
+                    else {
+                        console.error(e);
+                        return_500(res);
+                    }
                 });
             }
             else {
