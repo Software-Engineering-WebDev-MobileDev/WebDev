@@ -84,7 +84,7 @@ app.post('/add_task', async (req, res) => {
                         `INSERT INTO tblTasks (TaskID, RecipeID, AmountToBake, DueDate, AssignedEmployeeID)
                          VALUES ('${taskID}', '${recipe_id}', '${amount_to_bake}', '${req.body.DueDate}',
                                  '${req.body.AssignedEmployeeID}')`
-                    ).then((result) => {
+                    ).then(() => {
                         if (comments !== undefined) {
                             database.executeQuery(
                                 `INSERT INTO tblTaskComments (CommentID, TaskID, EmployeeID, CommentText)
@@ -147,7 +147,8 @@ app.get("/tasks", async (req, res) => {
                               Status,
                               AssignmentDate,
                               DueDate,
-                              CommentText        AS Comments
+                              CommentText        AS Comments,
+                              CommentID
                        FROM tblTasks AS tT
                                 INNER JOIN tblRecipes AS tR ON tT.RecipeID = tR.RecipeID
                                 LEFT JOIN tblTaskComments AS tTC ON tT.TaskID = tTC.TaskID
@@ -172,7 +173,7 @@ app.get("/tasks", async (req, res) => {
                             recipes: result.recordset
                         });
                     }).catch((e) => {
-                        console.log(e);
+                        console.error(e);
                         return_500(res);
                     });
                 }
@@ -227,7 +228,7 @@ app.get("/task/:taskID", async (req, res) => {
                             recipe: result.recordset
                         });
                     }).catch((e) => {
-                        console.log(e);
+                        console.error(e);
                         return_500(res);
                     });
                 }
@@ -279,15 +280,17 @@ app.delete("/delete_task/:taskID", async (req, res) => {
                             status: "success"
                         });
                     }).catch((e) => {
-                        console.log(e);
+                        console.error(e);
                         return_500(res);
                     });
                 }
                 else {
                     return_498(res);
                 }
+            }).catch((e) => {
+                console.error(e);
+                return_500(res);
             })
-
         }
     }
     catch (e) {
@@ -301,31 +304,149 @@ app.delete("/delete_task/:taskID", async (req, res) => {
 });
 
 app.put("/update_task/:taskID", async (req, res) => {
-    const taskID = req.params.taskID;
-    const now = new Date();
-    // Format the date into SQL-friendly format (YYYY-MM-DD HH:MM:SS)
-    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+    const task_id = req.params.taskID;
 
-    const query = `
-        UPDATE tblTasks
-        SET RecipeID           = '${req.body.RecipeID}',
-            AmountToBake       = '${req.body.AmountToBake}',
-            Status             = '${req.body.Status}',
-            DueDate            = '${req.body.DueDate}',
-            CompletionDate     = '${req.body.CompletionDate}',
-            AssignedEmployeeID = '${req.body.AssignedEmployeeID}'
-        WHERE TaskID = '${taskID}'
-    `;
+    const session_id = req.headers["session_id"];
+    const recipe_id = req.body["RecipeID"];
+    const amount_to_bake = req.body["AmountToBake"];
+    const assigned_employee_id = req.body["AssignedEmployeeID"];
+    const comments = req.body["Comments"];
+    const comment_id = req.body["CommentID"];
+    const dueDate = req.body["DueDate"];
+    const status = req.body["Status"];
 
-    database.executeQuery(query).then((result) => {
-        res.status(200).send({
-            status: "successful update",
-            // users: result.recordset
-        });
-    }).catch((e) => {
-        console.error(e);
-        return_500(res);
-    });
+    const test_date = new Date(dueDate);
+
+    if (session_id === undefined) {
+        res.status(403).send(
+            {
+                status: "error",
+                reason: "Missing session_id in headers"
+            }
+        );
+    }
+    else if (recipe_id === undefined) {
+        return_400(res, "Missing RecipeID in body");
+    }
+    else if (amount_to_bake === undefined) {
+        return_400(res, "Missing AmountToBake in body");
+    }
+    else if (assigned_employee_id === undefined) {
+        return_400(res, "Missing AssignedEmployeeID in body")
+    }
+    else if (comment_id !== undefined && !comment_id.match(/^\w{0,32}$/)) {
+        return_400(res, "Invalid CommentID format");
+    }
+    // VARCHAR(MAX) is up to 2^31-1 bytes, so the bee movie script shouldn't break this. Just might be a touch slow
+    else if (comments !== undefined && !comments.match(/^[\w\s\r.,\-!:;?+=#@$%&^()\[\]"*\/]+$/g) && comments.length < 2 ** 31 - 1) {
+        return_400(res,
+            "Invalid comments supplied. Make sure you're validating that correctly before sending it."
+        );
+    }
+    // TODO: Drop tables and revalidate with hyphen removed from the regex and length changed to 32
+    else if (!recipe_id.match(/^[\w-]{0,36}$/)) {
+        return_400(res, "Invalid RecipeID supplied");
+    }
+    else if (amount_to_bake > decimal_10_whole_2_fraction) {
+        return_400(res,
+            `AmountToBake too large. Make sure that it is less than ${decimal_10_whole_2_fraction}`
+        );
+    }
+    else if (amount_to_bake <= 0) {
+        return_400(res, "AmountToBake too small. You can't unbake product.");
+    }
+    else if (!assigned_employee_id.match(/\w{1,50}/)) {
+        return_400(res, "Invalid EmployeeID format");
+    }
+    else if (test_date.toString() === "Invalid Date" || isNaN(test_date.getTime()) || test_date.toISOString() !== dueDate) {
+        return_400(res, "Invalid date provided")
+    }
+    else if (!task_id.match(/^\w{0,32}$/)) {
+        return_400(res, "Invalid taskID format")
+    }
+    else if (status !== "Pending" && status !== "Completed") {
+        return_400(res, "Invalid task status");
+    }
+    else {
+        database.sessionToEmployeeID(session_id).then((employee_id) => {
+            if (employee_id) {
+                const query = `
+                    UPDATE tblTasks
+                    SET RecipeID           = '${recipe_id}',
+                        AmountToBake       = '${amount_to_bake}',
+                        Status             = '${status}',
+                        DueDate            = '${dueDate}',
+                        CompletionDate     = GETDATE(),
+                        AssignedEmployeeID = '${assigned_employee_id}'
+                    WHERE TaskID = '${task_id}'
+                `;
+
+                database.executeQuery(query).then((result) => {
+                    if (result.rowsAffected[0] > 0) {
+                        if (comment_id === undefined && comments) {
+                            database.executeQuery(
+                                `INSERT INTO tblTaskComments (CommentID, TaskID, EmployeeID, CommentText)
+                                 VALUES ('${database.gen_uuid()}', '${task_id}', '${employee_id}', '${comments}')`
+                            ).then(() => {
+                                res.status(201).send(
+                                    {
+                                        status: "success"
+                                    }
+                                );
+                            }).catch((e) => {
+                                console.error(e);
+                                return_500(res);
+                            });
+                        }
+                        else if (comment_id && comments === undefined) {
+                            database.executeQuery(
+                                `DELETE
+                                 FROM tblTaskComments
+                                 WHERE CommentID = '${comment_id}'`
+                            ).then(() => {
+                                res.status(200).send(
+                                    {
+                                        status: "success"
+                                    }
+                                );
+                            }).catch((e) => {
+                                console.error(e);
+                                return_500(res);
+                            });
+                        }
+                        else if (comment_id && comments) {
+                            database.executeQuery(
+                                `UPDATE tblTaskComments SET CommentText = '${comments}' WHERE CommentID = '${comment_id}'`
+                            ).then(() => {
+                                res.status(200).send(
+                                    {
+                                        status: "success"
+                                    }
+                                );
+                            }).catch((e) => {
+                                console.error(e);
+                                return_500(res);
+                            });
+                        }
+                        else {
+                            res.status(200).send({
+                                status: "success",
+                            });
+                        }
+                    }
+                    else {
+                        return_500(res, "Something went wrong on that update. Try creating the task?")
+                    }
+                }).catch((e) => {
+                    console.error(e);
+                    return_500(res);
+                });
+            }
+            else {
+                return_498(res);
+            }
+        })
+    }
 });
 
 app.post('/task_complete', (req, res) => {
@@ -350,7 +471,8 @@ app.post('/task_complete', (req, res) => {
                 if (employee_id) {
                     database.executeQuery(
                         `UPDATE tblTasks
-                         SET Status = 'Completed'
+                         SET Status         = 'Completed',
+                             CompletionDate = GETDATE()
                          WHERE TaskID = '${task_id}';
                         INSERT INTO tblTaskStatusAudit (StatusAuditID, TaskID, OldStatus, NewStatus,
                                                         StatusChangedByEmployeeID)
