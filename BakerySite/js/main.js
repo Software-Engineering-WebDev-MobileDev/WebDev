@@ -7,20 +7,20 @@ $(document).ready(function() {
         //localStorage.setItem('session_id', sessionID);
         
         $('#divLogin').hide();
-        $('#divDashboard').slideDown();
-        $("#btnLogout").show()
-        $("#btnAccount").show()
-        $("#btnDashboard").show()
-        $("#btnIngredient").show()
-        $("#btnRecipe").show()
-        $("#btnTask").show()
+        $('#btnHamburger').show();
+        $('#divErrorPage').slideDown();
+        $("#btnLogout").show();
+        $("#btnAccount").show();
+        $("#btnDashboard").show();
+        $("#btnIngredient").show();
+        $("#btnRecipe").show();
+        $("#btnTask").show();
         UpdateDivEnvironment();
         updateEggInfo();
         fillTable();
         
     }
-    
-})
+});
 
 /*
 function check(a,b){
@@ -108,7 +108,7 @@ if (sessionStorage.getItem('refresh'))
 else{
   sesssionStorage.setItem('refresh', true)
   switch (userLoc) {
-    case 'dashboard':
+    case 'errorpage':
     case 'registration':
     case 'login':
         window.location.href = 'index.html'
