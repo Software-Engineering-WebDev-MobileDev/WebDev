@@ -150,11 +150,12 @@ app.get("/tasks", async (req, res) => {
                               AssignmentDate,
                               DueDate,
                               CommentText        AS Comments,
-                              CommentID
+                              CommentID,
+                              CompletionDate
                        FROM tblTasks AS tT
                                 INNER JOIN tblRecipes AS tR ON tT.RecipeID = tR.RecipeID
                                 LEFT JOIN tblTaskComments AS tTC ON tT.TaskID = tTC.TaskID
-                       WHERE Status <> 'Completed'
+                       WHERE (CompletionDate >= DATEADD(day, -7, GETDATE()) OR CompletionDate IS NULL)
                        ORDER BY DueDate`;
         const session_id = req.headers['session_id'];
 
@@ -365,7 +366,7 @@ app.put("/update_task/:taskID", async (req, res) => {
     else if (!task_id.match(/^\w{0,32}$/)) {
         return_400(res, "Invalid taskID format")
     }
-    else if (status !== "Pending" && status !== "Completed") {
+    else if (status !== "Pending" && status !== "Completed" && status !== "In Progress") {
         return_400(res, "Invalid task status");
     }
     else {
@@ -462,6 +463,8 @@ app.post('/task_complete', (req, res) => {
     try {
         const session_id = req.headers["session_id"];
         const task_id = req.headers["task_id"];
+        const task_status = req.headers["task_status"];
+
 
         if (session_id === undefined) {
             res.status(403).send(
@@ -474,13 +477,18 @@ app.post('/task_complete', (req, res) => {
         else if (!task_id.match(/^\w{0,32}$/)) {
             return_400(res, "Invalid task_id supplied");
         }
+        else if (task_status !== "Pending" &&  task_status !== "Completed" && task_status !== "In Progress" && task_status !== undefined) {
+            return_400(res, "Invalid task status");
+        }
         else {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
+                    const newStatus = task_status !== undefined ? task_status : "Completed";
+                    const completionDate = newStatus === "Completed" ? "GETDATE()" : null;
                     database.executeQuery(
                         `UPDATE tblTasks
-                         SET Status         = 'Completed',
-                             CompletionDate = GETDATE()
+                         SET Status             = '${newStatus}',
+                             CompletionDate = ${completionDate}
                          WHERE TaskID = '${task_id}';
                         INSERT INTO tblTaskStatusAudit (StatusAuditID, TaskID, OldStatus, NewStatus,
                                                         StatusChangedByEmployeeID)
