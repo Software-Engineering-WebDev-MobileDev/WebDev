@@ -42,11 +42,8 @@ $('#btnLogin').on('click',function(){
     let strPassword = $('#txtLoginPassword').val();
 
     if(strUsername.length < 1 || strPassword.length < 1){
-        Swal.fire({
-            title: "Oops!",
-            html: '<p>Email and Password cannot be blank</p>',
-            icon: "error"
-        })
+            $('#errLoginUsername').text('Username cannot be blank').addClass('error-message');
+            $('#errLoginPassword').text('Password cannot be blank').addClass('error-message'); 
     } else {
 
         $.ajax({
@@ -59,7 +56,7 @@ $('#btnLogin').on('click',function(){
             success: function(result) {
                 console.log(result);
 
-                userLoc = 'errorpage'
+                userLoc = 'task'
                 setUserLocation(userLoc);
                 $("#btnHamburger").show();
                 $("#btnDashboard").show();
@@ -70,16 +67,24 @@ $('#btnLogin').on('click',function(){
                 $("#btnTask").show();
                 //$('#divNavbar').slideUp();
                 $('#divLogin').slideUp(function(){
-                    $('#divErrorPage').slideDown();
-                
+                //$('#divErrorPage').slideDown();
+                window.location.href='task.html'
                 });
                 localStorage.setItem('session_id', result['session_id'])
                 return result['session_id'];
             },
             error: function(e) {
                 console.log(e);
+                
+            if (e.status === 400) { // Assuming 401 is returned for incorrect credentials
+                    $('#errLoginUsername').text('');
+                    $('#errLoginPassword').text('Incorrect username or password').addClass('error-message'); 
+                } else {
+                    $('#errLoginUsername').text('An error occurred. Please try again.').addClass('error-message');
+                }
                 return e;
             }
+            
         });
     }
 })
@@ -161,8 +166,9 @@ $(document).ready(function () {
                 //show Error Page
                 //$('#divNavbar').slideUp();
                 $('#divRegister').slideUp(function(){
-                $('#divErrorPage').slideDown();
-                userLoc = 'errorpage'
+                //$('#divErrorPage').slideDown();
+                window.location.href='task.html'
+                userLoc = 'task'
                 setUserLocation(userLoc);
                 });
                 var observationDateTime = getTime();
@@ -218,13 +224,15 @@ $('#btnRefresh').on('click', function(){
 
 })
 
-$('#btnLogout').on('click', function(){
-    let strSessionID = localStorage.getItem('session_id');
+// Logout functionality
+$('#btnLogout').click(function () {
+    var sessionID = localStorage.getItem('session_id');
     localStorage.removeItem('session_id');
-    $('#btnLogout').hide();
-    window.location.reload();
+
+    // Redirect to the login page
+    window.location.href = 'index.html';
     setUserLocation('login');
-});
+    });
 
 $('#btnIngredient').on('click', function(){
     window.location.href = 'ingredient.html';

@@ -6,7 +6,7 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## TO-DO
-- Make it so that entering the wrong user or password informs the user of this problem
+- ~~Make it so that entering the wrong user or password informs the user of this problem~~
 - ~~Use a more secure way of changing pages, as well as using the return and homepage functionality~~
 - Implement the email in use checker
 - Make an error for an already in-use employee ID
@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ~~Deployment~~
 
 ## [Unreleased]
+
+## 2024-10-13
+
+### Changed
+- Changed logout functionality to new cleaner way to perform it
 
 ## 2024-10-11
 
@@ -41,6 +46,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Made recipe routes generate the UUID correctly so that task routes' validation allows recipe ids that are in the database.
+
+## 2024-10-10
+
+### Added
+- Username and Password return an error now if incorrect on the login page
+- Create Templates using Nunjucks
+- Templatize account, index, ingredient_view, ingredient, recipe, task pages
+- Created base.html and base_form.html to hold templates
+
+### Changed
+- Fixed style of errors on login to match the rest of the site
+
+### Broken
+- Known bug: hamburger menu only displays on index.html
 
 ## [0.2.1] - 2024-10-10
 
@@ -63,7 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refreshing now keeps you on the page you are supposed to be
 
 ### Changed
-- Switched all instances of sessionStorage to localStorage
+- Switched all instannces of sessionStorage to localStorage
 - Commented out checkEmail until it works
 - Switched all instances of previous sessionID to session_id to work with new backend
 - Phone Regex is more lax, now able to only be 10 digits instead of just the strict requirements before

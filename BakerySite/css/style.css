@@ -154,6 +154,14 @@
     background-color: #B22222; /* Change color on hover */
 }
 
+.emsg {
+    color: #B22222; /* Make the error message red */
+    font-size: 14px; /* Adjust the font size */
+    margin-top: 5px; /* Add some spacing above the error message */
+    display: block; /* Ensure the error message appears below the input */
+    font-weight: bold; /* Make the error message bold */
+}
+
 .error {
     border-color: #B22222; /* Highlight invalid fields with a red border */
     font-weight: bold;
