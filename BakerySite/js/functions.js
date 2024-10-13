@@ -122,6 +122,7 @@ parameters: none
 purpose: display ingredients as cards
 */
 function displayIngredients() {
+    console.log("displayIngredients");
     const container = document.getElementById('ingredientContainer');
     ingredients.forEach(ingredient => {
         const card = document.createElement('div');
