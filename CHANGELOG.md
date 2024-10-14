@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Employee ID needs requirements
 - ~~Fix the Employee ID registration appearance, it's too close to the left~~
 - Make a confirmation option for the clear button so people don't accidentally hit it, possibly make it smaller
+- Integrate templating into the tasks endpoint
 
 ## Backend
 - ~~Inventory Routes~~
@@ -36,16 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Made task routes return needed data
-- Possibly broke things by making task routes require more data.
+- Possibly broke things by making task routes require more data. 
 
 ### Fixed
 - Made recipe routes generate the UUID correctly so that task routes' validation allows recipe ids that are in the database.
-
-## 2024-10-10
-- Create Templates using Nunjucks
-- Templatize account, index, ingredient_view, ingredient, recipe, task pages
-- Created base.html and base_form.html to hold templates
-- Known bug: hamburger menu only displays on index.html
 
 ## [0.2.1] - 2024-10-10
 
@@ -61,7 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - About Page
 - About Button Functionality
 
-
 ## 2024-10-09
 
 ### Added
@@ -69,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refreshing now keeps you on the page you are supposed to be
 
 ### Changed
-- Switched all instaces of sessionStorage to localStorage
+- Switched all instances of sessionStorage to localStorage
 - Commented out checkEmail until it works
 - Switched all instances of previous sessionID to session_id to work with new backend
 - Phone Regex is more lax, now able to only be 10 digits instead of just the strict requirements before
@@ -96,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Username or Email is now just Username on the login page
 - Register and Return buttons are now javascript based instead of hrefs
-- About page return button modified the same way as previous two
+- About page return button modified the same way as the previous two
 
 ### Fixed
 - TypeError related to non-existent addEventListener on txtLoginEmail

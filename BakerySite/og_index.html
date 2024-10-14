@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Scones</title>
+
+    <style>
+        /* Chrome, Safari, Edge, Opera */
+        .settings-box input::-webkit-outer-spin-button,
+        .settings-box input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        .settings-box input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+
+    <link href="images/BreadIcon.png" rel="icon" type="image/png"/><!--favicon next to website title-->
+    <link href="css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="css/animate.min.css" rel="stylesheet"/>
+    <link href="css/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="css/dataTables.css" rel="stylesheet"/>
+    <link href="css/font.all.css" rel="stylesheet"/>
+    <link href="css/style.css" rel="stylesheet">
+   
+</head>
+<body background="images/BreadBack.jfif" style="background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+    <!--Navbar at the top of the page-->
+    <nav id="divNavbar" class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid col-6">
+            <a class="navbar-brand charcoal-text fs-1" href="index.html">
+                <img src="images/BreadIcon.png" alt="BakerySite logo" width="50" height="50">
+                <strong>Rolling Scones</strong>
+            </a>
+        </div>
+      <!--Navigation Button-->
+      <div class="col-6 d-flex justify-content-end">
+        <button id="btnHamburger" title="btnHamburger" class="btn dropdown-toggle" type="button" style="display: none;" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi-list fs-1"> </i>
+        </button>
+    
+        <ul id="dropDownMenu" class="dropdown-menu dropdown-menu-end">
+            <li><button id="btnAccount" class="dropdown-item position-relative" type="button" style="display: none;">Account</button></li>
+            <!--<li><button id="btnErrorPage" class="dropdown-item position-relative" type="button" style="display: none;">Dashboard</button></li>-->
+            <li><button id="btnIngredient" class="dropdown-item position-relative" type="button" style="display: none;">Inventory</button></li>
+            <li><button id="btnRecipe" class="dropdown-item position-relative" type="button" style="display: none;">Recipe</button></li>
+            <li><button id="btnTask" class="dropdown-item position-relative" type="button" style="display: none;">Task</button></li>
+            <li><button id="btnLogout" class="dropdown-item position-relative" type="button" style="display: none;">Logout</button></li>        
+        </ul>
+      </div>
+    </nav>
+
+    <style>
+        .err { background: #ffe6ee; border: 1px solid #b1395f; }
+        .emsg { color: #c12020; font-weight: bold; }
+    </style>    
+
+    <!-- Central Card -->
+    <div class="d-flex align-items-center justify-content-center">
+        <!--Login Form-->
+        <div id="divLogin" class="card col-10 col-md-8 col-lg-6 mt-3">
+            <div class="card-header">
+                <h2 class="text-center brown-text"><strong>Sign In</strong></h2>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-floating mb-3" > <!--username/email-->
+                        <input id="txtLoginUsername" type="text" class="form-control" placeholder="Username or Email">
+                        <label for="txtLoginUsername" class="form-label text-black">Username</label>
+                    <div id="errLoginUsername" class="emsg"></div>
+                    </div> 
+                    <div class="form-floating mb-3" required minlength="1"> <!--password-->
+                        <input id="txtLoginPassword" type="password" class="form-control" placeholder="Password">
+                        <label for="txtLoginPassword" class="form-label text-black" aria-label="Password">Password</label>
+                    <div id="errLoginPassword" class="emsg"></div>
+                    <div id="capsLockWarningLogin" class="emsg" style="display: none;">
+                        Caps Lock is on
+                    </div>
+                    </div>
+                    <button id="btnLogin" type="button" class="btn btn-primary col-12 mt-4"><strong>Login</strong></button>
+                    <div class="text-center mt-4">
+                        <span id="btnToggle" class="brown-text" role="button" tabindex="0"><strong>Don't have an account? Register here!</strong></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!--Registration Form-->
+        <div id="divRegister" class="card col-10 col-md-8 col-lg-6 mt-3" style="display: none;">
+            <div class="card-header">
+                <h2 class="text-center">Register</h2>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="row gx-3">
+                        <div class="col">   
+                            <div class="form-floating mb-3" required minlength="1">
+                                <input id="txtRegisterFirstName" class="form-control" placeholder="First Name">
+                                <label for="txtRegisterFirstName" class="form-label text-black" aria-label="First Name">First name</label>
+                                <div id="errRegisterFirstName" class="emsg"></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating mb-3" required minlength="1">
+                                <input id="txtRegisterLastName" class="form-control" placeholder="Last Name">
+                                <label for="txtRegisterLastName" class="form-label text-black" aria-label="Last Name">Last name</label>
+                                <div id="errRegisterLastName" class="emsg"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-floating mb-3" > <!--username-->
+                        <input id="txtRegisterUsername" class="form-control" placeholder="Username">
+                        <label for="txtRegisterUsername" class="form-label text-black" aria-label="Username">Username</label>
+                    <div id="errRegisterUsername" class="emsg"></div>
+                    </div>
+                    <div class="form-floating mb-3" required minlength="1"> <!--password-->
+                        <input id="txtRegisterPassword" type="password" class="form-control" placeholder="Password">
+                        <label for="txtRegisterPassword" class="form-label text-black" aria-label="Password">Password</label>
+                    <div id="passwordRequirements" class="emsg" style="display: none;">
+                        <strong>Password must meet the following requirements:</strong>
+                        <ul>
+                            <li id="lengthReq">At least 8 characters</li>
+                            <li id="numberReq">At least one number</li>
+                            <li id="specialCharReq">At least one special character (!@#$%^&*)</li>
+                        </ul>
+                    </div>
+                    <div id="capsLockWarningRegister" class="emsg" style="display: none;">
+                        Caps Lock is on
+                    </div>
+                    <div id="errRegisterPassword" class="emsg"></div>
+                    </div>
+                    <div class="form-floating mb-3" required minlength="1">     
+                        <input id="txtRegisterEmail" class="form-control" placeholder="Email"  required>
+                        <label for="txtRegisterEmail" class="form-label text-black" aria-label="Email">Email</label>
+                        <div id="errRegisterEmail" class="emsg"></div>
+                    </div>
+                    <div class="row gx-3">
+                        <div class="col">
+                            <div class="form-floating mb-3" required length="10">
+                                <input id="numRegisterPhone" class="form-control" type="tel" placeholder="Phone Number">
+                                <label for="numRegisterPhone" class="form-label text-black" aria-label="Phone number">Phone number</label>
+                                <div id="errRegisterPhone" class="emsg"></div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-floating mb-3" > <!--Employee ID-->
+                                <input id="txtRegisterEmployeeId" class="form-control" placeholder="Employee ID">
+                                <label for="txtRegisterEmployeeId" class="form-label text-black" aria-label="Employee ID">Employee ID</label>
+                            <div id="errRegisterEmployeeId" class="emsg"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="btnRegister" type="button" class="btn btn-primary charcoal-text col-12 mt-4"><strong>Register</strong></button>
+                    <button id="btnClear" type="button" class="btn btn-danger col-12 mt-4"><strong>Clear</strong></button>
+                    
+                    <div class="text-center mt-4">
+                        <span id="btnReturn" class="brown-text" role="button" tabindex="0"><strong>Return</strong></span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!--Error Handler Page -->
+        <div id="divErrorPage" class="card col-10 col-md-8 col-lg-6 mt-3" style="display: none;">
+            <div class="card-header">
+                <h2 class="text-center font-weight-bold;">Error</h2>
+            </div>
+
+            <div class="card-body">
+                        <h3 class="text-center">You shouldn't be here, let the developers know if you make it here.</h3>
+            </div>
+        </div>
+                    <!--  Dashboard elements  <h3 class="text-center">Eggs</h3>
+                        
+                        <button type="button" class="btn btn-primary col-12" data-bs-toggle="modal" data-bs-target="#eggModal">Add harvest</button>
+                    </div>
+                    <div>
+                        <canvas id="eggChart" width="400" height="200"></canvas>
+                    </div class="col">
+                </div>
+
+                <h3>Environment</h3>
+                <table id="tblEnvironment" class="table table-striped w-auto">
+                    <thead>
+                        <th>Observation Date and Time</th>
+                        <th>Temperature</th>
+                        <th>Humidity</th>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                    
+                </table>
+                <p id="pNoObservations" class="text-center">No Current Observations</p>
+            </div>
+
+            <button id="settingsLink" class="btn btn-link" onclick="openSettings()">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+    </div>
+</div>-->
+
+<!-- Settings Modal -->
+<div id="settingsModal" class="modal settings-box" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <!-- Door Times Setting -->
+                    <div class="col-md-5">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Door Times</h5>
+                                <div class="form-group">
+                                    <label for="doorOpenTime">Open Time:</label>
+                                    <input type="time" class="form-control" id="doorOpenTime" name="doorOpenTime">
+                                </div>
+                                <div class="form-group">
+                                    <label for="doorCloseTime">Close Time:</label>
+                                    <input type="time" class="form-control" id="doorCloseTime" name="doorCloseTime">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Other Settings (Fan Temperature, Heater Temperature) -->
+                    <div id="otherSettingsContainer" class="col-md-7">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">Other Settings</h5>
+                                <div class="row">
+                                    <!-- Fan Temperature Setting -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="fanTemperature">Fan Temperature (&deg;F):</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="adjustTemperature('fanTemperature', -1)">-</button>
+                                                </div>
+                                                <input type="number" class="form-control" id="fanTemperature", name="fanTemperature" value="68">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="adjustTemperature('fanTemperature', 1)">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Heater Temperature Setting -->
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label for="heaterTemperature">Heater Temperature (&deg;F):</label>
+                                            <div class="input-group">
+                                                <div class="input-group-prepend">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="adjustTemperature('heaterTemperature', -1)">-</button>
+                                                </div>
+                                                <input type="number" class="form-control" id="heaterTemperature" name="heaterTemperature" value="74">
+                                                <div class="input-group-append">
+                                                    <button class="btn btn-outline-secondary" type="button" onclick="adjustTemperature('heaterTemperature', 1)">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Door Status Setting -->
+                    <div class="row mt-md-0 mt-3" style="padding-left: 35px;">
+                        <div class="col-md-12 d-flex justify-content-center">
+                            <div class="card border-top-0" style="width: 1600px;">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">Door Status</h5>
+                                    <div class="form-group">
+                                        <label>Status:</label>
+                                        <span id="doorStatusIndicator">Closed</span>
+                                    </div>
+                                    <button id="doorActionButton" type="button" class="btn btn-primary mt-2" onclick="toggleDoor()">Open Door</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveSettings()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!--Egg Modal (popup)-->
+    <div class="modal fade" id="eggModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add harvest</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <label for="txtEggs" class="form-label">Enter the number of eggs collected</label>
+                        <input id="txtEggs" class="form-control" placeholder="12" type="number">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="btnLogEggs">Log harvest!</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--START OF JAVASCRIPT-->
+
+    <script src="/js/jsource/jquery.js"></script>
+    <script src="/js/jsource/chart.js"></script>
+    <script src="/js/jsource/dataTables.js"></script>
+    <script src="/js/jsource/jsbootstrap.js"></script>
+    <script src="/js/jsource/sweetalert.js"></script>  
+    <script src="/js/buttons.js"></script>
+    <script src="/js/functions.js"></script>
+    <script src="/js/main.js"></script>
+    <script src="/js/settings.js"></script>
+    <script src="/js/temp.js"></script>
+    <script src="/js/ingredients.js"></script>
+</body>
+</html>
