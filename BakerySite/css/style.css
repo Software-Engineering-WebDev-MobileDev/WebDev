@@ -23,17 +23,17 @@
 
 /* Login Form Style */
 
-#divLogin {
+#divLogin, #taskFormContainer, #taskViewer, .task-row {
     background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
-    border-radius: 0.25rem; 
-    padding: 1.5rem; 
+    border-radius: 0.25rem;
+    padding: 1.5rem;
 }
 .form-control {
     background-color: #fff; /* Ensure input fields remain fully opaque */
 }
 
-/* Login Button Style */
-#btnLogin {
+/* Login Button, Task Add Button, and Task Submit Button Styles */
+#btnLogin, #taskAddButton, #submitTaskButton, #updateTaskButton {
     background-color: #f5c976; /* Set the background color */
     color: #2C2C2C; /* Set the text color */
     border: none; /* Remove the border */
@@ -46,14 +46,13 @@
     cursor: pointer; /* Change cursor to pointer when hovered */
 }
 
-#btnLogin:hover {
+#btnLogin:hover, #taskAddButton:hover, #submitTaskButton:hover, #updateTaskButton:hover {
     background-color: #e5b567; /* Change color on hover */
 }
 
 /* Navigation Bar Style */
 .navbar-custom {
     background-color: #f5c976; /* Set the background color */
-    padding: 10px;
 }
 
 /* Hamburger Navigation Button Style */
@@ -61,46 +60,6 @@
     background-color: #f5c976; /* Button background color */
     border: none; /* Remove border if needed */
     color: #2C2C2C; /* Text color (icon color) */
-}
-
-.navbar-brand {
-    display: flex;
-    align-items: center;
-}
-
-.brand-text {
-    font-size: 1.5em;
-    color: #4b2e1e; /* Dark brown color */
-    margin-left: 10px;
-    font-family: 'Pacifico', cursive;
-}
-
-/* Navbar list items */
-.navbar-nav {
-    list-style: none;
-    display: flex;
-    margin-left: auto;
-}
-
-.nav-item {
-    margin-left: 20px;
-}
-
-.nav-link {
-    font-size: 1.2em;
-    color: #4b2e1e; /* Dark brown color */
-    text-decoration: none;
-    font-family: 'Pacifico', cursive;
-    transition: color 0.3s;
-}
-
-.nav-link:hover {
-    color: #825a3d; /* Slightly lighter brown on hover */
-}
-
-/* Hamburger icon styling */
-.navbar-toggler {
-    border: none;
 }
 
 #btnHamburger:hover {
@@ -111,8 +70,8 @@
 
 #divRegister {
     background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
-    border-radius: 0.25rem; 
-    padding: 1.5rem; 
+    border-radius: 0.25rem;
+    padding: 1.5rem;
 }
 .form-control {
     background-color: #fff; /* Ensure input fields remain fully opaque */
@@ -137,7 +96,7 @@
 }
 
 /* Clear Button Style */
-#btnClear, #btnLogout:hover {
+#btnClear {
     background-color: #D32F2F; /* Set the background color */
     color: #f6ebd8; /* Set the text color */
     border: none; /* Remove the border */
@@ -154,20 +113,12 @@
     background-color: #B22222; /* Change color on hover */
 }
 
-.emsg {
-    color: #B22222; /* Make the error message red */
-    font-size: 14px; /* Adjust the font size */
-    margin-top: 5px; /* Add some spacing above the error message */
-    display: block; /* Ensure the error message appears below the input */
-    font-weight: bold; /* Make the error message bold */
-}
-
 .error {
     border-color: #B22222; /* Highlight invalid fields with a red border */
     font-weight: bold;
 }
 
-.error-message, .emsg {
+.error-message {
     color: #B22222; /* Make the error message red */
     font-size: 14px; /* Adjust the font size */
     margin-top: 5px; /* Add some spacing above the error message */
@@ -257,4 +208,37 @@ body, html {
     height: 50px;
     background: linear-gradient(45deg, #ccc, #eee);
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* Task form styles */
+@media (max-width: 767px) {
+    .task-form {
+        width: 100%;
+    }
+}
+@media (min-width: 768px) {
+    .task-form {
+        width: 80%;
+        justify-content: center;
+    }
+}
+#recipeIDForm, #amountToBake, #dueDate, #assignedEmployeeID, #taskNotes {
+    border-radius: 0.25rem;
+    padding-bottom: 0.5rem;
+}
+
+/* Task row styles */
+.task-row {
+    border-radius: 0.5rem;
+    height: 3em;
+}
+.task-row:hover {
+    background-color: #f5c976; /* Change color on hover */
+}
+/*
+ * Faux task row styles.
+ * This controls the spacing between tasks
+ */
+.faux-task-row {
+    height: 1.5em;
 }
