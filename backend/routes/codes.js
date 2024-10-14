@@ -9,6 +9,9 @@ const express = require('express');
  * @param reason_for {String} A string representing the reason for the 400 response.
  */
 const return_400 = function (res, reason_for = "Bad Request") {
+    if (process.env.NODE_ENV.trim() === 'development') {
+        console.error(reason_for);
+    }
     res.status(400).send(
         {
             status: "error",

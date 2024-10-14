@@ -23,10 +23,11 @@
 
 /* Login Form Style */
 
+#divLogin, #taskFormContainer, #taskViewer, .task-row {
 #divLogin, #taskFormContainer, #taskViewer, .task-row{
     background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
-    border-radius: 0.25rem; 
-    padding: 1.5rem; 
+    border-radius: 0.25rem;
+    padding: 1.5rem;
 }
 .form-control {
     background-color: #fff; /* Ensure input fields remain fully opaque */
@@ -70,8 +71,8 @@
 
 #divRegister {
     background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
-    border-radius: 0.25rem; 
-    padding: 1.5rem; 
+    border-radius: 0.25rem;
+    padding: 1.5rem;
 }
 .form-control {
     background-color: #fff; /* Ensure input fields remain fully opaque */
@@ -104,7 +105,7 @@
 }
 
 /* Clear Button Style */
-#btnClear, #btnLogout:hover {
+#btnClear {
     background-color: #D32F2F; /* Set the background color */
     color: #f6ebd8; /* Set the text color */
     border: none; /* Remove the border */
@@ -126,7 +127,7 @@
     font-weight: bold;
 }
 
-.error-message, .emsg {
+.error-message {
     color: #B22222; /* Make the error message red */
     font-size: 14px; /* Adjust the font size */
     margin-top: 5px; /* Add some spacing above the error message */
@@ -150,7 +151,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: Arial, sans-serif;
+    font-family: 'Pacifico', cursive;
 }
 
 .background {
@@ -223,11 +224,22 @@ body, html {
     .task-form {
         width: 100%;
     }
+    #taskAddButton {
+        width: 95.6%;
+    }
 }
 @media (min-width: 768px) {
     .task-form {
         width: 80%;
         justify-content: center;
+    }
+    #taskAddButton {
+        width: 77.7%;
+    }
+}
+@media (min-width: 1200px) {
+    #taskAddButton {
+        width: 78.5%;
     }
 }
 #recipeIDForm, #amountToBake, #dueDate, #assignedEmployeeID, #taskNotes {
@@ -249,4 +261,11 @@ body, html {
  */
 .faux-task-row {
     height: 1.5em;
+}
+
+.brand-text {
+    font-size: 1.5em;
+    color: #4b2e1e;
+    margin-left: 10px;
+    font-family: 'Pacifico', cursive;
 }
