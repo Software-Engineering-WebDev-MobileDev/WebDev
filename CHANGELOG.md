@@ -6,7 +6,7 @@ This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## TO-DO
-- ~~Make it so that entering the wrong user or password informs the user of this problem~~
+- Make it so that entering the wrong user or password informs the user of this problem
 - ~~Use a more secure way of changing pages, as well as using the return and homepage functionality~~
 - Implement the email in use checker
 - Make an error for an already in-use employee ID
@@ -14,17 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Employee ID needs requirements
 - ~~Fix the Employee ID registration appearance, it's too close to the left~~
 - Make a confirmation option for the clear button so people don't accidentally hit it, possibly make it smaller
+- Integrate templating into the tasks endpoint
 
 ## Backend
 - ~~Inventory Routes~~
 - ~~Deployment~~
 
 ## [Unreleased]
-
-## 2024-10-13
-### Changed
-- Changed logout functionality to new cleaner way to perform it
-
 
 ## 2024-10-11
 
@@ -41,25 +37,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Made task routes return needed data
-- Possibly broke things by making task routes require more data.
+- Possibly broke things by making task routes require more data. 
 
 ### Fixed
 - Made recipe routes generate the UUID correctly so that task routes' validation allows recipe ids that are in the database.
-
-## 2024-10-10
-
-### Added
-- Create Templates using Nunjucks
-- Templatize account, index, ingredient_view, ingredient, recipe, task pages
-- Created base.html and base_form.html to hold templates
-- Username and Password return an error now if incorrect on the login page
- 
-### Changed
-- Fixed style of errors on login to match the rest of the site
-
-### Broken
-- Known bug: hamburger menu only displays on index.html
-
 
 ## [0.2.1] - 2024-10-10
 
@@ -74,7 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - About Page
 - About Button Functionality
-
 
 ## 2024-10-09
 
@@ -110,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Username or Email is now just Username on the login page
 - Register and Return buttons are now javascript based instead of hrefs
-- About page return button modified the same way as previous two
+- About page return button modified the same way as the previous two
 
 ### Fixed
 - TypeError related to non-existent addEventListener on txtLoginEmail

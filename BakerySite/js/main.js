@@ -1,4 +1,24 @@
 $(document).ready(function () {
+  init_values();
+
+    // Check if SessionID exists in localStorage
+    var sessionID = localStorage.getItem('SessionID');
+    if (sessionID) {
+        sessionStorage.setItem('SessionID', sessionID);
+        
+        $('#divLogin').hide();
+        $('#divDashboard').slideDown();
+        $("#btnLogout").show()
+        $("#btnAccount").show()
+        $("#btnDashboard").show()
+        $("#btnIngredient").show()
+        $("#btnRecipe").show()
+        $("#btnTask").show()
+        UpdateDivEnvironment();
+        updateEggInfo();
+        fillTable();
+        
+    }
     // Hide error message on page load
     $('#loginErrorMessage').hide();
   
@@ -30,70 +50,40 @@ $(document).ready(function () {
         }
     }
   
-    // Login functionality
-    $('#btnLogin').click(function () {
-        var username = $('#txtLoginUsername').val();
-        var password = $('#txtLoginPassword').val();
-  
-        // Basic validation
-        if (username === '' || password === '') {
-            alert('Please enter both username and password.');
-            return;
-        }
-  
-        // Perform an AJAX request to validate the user
-        $.ajax({
-            url: '/login',  // Replace with your actual backend login route
-            type: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            data: JSON.stringify({
-                username: username,
-                password: password
-            }),
-            success: function (response) {
-                console.log('Login response:', response);  // Debugging the response
-                if (response.success) {
-                    // Store the session ID returned by the backend
-                    localStorage.setItem('session_id', response.session_id);
-                    console.log('Session ID saved:', response.session_id);  // Debugging session ID storage
-  
-                    // Redirect to task.html after successful login
-                    window.location.href = 'task.html';
-                } else {
-                    // Show the red error message if login fails
-                    $('#loginErrorMessage').text('⚠ Invalid login credentials! Please try again.').show();
-                }
-            },
-            error: function (err) {
-                console.error('Login request failed', err);
-                $('#loginErrorMessage').text('An error occurred during login. Please try again.').show();
-            }
-        });
-    });
-  
-    // Logout functionality
-    $('#btnLogout').click(function () {
-        var sessionID = localStorage.getItem('session_id');
-  
-        // Perform an AJAX request to logout
-        $.ajax({
-            url: '/logout',  // Replace with your actual backend logout route
-            type: 'POST',
-            headers: {
-                'session_id': sessionID
-            },
-            success: function () {
-                // Remove session ID from localStorage
-                localStorage.removeItem('session_id');
-  
-                // Redirect to the login page
-                window.location.href = 'index.html';
-            },
-            error: function (err) {
-                console.error('Logout request failed', err);
-            }
-        });
-    });
+    // Attach event listener to the password input
+document.getElementById('txtLoginPassword').addEventListener('keypress', checkCapsLock);
+
+// Attach event listener to the password registration
+document.getElementById('txtRegisterPassword').addEventListener('keypress', checkCapsLock);
+
+// Attach event listener to password input to check requirements in real-time
+document.getElementById('txtRegisterPassword').addEventListener('keypress', checkPasswordRequirements);
+
+document.getElementById('txtLoginUsername').addEventListener('focusout', function() {
+  check(document.getElementById('txtLoginUsername'), document.getElementById('errLoginUsername'));
+});
+
+document.getElementById('txtLoginPassword').addEventListener('input', function() {
+  check(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
+});
+
+document.getElementById('txtRegisterUsername').addEventListener('focusout', function() {
+  check(document.getElementById('txtRegisterUsername'), document.getElementById('errRegisterUsername'));
+});
+
+document.getElementById('txtRegisterPassword').addEventListener('input', function() {
+  checkPasswordRequirements(document.getElementById('txtRegisterPassword'), document.getElementById('passwordRequirements'));
+});
+
+document.getElementById('txtRegisterEmail').addEventListener('focusout', function() {
+  check(document.getElementById('txtRegisterEmail'), document.getElementById('errRegisterEmail'));
+});
+
+document.getElementById('txtRegisterFirstName').addEventListener('focusout', function() {
+  check(document.getElementById('txtRegisterFirstName'), document.getElementById('errRegisterFirstName'));
+});
+
+document.getElementById('txtRegisterLastName').addEventListener('focusout', function() {
+  check(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastName'));
+});
 });
