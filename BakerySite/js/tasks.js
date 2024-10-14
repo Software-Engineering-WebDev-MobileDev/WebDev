@@ -21,6 +21,7 @@ function renderAddTask() {
     tableTaskContainer.id = "taskContainer";
     tableTaskContainer.className = "table";
     tableTaskContainer.hidden = true;
+    tableTaskContainer.style.backgroundColor = "#ffffffd1"
     currentDiv.appendChild(tableTaskContainer);
     contentContainer.appendChild(currentDiv);
 
@@ -176,11 +177,11 @@ const contentContainer = document.getElementById('contentContainer');
 
 // Create the task add button
 let currentDiv = document.createElement('div');
-currentDiv.style.alignContent = "center";
+currentDiv.align = "center";
 
 // Then make the button
 const tABButton = document.createElement('button');
-tABButton.className = "btn btn-primary col-12 mt-4";
+tABButton.className = "btn btn-primary col-10 mt-4";
 tABButton.id = "taskAddButton";
 tABButton.name = "taskAddButton";
 tABButton.type = "button";
