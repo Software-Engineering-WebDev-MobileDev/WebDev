@@ -319,14 +319,16 @@ async function fetchRecipes() {
  * Marks a task as completed.
  * @param sessionID {String} the session id to use for the API.
  * @param taskID {String} the task id to mark as completed.
+ * @param taskStatus {String} the task's new status.
  * @returns {Promise<Response>} Nothing, await if needed.
  */
-async function markComplete(sessionID, taskID) {
+async function markComplete(sessionID, taskID, taskStatus) {
     return fetch('/api/task_complete', {
         method: "POST",
         headers: {
             session_id: sessionID,
-            task_id: taskID
+            task_id: taskID,
+            task_status: taskStatus
         }
     }).then(() => {
     }).catch((e) => {
@@ -713,21 +715,57 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     doneButton.style.width = "40%";
     doneButton.style.marginBottom = "1em";
     doneButton.id = "updateTaskButton";
-    doneButton.innerText = "Mark As Done";
-    doneButton.addEventListener(
-        'mouseup',
-        async () => {
-            await markComplete(sessionID, task["TaskID"]);
+    if (task["Status"] === "Pending") {
+        doneButton.innerText = "Mark As In Progress";
+        doneButton.addEventListener(
+            'mouseup',
+            async () => {
+                await markComplete(sessionID, task["TaskID"], "In Progress");
 
-            // Get the task list again
-            taskList = [];
-            await renderTasks();
+                // Get the task list again
+                taskList = [];
+                await renderTasks();
 
-            taskViewer.hidden = true;
-            addTaskButton.hidden = false;
-            taskBox.hidden = false;
-        }
-    )
+                taskViewer.hidden = true;
+                addTaskButton.hidden = false;
+                taskBox.hidden = false;
+            }
+        );
+    }
+    else if (task["Status"] === "In Progress") {
+        doneButton.innerText = "Mark As Completed";
+        doneButton.addEventListener(
+            'mouseup',
+            async () => {
+                await markComplete(sessionID, task["TaskID"], "Completed");
+
+                // Get the task list again
+                taskList = [];
+                await renderTasks();
+
+                taskViewer.hidden = true;
+                addTaskButton.hidden = false;
+                taskBox.hidden = false;
+            }
+        );
+    }
+    else {
+        doneButton.innerText = "Mark As In Progress";
+        doneButton.addEventListener(
+            'mouseup',
+            async () => {
+                await markComplete(sessionID, task["TaskID"], "In Progress");
+
+                // Get the task list again
+                taskList = [];
+                await renderTasks();
+
+                taskViewer.hidden = true;
+                addTaskButton.hidden = false;
+                taskBox.hidden = false;
+            }
+        );
+    }
     buttonDiv.appendChild(doneButton);
     buttonDiv.appendChild(lineBreak.cloneNode());
 
@@ -768,6 +806,7 @@ async function renderTasks() {
     try {
         // Text color of the overdue tasks
         const overDueTaskColor = "#c00";
+        const completedTaskColor = "#0f0";
         // If the taskList is empty (or has been emptied), fetch it again
         if (taskList.length === 0) {
             taskList = await fetchTasks();
@@ -819,7 +858,7 @@ async function renderTasks() {
                 const name = document.createElement('td');
                 name.innerText = task["RecipeName"];
                 name.style.textAlign = "center";
-                if (whenDue < now) {
+                if (whenDue < now && (!("CompletionDate" in task) || task["CompletionDate"] === null)) {
                     name.style.color = overDueTaskColor;
                 }
                 taskEntry.appendChild(name);
@@ -828,7 +867,7 @@ async function renderTasks() {
                 const amount = document.createElement('td');
                 amount.innerText = task["AmountToBake"];
                 amount.style.textAlign = "center";
-                if (whenDue < now) {
+                if (whenDue < now && (!("CompletionDate" in task) || task["CompletionDate"] === null)) {
                     amount.style.color = overDueTaskColor;
                 }
                 taskEntry.appendChild(amount);
@@ -837,7 +876,7 @@ async function renderTasks() {
                 const status = document.createElement('td');
                 status.innerText = task["Status"];
                 status.style.textAlign = "center";
-                if (whenDue < now) {
+                if (whenDue < now && (!("CompletionDate" in task) || task["CompletionDate"] === null)) {
                     status.style.color = overDueTaskColor;
                 }
                 taskEntry.appendChild(status);
@@ -846,18 +885,18 @@ async function renderTasks() {
                 const assignmentDate = document.createElement('td');
                 assignmentDate.innerText = task["AssignmentDate"].substring(0, 10);
                 assignmentDate.style.textAlign = "center";
-                if (whenDue < now) {
+                if (whenDue < now && (!("CompletionDate" in task) || task["CompletionDate"] === null)) {
                     assignmentDate.style.color = overDueTaskColor;
                 }
                 taskEntry.appendChild(assignmentDate);
 
                 // Just in case the SQL query gets tampered with, check for this.
-                if (!("CompletionDate" in task)) {
+                if (!("CompletionDate" in task) || task["CompletionDate"] === null) {
                     // Add the due date
                     const dueDate = document.createElement('td');
                     dueDate.innerText = task["DueDate"].substring(0, 10);
                     dueDate.style.textAlign = "center";
-                    if (whenDue < now) {
+                    if (whenDue < now  && (!("CompletionDate" in task) || task["CompletionDate"] === null)) {
                         dueDate.style.color = overDueTaskColor;
                     }
                     taskEntry.appendChild(dueDate);
