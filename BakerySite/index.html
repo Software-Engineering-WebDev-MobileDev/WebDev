@@ -51,19 +51,19 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="account.html">Account</a>
+                        <a class="nav-link" id="btnAccount">Account</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="ingredient.html">Inventory</a>
+                        <a class="nav-link" id="btnIngredient">Inventory</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="recipe.html">Recipes</a>
+                        <a class="nav-link" id="btnRecipe">Recipes</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="task.html">Tasks</a>
+                        <a class="nav-link" id="btnTask">Tasks</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" id="btnLogout" href="#">Logout</a>
+                        <a class="nav-link" id="btnLogout">Logout</a>
                     </li>
                 </ul>
             </div>
@@ -81,13 +81,18 @@
                     <div class="form-floating mb-3">
                         <input id="txtLoginUsername" type="text" class="form-control" placeholder="Username">
                         <label for="txtLoginUsername" class="form-label text-black">Username</label>
+                        <div id="errLoginUsername" class="emsg"></div>
                     </div>
                     <div class="form-floating mb-3">
                         <input id="txtLoginPassword" type="password" class="form-control" placeholder="Password">
                         <label for="txtLoginPassword" class="form-label text-black">Password</label>
+                        <div id="errLoginPassword" class="emsg"></div>
+                    <div id="capsLockWarningLogin" class="emsg" style="display: none;">
+                        Caps Lock is on
+                    </div>
                     </div>
                     <!-- Error message -->
-                    <div id="loginErrorMessage" class="emsg" style="display:none; color:red; font-weight:bold;"></div>
+                    <div id="loginErrorMessage" class="emsg" style="display:none;"></div>
                     <button id="btnLogin" type="button" class="btn btn-primary col-12 mt-4"><strong>Login</strong></button>
                     <div class="text-center mt-4">
                         <span id="btnToggle" class="brown-text" role="button" tabindex="0"><strong>Don't have an account? Register here!</strong></span>

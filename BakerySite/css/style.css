@@ -24,6 +24,7 @@
 /* Login Form Style */
 
 #divLogin, #taskFormContainer, #taskViewer, .task-row {
+#divLogin, #taskFormContainer, #taskViewer, .task-row{
     background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
     border-radius: 0.25rem;
     padding: 1.5rem;
@@ -91,8 +92,16 @@
     cursor: pointer; /* Change cursor to pointer when hovered */
 }
 
-#btnRegister:hover {
+#btnRegister:hover, #btnAccount:hover, #btnIngredient:hover, #btnRecipe:hover, #btnTask:hover{
     background-color: #e5b567; /* Change color on hover */
+    cursor: pointer; /* Change cursor to pointer when hovered */
+    border: none; /* Remove the border */
+    padding: 12px 20px; /*  Add some padding */
+    text-align: center; /* Center the text */
+    text-decoration: none; /* Remove underline from text */
+    display: inline-block; /* Make sure the button behaves as an inline element */
+    font-size: 16px; /* Set font size */
+    border-radius: 4px; /* Add rounded corners */
 }
 
 /* Clear Button Style */
