@@ -22,6 +22,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2024-10-14
+
+### Added
+- Logout when hovered turns red and turns the text white
+- All taskbar options now have a hovering feature similar to standard buttons
+
+### Fixed
+- Resolved massive Merge conflict
+- .val issue in account creation that fixes the inability to create an account
+- Errors not showing on login page
+
+
 ## 2024-10-13
 
 ### Changed
