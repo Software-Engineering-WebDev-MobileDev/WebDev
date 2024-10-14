@@ -137,7 +137,7 @@
 }
 
 /* Clear Button Style */
-#btnClear {
+#btnClear, #btnLogout:hover {
     background-color: #D32F2F; /* Set the background color */
     color: #f6ebd8; /* Set the text color */
     border: none; /* Remove the border */
@@ -159,7 +159,7 @@
     font-weight: bold;
 }
 
-.error-message {
+.error-message, .emsg {
     color: #B22222; /* Make the error message red */
     font-size: 14px; /* Adjust the font size */
     margin-top: 5px; /* Add some spacing above the error message */
