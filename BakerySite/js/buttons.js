@@ -56,9 +56,6 @@ $('#btnLogin').on('click',function(){
             },
             success: function(result) {
                 console.log(result);
-
-                userLoc = 'errorpage'
-                setUserLocation(userLoc);
                 $("#btnHamburger").show();
                 $("#btnDashboard").show();
                 $('#btnLogout').show();
@@ -78,7 +75,7 @@ $('#btnLogin').on('click',function(){
             error: function(e) {
                 console.log(e);
 
-                if (e.status === 400) { // Assuming 401 is returned for incorrect credentials
+                if (e.status === 400) { // Assuming 400 is returned for incorrect credentials
                     $('#errLoginUsername').text('');
                     $('#errLoginPassword').text('Incorrect username or password').addClass('error-message');
                 } else {
@@ -167,9 +164,11 @@ $(document).ready(function () {
                 //show Error Page
                 //$('#divNavbar').slideUp();
                 $('#divRegister').slideUp(function(){
-                $('#divErrorPage').slideDown();
-                userLoc = 'errorpage'
+                //$('#divErrorPage').slideDown();
+                //userLoc = 'errorpage'
+                userLoc = 'task'
                 setUserLocation(userLoc);
+                window.location.href = '/task'
                 });
                 var observationDateTime = getTime();
         
