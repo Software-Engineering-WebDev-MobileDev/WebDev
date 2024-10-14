@@ -33,7 +33,7 @@
 
 <body background="images/BreadBack.jfif" style="background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
     <!-- Navbar (hidden on login page, visible after login) -->
-    <nav class="navbar navbar-expand-md navbar-custom" style="display:none;" id="navMain">
+    <nav class="navbar navbar-expand-md navbar-custom" id="navMain">
         <div class="container-fluid">
             <a class="navbar-brand" href="tasks.html">
                 <img src="images/BreadIcon.png" alt="Bakery Logo" width="50" height="50">
@@ -74,15 +74,19 @@
 
     <!-- START OF JAVASCRIPT -->
     <script src="js/jsource/jquery.js"></script>
+    <script src="js/buttons.js"></script>
+    <script src="js/functions.js"></script>
+
+    {% block js %}
     <script src="js/jsource/chart.js"></script>
     <script src="js/jsource/dataTables.js"></script>
     <script src="js/jsource/jsbootstrap.js"></script>
     <script src="js/jsource/sweetalert.js"></script>
-    <script src="js/buttons.js"></script>
-    <script src="js/functions.js"></script>
+
     <script src="js/main.js"></script>
     <script src="js/settings.js"></script>
     <script src="js/temp.js"></script>
     <script src="js/ingredients.js"></script>
+    {% endblock %}
 </body>
 </html>
