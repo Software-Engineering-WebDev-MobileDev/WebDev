@@ -298,7 +298,7 @@ async function getIngredient(ingredientID) {
     else {
         console.log("User is not logged in!");
         // Return to home if the user is not logged in
-        //window.location.href = "/";
+        window.location.href = "/";
     }
 }
 
