@@ -356,7 +356,7 @@ async function updateTask(taskID, RecipeID, AmountToBake, Status, DueDate, Assig
         Swal.fire("Amount to bake must be greater than 1!");
         return "error";
     }
-    else if (AmountToBake.value > 999_999_999) {
+    else if (AmountToBake.value > 99_999_999) {
         Swal.fire("That's way too much to bake, friend. Try a value lower than 999,999,999");
         return "error";
     }
@@ -1096,7 +1096,7 @@ async function submitTask(recipeIDForm, amountToBake, dueDate, assignedEmployeeI
         if (amountToBake.value < 1) {
             Swal.fire("Amount to bake must be greater than 1!");
         }
-        else if (amountToBake.value > 999_999_999) {
+        else if (amountToBake.value > 99_999_999) {
             Swal.fire("That's way too much to bake, friend. Try a value lower than 999,999,999");
         }
         else if (!assignedEmployeeID.value.match(/\w{1,50}/)) {

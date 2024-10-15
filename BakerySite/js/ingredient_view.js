@@ -267,7 +267,7 @@ function createIngredientForm(ingredient = null) {
                 const quantity = document.getElementById("quantityInput");
                 const unitOfMeasure = document.getElementById("unitOfMeasureForm");
 
-                if (quantity.value > 999_999_999 || quantity.value <= 0) {
+                if (quantity.value > 99_999_999 || quantity.value <= 0) {
                     Swal.fire("Invalid quantity");
                 }
                 else {
@@ -285,7 +285,7 @@ function createIngredientForm(ingredient = null) {
                 const quantity = document.getElementById("quantityInput");
                 const unitOfMeasure = document.getElementById("unitOfMeasureForm");
 
-                if (quantity.value > 999_999_999 || quantity.value <= 0) {
+                if (quantity.value > 99_999_999 || quantity.value <= 0) {
                     Swal.fire("Invalid quantity");
                 }
                 else {

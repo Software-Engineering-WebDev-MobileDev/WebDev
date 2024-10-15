@@ -249,7 +249,7 @@ async function createInventoryForm(inventoryItem = null) {
                 if (!name.value.match(/^[\w\s.,*/]{1,50}$/)) {
                     Swal.fire("Invalid name format!");
                 }
-                else if (shelfLife.value > 999_999_999) {
+                else if (shelfLife.value > 99_999_999) {
                     Swal.fire("Shelf life too large!");
                 }
                 else if (shelfLife.value <= 0) {
@@ -258,7 +258,7 @@ async function createInventoryForm(inventoryItem = null) {
                 else if (reorderAmount.value <= 0) {
                     Swal.fire("Reorder Amount too small!");
                 }
-                else if (reorderAmount.value > 999_999_999) {
+                else if (reorderAmount.value > 99_999_999) {
                     Swal.fire("Reorder Amount too large!");
                 }
                 else {
@@ -281,7 +281,7 @@ async function createInventoryForm(inventoryItem = null) {
                 if (!name.value.match(/^[\w\s.,*/]{1,50}$/)) {
                     Swal.fire("Invalid name format!");
                 }
-                else if (shelfLife.value > 999_999_999) {
+                else if (shelfLife.value > 99_999_999) {
                     Swal.fire("Shelf life too large!");
                 }
                 else if (shelfLife.value <= 0) {
@@ -290,7 +290,7 @@ async function createInventoryForm(inventoryItem = null) {
                 else if (reorderAmount.value <= 0) {
                     Swal.fire("Reorder Amount too small!");
                 }
-                else if (reorderAmount.value > 999_999_999) {
+                else if (reorderAmount.value > 99_999_999) {
                     Swal.fire("Reorder Amount too large!");
                 }
                 else {

@@ -12,7 +12,7 @@ const database = new Database(config);
 const app = express.Router();
 
 // Max that the database will hold
-const decimal_10_whole_2_fraction = 999_999_999.99;
+const decimal_10_whole_2_fraction = 99_999_999.99;
 
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());

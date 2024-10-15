@@ -15,7 +15,7 @@ const Database = require('../database');
 const database = new Database(config);
 
 // Max that the database will hold
-const decimal_10_whole_2_fraction = 999_999_999.99;
+const decimal_10_whole_2_fraction = 99_999_999.99;
 
 // Used for API routes
 const app = express.Router();
