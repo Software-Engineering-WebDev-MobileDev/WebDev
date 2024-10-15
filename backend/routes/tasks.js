@@ -277,6 +277,9 @@ app.delete("/delete_task/:taskID", async (req, res) => {
                         DELETE
                         FROM tblTasks
                         WHERE TaskID = '${taskID}';
+                        DELETE
+                        FROM tblTaskStatusAudit
+                        WHERE TaskID = '${taskID}'
                     `;
                     database.executeQuery(query).then(() => {
                         res.status(200).send({
