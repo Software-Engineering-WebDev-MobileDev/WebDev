@@ -338,14 +338,9 @@ async function getInventoryItem(inventoryID) {
     else {
         console.log("User is not logged in!");
         // Return to home if the user is not logged in
-        //window.location.href = "/";
+        window.location.href = "/";
     }
 }
-
-
-
-
-
 
 const urlParams = new URLSearchParams(window.location.search);
 console.log(urlParams.get("inventory"));
