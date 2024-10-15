@@ -22,7 +22,15 @@ app.get("/ingredients", (req, res) => {
         database.sessionToEmployeeID(session_id).then((employee_id) => {
             if (employee_id) {
                 database.executeQuery(
-                    `SELECT IngredientID, ing.InventoryID, Quantity, UnitOfMeasure, Name, ShelfLife, ShelfLifeUnit, ReorderAmount, ReorderUnit
+                    `SELECT IngredientID,
+                            ing.InventoryID,
+                            Quantity,
+                            UnitOfMeasure,
+                            Name,
+                            ShelfLife,
+                            ShelfLifeUnit,
+                            ReorderAmount,
+                            ReorderUnit
                      FROM tblIngredients AS ing
                               INNER JOIN tblInventory AS inv ON ing.InventoryID = inv.InventoryID`
                 ).then((result) => {
@@ -130,9 +138,11 @@ app.get("/ingredient", (req, res) => {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `SELECT *
-                         FROM tblIngredients
-                         WHERE IngredientID = '${ingredient_id}'`
+                        `SELECT IngredientID, tIn.InventoryID, tIv.Name, Quantity, UnitOfMeasure
+                         FROM tblIngredients AS tIn
+                                  INNER JOIN tblInventory AS tIv
+                                  ON tIn.InventoryID = tIv.InventoryID
+                         WHERE tIn.IngredientID = '${ingredient_id}'`
                     ).then((result) => {
                         if (result.rowsAffected[0] > 0) {
                             res.status(200).send(
