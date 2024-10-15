@@ -1,6 +1,5 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const {v4} = require('uuid');
 const {return_500, return_400, return_498} = require('./codes')
 const isNumber = (v) => typeof v === "number" || (typeof v === "string" && Number.isFinite(+v))
 
@@ -141,7 +140,7 @@ app.get("/ingredient", (req, res) => {
                         `SELECT IngredientID, tIn.InventoryID, tIv.Name, Quantity, UnitOfMeasure
                          FROM tblIngredients AS tIn
                                   INNER JOIN tblInventory AS tIv
-                                  ON tIn.InventoryID = tIv.InventoryID
+                                             ON tIn.InventoryID = tIv.InventoryID
                          WHERE tIn.IngredientID = '${ingredient_id}'`
                     ).then((result) => {
                         if (result.rowsAffected[0] > 0) {
@@ -329,29 +328,92 @@ app.delete('/ingredient', (req, res) => {
 
 app.put('/ingredient', (req, res) => {
     try {
-        const session_id = req.header('session_id');
-        const ingredient_id = req.header("ingredient_id")
-        const description = req.header("description");
-        const category = req.header("category");
-        const measurement = req.header("measurement");
-        const max_amount = req.header("max_amount");
-        const reorder_amount = req.header("reorder_amount");
-        const min_amount = req.header("min_amount");
+        const session_id = req.header("session_id");
+        const inventory_id = req.header("inventory_id");
+        const ingredient_id = req.header("ingredient_id");
+        const quantity = req.header("quantity");
+        const unit_of_measurement = req.header("unit_of_measurement");
+        const name = req.header("name");
 
-        /*
-         * For the implementation, I would guess that we will want all columns coming from the frontend. There is
-         * already an endpoint to get all of these details currently present in the database, so I feel like we can
-         * put the responsibility of filling out those fields on the frontend. It would therefore be advantageous for
-         * all the validation from `POST ingredient` to be a function used by both endpoints.
-         */
+        // Make sure that relevant sentence-like info can be inserted into the DB without SQL injection
+        const sentence_regex = /^[\w\s,.!?'"(){}\[\]:-=]{1,50}(?!--|;)$/;
+        // The biggest floating point number that will be stored by the database
+        const decimal_10whole_2fraction_max = 999_999_999.99;
 
-        // TODO: Implement this
-        res.status(501).send(
-            {
-                status: "error",
-                reason: "Not implemented yet for MVP"
-            }
-        )
+        if (session_id === undefined) {
+            return_400(res, "Missing session_id in headers");
+        }
+        else if (inventory_id === undefined) {
+            return_400(res, "Missing inventory_id in headers");
+        }
+        else if (quantity === undefined) {
+            return_400(res, "Missing quantity in headers");
+        }
+        else if (unit_of_measurement === undefined) {
+            return_400(res, "Missing unit_of_measurement in headers");
+        }
+        else if (ingredient_id === undefined) {
+            return_400(res, "Missing ingredient_id in headers");
+        }
+        else if (name === undefined) {
+            return_400(res, "Missing name in headers");
+        }
+        // TODO: Check if the unit is in a list of metric units or something like that
+        else if (!unit_of_measurement.match(sentence_regex)) {
+            return_400(res, "Invalid category contents");
+        }
+        else if (!ingredient_id.match(/^\w{0,32}$/)) {
+            return_400(res, "Bad ingredient_id format");
+        }
+        else if (!inventory_id.match(/^\w{0,32}$/)) {
+            return_400(res, "Bad inventory_id format");
+        }
+        else if (quantity < 0) {
+            return_400(res, "Quantity must be positive");
+        }
+        else if (quantity > decimal_10whole_2fraction_max) {
+            return_400(res, "Quantity is too large");
+        }
+        else if (!name.match(sentence_regex)) {
+            return_400(res, "Invalid name supplied!");
+        }
+        else {
+            database.sessionToEmployeeID(session_id).then((employee_id) => {
+                if (employee_id) {
+                    database.executeQuery(
+                        `UPDATE tblIngredients
+                         SET IngredientID = '${ingredient_id}',
+                             InventoryID = '${inventory_id}',
+                             Quantity = ${quantity},
+                             UnitOfMeasure = '${unit_of_measurement}'
+                         WHERE IngredientID = '${ingredient_id}';
+                        UPDATE tblInventory
+                        SET Name = '${name}'
+                        WHERE InventoryID = '${inventory_id}'`
+                    ).then((result) => {
+                        if (result.rowsAffected[0] > 0) {
+                            res.status(200).send(
+                                {
+                                    status: "success"
+                                }
+                            );
+                        }
+                        else {
+                            return_400(res, "Bad ingredient parameters")
+                        }
+                    }).catch((e) => {
+                        console.error(e);
+                        return_500(res);
+                    })
+                }
+                else {
+                    return_498(res);
+                }
+            }).catch((e) => {
+                console.error(e);
+                return_500(res);
+            });
+        }
     }
     catch (e) {
         if (e instanceof TypeError) {
