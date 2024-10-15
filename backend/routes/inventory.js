@@ -1127,6 +1127,9 @@ app.post('/purchase_order', (req, res) => {
                             console.error(e);
                             return_400(res, "inventory_id not found in the database");
                         }
+                        else if (e.message.startsWith("Invalid column name")) {
+                            return_400(res, "You probably converted `undefined`, `NULL` or `null` to a string");
+                        }
                         else {
                             console.error(e);
                             return_500(res);
