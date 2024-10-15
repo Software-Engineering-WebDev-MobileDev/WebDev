@@ -51,7 +51,7 @@ async function updateIngredient(ingredientID, name, quantity, unitOfMeasurement)
     }).then(async (result) => {
         if (result.status === 200) {
             console.log("Success");
-            // TODO: Return to the ingredient page
+            window.location.href = '/ingredient';
         }
         else {
             console.error(await result.json());
@@ -81,8 +81,8 @@ async function addIngredient(name, quantity, unitOfMeasurement) {
         }
     }).then(async (result) => {
         if (result.status === 201) {
-            console.log("Redirect to /ingredient");
-            // TODO: Return to the ingredient page
+            console.log("Success. Redirect to /ingredient");
+            window.location.href = '/ingredient';
         }
         else {
             console.error(await result.json());

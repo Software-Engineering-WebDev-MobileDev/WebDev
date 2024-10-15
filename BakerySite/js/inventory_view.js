@@ -25,7 +25,8 @@ async function addInventoryItem(nameForm, shelfLifeForm, shelfLifeUnitForm, reor
         }
     }).then(async (response) => {
         if (response.status === 201) {
-            console.log('Inventory Added. Redirect to other page');
+            console.log("Success");
+            window.location.href = '/ingredient';
         }
         else {
             console.error(await response.json());
@@ -60,7 +61,8 @@ async function updateInventoryItem(nameForm, shelfLifeForm, shelfLifeUnitForm, r
         }
     }).then(async (response) => {
         if (response.status === 200) {
-            console.log('Inventory updated. Redirect to other page');
+            console.log("Success");
+            window.location.href = '/ingredient';
         }
         else {
             console.error(await response.json());
