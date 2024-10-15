@@ -173,7 +173,7 @@ function createIngredientForm(ingredient = null) {
     // Create the name label
     const ingredientNameLabel = document.createElement("label");
     ingredientNameLabel.innerText = "Ingredient Name";
-    ingredientNameLabel.for = "ingredientNameInput";
+    ingredientNameLabel.htmlFor = "ingredientNameInput";
     ingredientNameLabel.className = "control-label";
     ingredientForm.appendChild(ingredientNameLabel);
 
@@ -200,7 +200,7 @@ function createIngredientForm(ingredient = null) {
 
     // Quantity label
     const quantityLabel = document.createElement("label");
-    quantityLabel.for = "quantityInput";
+    quantityLabel.htmlFor = "quantityInput";
     quantityLabel.innerHTML = "Quantity";
     quantityLabel.className = "control-label";
     ingredientForm.appendChild(quantityLabel);
@@ -227,7 +227,7 @@ function createIngredientForm(ingredient = null) {
     const unitOfMeasureLabel = document.createElement("label");
     unitOfMeasureLabel.innerText = "Unit";
     unitOfMeasureLabel.className = "control-label";
-    unitOfMeasureLabel.for = "unitOfMeasureForm";
+    unitOfMeasureLabel.htmlFor = "unitOfMeasureForm";
     ingredientForm.appendChild(unitOfMeasureLabel);
 
     // Unit input form
