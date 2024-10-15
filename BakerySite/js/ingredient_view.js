@@ -4,6 +4,12 @@ const unitsOfMeasure = ['g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs'];
 // User's session_id to be used
 const sessionID = localStorage.getItem('session_id');
 
+/**
+ * Gets all inventory items from the API.
+ * @param pageNumber {Number} Page number to get (used in recursive calls).
+ * @param pageSize {Number} The size of each page to get (used in recursive calls).
+ * @returns {Promise<*|[string]>} Array of Inventory item objects.
+ */
 async function getInventory(pageNumber = 1, pageSize = 30) {
     return await fetch('api/inventory',{
         method: 'GET',
