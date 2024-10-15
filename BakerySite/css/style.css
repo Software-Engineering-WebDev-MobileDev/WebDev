@@ -33,7 +33,7 @@
 }
 
 /* Login Button, Task Add Button, and Task Submit Button Styles */
-#btnLogin, #taskAddButton, #submitTaskButton, #updateTaskButton, #submitIngredientButton, #submitItemButton {
+#btnLogin, #taskAddButton, #submitTaskButton, #updateTaskButton, #submitIngredientButton, #submitItemButton, #inventoryViewButton, #purchaseOrderButton {
     background-color: #f5c976; /* Set the background color */
     color: #2C2C2C; /* Set the text color */
     border: none; /* Remove the border */
@@ -46,7 +46,7 @@
     cursor: pointer; /* Change cursor to pointer when hovered */
 }
 
-#btnLogin:hover, #taskAddButton:hover, #submitTaskButton:hover, #updateTaskButton:hover, #submitIngredientButton:hover {
+#btnLogin:hover, #taskAddButton:hover, #submitTaskButton:hover, #updateTaskButton:hover, #submitIngredientButton:hover, #inventoryViewButton:hover, #purchaseOrderButton:hover {
     background-color: #e5b567; /* Change color on hover */
 }
 

@@ -111,7 +111,58 @@ function createIngredientForm(ingredient = null) {
     }
     heading.style.fontWeight = "bold";
     ingredientForm.appendChild(heading);
-    ingredientForm.appendChild(document.createElement('br'));
+
+    if (ingredient) {
+        const pageButtonDiv = document.createElement("div");
+        pageButtonDiv.id = "pageButtonDiv";
+        pageButtonDiv.align = "center";
+        pageButtonDiv.style.display = "flex";
+        pageButtonDiv.style.alignItems = "flex-end";
+        pageButtonDiv.style.flexDirection = "row";
+        pageButtonDiv.style.justifyContent = "center";
+
+        // Button to go to the inventory page
+        const inventoryViewButton = document.createElement("button");
+        inventoryViewButton.id = "inventoryViewButton";
+        inventoryViewButton.innerText = "Inventory Item";
+        inventoryViewButton.className = "form-control btn btn-primary col-12 mt-4";
+        inventoryViewButton.style.width = "40%";
+        inventoryViewButton.style.marginBottom = "1em";
+        inventoryViewButton.type = "button";
+        inventoryViewButton.addEventListener(
+            'mousedown',
+            () => {
+                window.location.href = `/inventory_view?inventory=${ingredient["InventoryID"]}`;
+            }
+        )
+        pageButtonDiv.appendChild(inventoryViewButton);
+
+        // Spacer between buttons
+        const tabSpacer = document.createElement('p');
+        tabSpacer.innerHTML = "&emsp;";
+        pageButtonDiv.appendChild(tabSpacer);
+
+        // Purchase order button
+        const purchaseOrderButton = document.createElement('button');
+        purchaseOrderButton.id = "purchaseOrderButton";
+        purchaseOrderButton.innerText = "Purchase Order";
+        purchaseOrderButton.className = "form-control btn btn-primary col-12 mt-4";
+        purchaseOrderButton.style.width = "40%";
+        purchaseOrderButton.style.marginBottom = "1em";
+        purchaseOrderButton.type = "button";
+        purchaseOrderButton.addEventListener(
+            'mousedown',
+            () => {
+                window.location.href = `/purchase_order?inventory=${ingredient["InventoryID"]}`;
+            }
+        )
+        pageButtonDiv.appendChild(purchaseOrderButton);
+
+        ingredientForm.appendChild(pageButtonDiv);
+    }
+    else {
+        ingredientForm.appendChild(document.createElement('br'));
+    }
 
     // Create the name label
     const ingredientNameLabel = document.createElement("label");
