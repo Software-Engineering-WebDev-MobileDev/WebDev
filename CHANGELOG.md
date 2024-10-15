@@ -22,6 +22,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## 2024-10-15
+
+### Added
+- Ingredient view page
+- Ingredient update page
+- Inventory add page
+- Inventory update page
+- Name to single ingredient API route return.
+- Purchase order creation page
+
 ## 2024-10-14
 
 ### Added

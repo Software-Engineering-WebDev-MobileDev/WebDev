@@ -334,6 +334,8 @@ describe("Create and retrieve ingredients", function () {
             .hasProperty('status') // Check if 'status' exists
             .string(ingredient_api.status).is('success'); // Check if 'status' is 'success'
 
+        delete ingredient_api["content"]["Name"]
+
         assert.strictEqual(JSON.stringify(ingredient_api["content"]), JSON.stringify(test_ingredient_object), `Database and API ingredients do not match:\n${test_ingredient_object}\n\n${ingredient_api}`)
     });
 

@@ -4,25 +4,15 @@
 {% extends 'base.html' %}
 {% set background = '' %}
 {% set title = 'Ingredient View' %} <!-- Change dynamically based on which ingredient was clicked on from ingredient.html -->
-
-{% block head %}
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<!-- <link rel="stylesheet" href="css/ingredients_icons.css"> -->
-{% endblock %}
-
 {% block content %}
-    <!-- <div class="card">
-        <div class="card-image">
-            <img src="path/to/your/image.jpg" alt="Card Image">
-        </div> -->
-                <!-- <div class="card-content">
-             <h2 class="card-title">Recipes</h2>
-             <p class="card-description">Try this recipe</p>
-             <div class="card-icons">
-                <i class="fas fa-apple-whole"></i>
-                <i class="fas fa-bread-slice"></i>
-                <i class="fas fa-carrot"></i>
-             </div>
-        </div>
-    </div> -->
+
+<div align="center">
+    <div class="task-form col-12" id="ingredientFormContainer" align="left">
+    </div>
+</div>
+
+<script src="js/jsource/sweetalert.js"></script>
+<script src="js/ingredient_view.js"></script>
+{% endblock %}
+{% block js %}
 {% endblock %}
