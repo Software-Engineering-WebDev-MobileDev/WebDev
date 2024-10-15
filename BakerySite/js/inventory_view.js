@@ -117,6 +117,7 @@ async function createInventoryForm(inventoryItem = null) {
     inventoryNameInput.required = true;
     inventoryNameInput.ariaRequired = "true";
     inventoryForm.appendChild(inventoryNameInput);
+    inventoryForm.appendChild(document.createElement('br'));
 
     // Shelf life label
     const shelfLifeLabel = document.createElement("label");
@@ -143,6 +144,7 @@ async function createInventoryForm(inventoryItem = null) {
         shelfLifeInput.placeholder = "0";
     }
     inventoryForm.appendChild(shelfLifeInput);
+    inventoryForm.appendChild(document.createElement('br'));
 
     // Unit of measure label
     const shelfLifeUnitOfMeasureLabel = document.createElement("label");
@@ -169,6 +171,7 @@ async function createInventoryForm(inventoryItem = null) {
     }
 
     inventoryForm.appendChild(shelfLifeUnitOfMeasureForm);
+    inventoryForm.appendChild(document.createElement('br'));
 
     // Reorder label
     const reorderLabel = document.createElement("label");
@@ -195,6 +198,7 @@ async function createInventoryForm(inventoryItem = null) {
         reorderInput.placeholder = "0";
     }
     inventoryForm.appendChild(reorderInput);
+    inventoryForm.appendChild(document.createElement('br'));
 
     // Unit of measure label
     const reorderUnitOfMeasureLabel = document.createElement("label");
@@ -222,6 +226,7 @@ async function createInventoryForm(inventoryItem = null) {
     }
 
     inventoryForm.appendChild(reorderUnitOfMeasureForm);
+    inventoryForm.appendChild(document.createElement('br'));
 
     // Submit button
     const submitButton = document.createElement('button');

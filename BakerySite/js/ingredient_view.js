@@ -111,6 +111,7 @@ function createIngredientForm(ingredient = null) {
     }
     heading.style.fontWeight = "bold";
     ingredientForm.appendChild(heading);
+    ingredientForm.appendChild(document.createElement('br'));
 
     // Create the name label
     const ingredientNameLabel = document.createElement("label");
@@ -138,6 +139,7 @@ function createIngredientForm(ingredient = null) {
         })
     })
     ingredientForm.appendChild(ingredientNameSelect);
+    ingredientForm.appendChild(document.createElement('br'));
 
     // Quantity label
     const quantityLabel = document.createElement("label");
@@ -162,6 +164,7 @@ function createIngredientForm(ingredient = null) {
     quantityInput.className = "form-control";
     quantityInput.id = "quantityInput";
     ingredientForm.appendChild(quantityInput);
+    ingredientForm.appendChild(document.createElement('br'));
 
     // Unit of measure label
     const unitOfMeasureLabel = document.createElement("label");
@@ -189,6 +192,7 @@ function createIngredientForm(ingredient = null) {
     }
 
     ingredientForm.appendChild(unitOfMeasureForm);
+    ingredientForm.appendChild(document.createElement('br'));
 
     // Submit button
     const submitButton = document.createElement('button');
