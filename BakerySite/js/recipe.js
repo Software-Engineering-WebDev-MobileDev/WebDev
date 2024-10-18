@@ -43,11 +43,12 @@ async function addRecipes() {
     try {
         if (recipeList.length === 0){
             recipeList = await fetchRecipes();
+            
         }
-
+        recipeList["recipes"].sort((a,b) => a.RecipeName.localeCompare(b.RecipeName));
         recipeIDForm.innerHTML = '';
         const rowNew = document.createElement('div');
-        rowNew.className = "row g-2 justify-content-center mb-2";
+        rowNew.className = "row g-2 justify-content-center";
         rowNew.id = 'row';
         recipeIDForm.appendChild(rowNew)
 
