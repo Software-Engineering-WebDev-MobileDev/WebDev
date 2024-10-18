@@ -236,7 +236,7 @@ async function createInventoryForm(inventoryItem = null) {
     submitButton.style.width = "50%";
     submitButton.style.marginBottom = "1em";
     if (inventoryItem) {
-        submitButton.innerHTML = "Update";
+        submitButton.innerText = "Update";
         submitButton.addEventListener(
             'mousedown',
             () => {
