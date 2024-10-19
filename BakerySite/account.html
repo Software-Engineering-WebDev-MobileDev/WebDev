@@ -71,15 +71,25 @@
         function updateGreeting() {
             var firstName = document.getElementById("firstName").value;
             var lastName = document.getElementById("lastName").value;
-            document.getElementById("greeting").innerText = "Hi, " + firstName + " " + lastName;
+            var greeting = document.getElementById("greeting")
+
+            if (firstName || lastName) {
+                greeting.innerText = "Hi, " + firstName + " " + lastName;
+            } else {
+                greeting.innerText = "Hi, there!";
+            }
         }
 
         function toggleEditMode() {
             var formElements = document.querySelectorAll('#accountForm input');
+            isDisabled = formElements[0].disabled;
+
             formElements.forEach(function(element) {
-                element.disabled = !element.disabled; // Toggle the disabled attribute
+                element.disabled = !isDisabled; // Toggle the disabled attribute
             });
-            document.getElementById("submitButton").style.display = "block"; // Show Submit button
+
+            var submitButton = document.getElementById("submitButton");
+            submitButton.style.display = isDisabled ? "block" : "none";
         }
 
         function submitForm() {
@@ -100,8 +110,6 @@
             }
         }
     </script>
-    <!--src="script.js"!-->
-
 
 {% endblock %}
 
