@@ -15,7 +15,7 @@ const Database = require('../database');
 const database = new Database(config);
 
 // Max that the database will hold
-const decimal_10_whole_2_fraction = 999_999_999.99;
+const decimal_10_whole_2_fraction = 99_999_999.99;
 
 // Used for API routes
 const app = express.Router();
@@ -277,6 +277,9 @@ app.delete("/delete_task/:taskID", async (req, res) => {
                         DELETE
                         FROM tblTasks
                         WHERE TaskID = '${taskID}';
+                        DELETE
+                        FROM tblTaskStatusAudit
+                        WHERE TaskID = '${taskID}'
                     `;
                     database.executeQuery(query).then(() => {
                         res.status(200).send({

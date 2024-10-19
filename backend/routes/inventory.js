@@ -12,7 +12,7 @@ const database = new Database(config);
 const app = express.Router();
 
 // Max that the database will hold
-const decimal_10_whole_2_fraction = 999_999_999.99;
+const decimal_10_whole_2_fraction = 99_999_999.99;
 
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
@@ -1043,7 +1043,7 @@ app.post('/purchase_order', (req, res) => {
         const session_id = req.header("session_id");
         const purchase_order_id = database.gen_uuid();
         const inventory_id = req.header("inventory_id");
-        const date = req.header("date");
+        const date = req.header("po_date");
         const order_quantity = req.header("order_quantity");
         const vendor = req.header("vendor");
         const payable_amount = req.header("payable_amount");
@@ -1126,6 +1126,9 @@ app.post('/purchase_order', (req, res) => {
                         if (e.message.includes("FOREIGN KEY constraint")) {
                             console.error(e);
                             return_400(res, "inventory_id not found in the database");
+                        }
+                        else if (e.message.startsWith("Invalid column name")) {
+                            return_400(res, "You probably converted `undefined`, `NULL` or `null` to a string");
                         }
                         else {
                             console.error(e);

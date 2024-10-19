@@ -895,7 +895,7 @@ describe("Make, get, and delete some purchase orders", function () {
             headers: {
                 session_id: session_id,
                 inventory_id: inventory_id,
-                date: test_date.toISOString(),
+                po_date: test_date.toISOString(),
                 order_quantity: 20_000.0,
                 vendor: "Big Flour Power",
                 payable_amount: 2_000.0,

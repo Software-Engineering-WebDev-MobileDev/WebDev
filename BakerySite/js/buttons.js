@@ -42,11 +42,9 @@ $('#btnLogin').on('click',function(){
     let strPassword = $('#txtLoginPassword').val();
 
     if(strUsername.length < 1 || strPassword.length < 1){
-        Swal.fire({
-            title: "Oops!",
-            html: '<p>Email and Password cannot be blank</p>',
-            icon: "error"
-        })
+        $('#errLoginUsername').text('Username cannot be blank').addClass('error-message');
+        $('#errLoginPassword').text('Password cannot be blank').addClass('error-message');
+
     } else {
 
         $.ajax({
@@ -58,9 +56,6 @@ $('#btnLogin').on('click',function(){
             },
             success: function(result) {
                 console.log(result);
-
-                userLoc = 'errorpage'
-                setUserLocation(userLoc);
                 $("#btnHamburger").show();
                 $("#btnDashboard").show();
                 $('#btnLogout').show();
@@ -70,14 +65,22 @@ $('#btnLogin').on('click',function(){
                 $("#btnTask").show();
                 //$('#divNavbar').slideUp();
                 $('#divLogin').slideUp(function(){
-                    $('#divErrorPage').slideDown();
-                
+                    // $('#divErrorPage').slideDown();
+                    userLoc = 'task'
+                    window.location.href = "/task";
                 });
                 localStorage.setItem('session_id', result['session_id'])
                 return result['session_id'];
             },
             error: function(e) {
                 console.log(e);
+
+                if (e.status === 400) { // Assuming 400 is returned for incorrect credentials
+                    $('#errLoginUsername').text('');
+                    $('#errLoginPassword').text('Incorrect username or password').addClass('error-message');
+                } else {
+                    $('#errLoginUsername').text('An error occurred. Please try again.').addClass('error-message');
+                }
                 return e;
             }
         });
@@ -85,14 +88,14 @@ $('#btnLogin').on('click',function(){
 })
 
 $(document).ready(function () {
-    let strUsername = $('#txtRegisterUsername').val();
-    let strPassword = $('#txtRegisterPassword').val();
-    let strFirstName = $('#txtRegisterFirstName').val();
-    let strLastName = $('#txtRegisterLastName').val();
-    let strEmail = $('#txtRegisterEmail').val();
-    let strPhone = $('#numRegisterPhone').val();
-    let strEmployeeId = $('#txtRegisterEmployeeId').val();
-    const phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/ || /^(\d{3}-\d{3}-\d{4}|\d{10})$/;
+    let strUsername = $('#txtRegisterUsername');
+    let strPassword = $('#txtRegisterPassword');
+    let strFirstName = $('#txtRegisterFirstName');
+    let strLastName = $('#txtRegisterLastName');
+    let strEmail = $('#txtRegisterEmail');
+    let strPhone = $('#numRegisterPhone');
+    let strEmployeeId = $('#txtRegisterEmployeeId');
+    const phoneRegex = /^\(?\d{3}\)?[\d -]?\d{3}[\d -]?\d{4}$/;
     const emailRegex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
 
     // Add inline validation for other fields
@@ -146,13 +149,13 @@ $(document).ready(function () {
             url: "/api/create_account",
             method: "POST",
             headers: {
-                employee_id: strEmployeeId,
-                first_name: strFirstName,
-                last_name: strLastName,
-                username: strUsername,
-                password: strPassword,
-                email_address: strEmail,
-                phone_number: strPhone
+                employee_id: strEmployeeId.val(),
+                first_name: strFirstName.val(),
+                last_name: strLastName.val(),
+                username: strUsername.val(),
+                password: strPassword.val(),
+                email_address: strEmail.val(),
+                phone_number: strPhone.val()
             },
             success: function(result) {
                 console.log(result);
@@ -161,9 +164,11 @@ $(document).ready(function () {
                 //show Error Page
                 //$('#divNavbar').slideUp();
                 $('#divRegister').slideUp(function(){
-                $('#divErrorPage').slideDown();
-                userLoc = 'errorpage'
+                //$('#divErrorPage').slideDown();
+                //userLoc = 'errorpage'
+                userLoc = 'task'
                 setUserLocation(userLoc);
+                window.location.href = '/task'
                 });
                 var observationDateTime = getTime();
         
@@ -220,10 +225,17 @@ $('#btnRefresh').on('click', function(){
 
 $('#btnLogout').on('click', function(){
     let strSessionID = localStorage.getItem('session_id');
+    fetch('/api/logout', {
+        method: "POST",
+        headers: {
+            session_id: strSessionID
+        }
+    }).then(() => {}).catch(() => {});
     localStorage.removeItem('session_id');
     $('#btnLogout').hide();
-    window.location.reload();
-    setUserLocation('login');
+    localStorage.setItem('userLoc', "login");
+    // Redirect to the login page
+    window.location.href = 'index.html';
 });
 
 $('#btnIngredient').on('click', function(){
