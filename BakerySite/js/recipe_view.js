@@ -108,13 +108,21 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     // Create the heading
     const heading = document.createElement('h1');
     if (!recipe) {
+        console.log('Null Recipe')
+        console.log(recipe);
+
         heading.innerText = "Add a New Recipe";
     }
     else if (recipe && editMode) {
+        console.log('Edit recipe')
+        console.log(recipe);
         heading.innerText = `Edit ${recipe["RecipeName"]}`;
         document.title = `Edit ${recipe["RecipeName"]}`;
     }
     else {
+        console.log('View Recipe')
+        console.log(recipe);
+
         heading.innerText = recipe["RecipeName"];
         document.title = recipe["RecipeName"];
     }
@@ -473,7 +481,11 @@ async function getRecipe(recipe) {
                 }
             }).then((response) => {
                 if (response.status < 400) {
+                    console.log('yes recipe')
+
                     const result = response.json();
+                    console.log(result);
+                    console.log(result["recipe"]);
                     renderRecipeForm(result["recipe"]);
                 }
                 else {
@@ -482,6 +494,7 @@ async function getRecipe(recipe) {
             })
         }
         else {
+            console.log('No recipe')
             await renderRecipeForm()
         }
     }

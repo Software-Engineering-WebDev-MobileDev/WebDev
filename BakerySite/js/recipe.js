@@ -39,7 +39,7 @@ async function fetchRecipes() {
 }
 
 // adds recipes to page as buttons
-async function addRecipes() {
+async function getRecipes() {
     try {
         if (recipeList.length === 0){
             recipeList = await fetchRecipes();
@@ -59,6 +59,13 @@ async function addRecipes() {
             recipeButton.style = "background-color: #f5c976;"
             recipeButton.type = "button";
             recipeButton.innerText = recipe["RecipeName"];
+
+            recipeButton.onclick = function() {
+                window.location.href = 'recipe_view.html?recipe=' + recipe.RecipeID;
+                userLoc = recipe.RecipeName;
+                setUserLocation(userLoc);
+            };
+
             rowNew.appendChild(recipeButton);
         });
     } catch (e) {
@@ -66,4 +73,5 @@ async function addRecipes() {
     }
 }
 
-addRecipes();
+getRecipes();
+
