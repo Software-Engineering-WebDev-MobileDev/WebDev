@@ -1,6 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const {return_500, return_400, return_498} = require('./codes')
+const { return_500, return_400, return_498 } = require('./codes')
 const isNumber = (v) => typeof v === "number" || (typeof v === "string" && Number.isFinite(+v))
 
 // Database setup:
@@ -267,64 +267,61 @@ app.post("/ingredient", (req, res) => {
 app.delete('/ingredient', (req, res) => {
     try {
         const session_id = req.header('session_id');
-        const ingredient_id = req.header("ingredient_id")
+        const ingredient_id = req.header("ingredient_id");
 
         if (ingredient_id === undefined) {
             return_400(res, "Missing ingredient_id in header");
-        }
-        else if (!ingredient_id.match(/^[0-9A-Za-z]{32}$/)) {
+        } else if (!ingredient_id.match(/^[0-9A-Za-z]{32}$/)) {
             return_400(res, "Invalid ingredient_id format");
-        }
-        else {
+        } else {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `DELETE
-                         FROM tblIngredients
+                        `DELETE FROM tblRecipeIngredientModifier
                          WHERE IngredientID = '${ingredient_id}'`
-                    ).then((result) => {
-                        if (result.rowsAffected[0] >= 1) {
-                            res.status(200).send(
-                                {
+                    ).then((modifierDeleteResult) => {
+                        database.executeQuery(
+                            `DELETE FROM tblIngredients
+                             WHERE IngredientID = '${ingredient_id}'`
+                        ).then((result) => {
+                            if (result.rowsAffected[0] >= 1) {
+                                res.status(200).send({
                                     status: "success"
-                                }
-                            );
-                        }
-                        else if (result.rowsAffected[0] === 0) {
-                            res.status(404).send(
-                                {
+                                });
+                            } else if (result.rowsAffected[0] === 0) {
+                                res.status(404).send({
                                     status: "error",
                                     reason: "Ingredient not found in the database"
-                                }
-                            );
-                        }
-                        else {
-                            console.log(`Error: ${JSON.stringify(result)}`);
+                                });
+                            } else {
+                                console.log(`Error: ${JSON.stringify(result)}`);
+                                return_500(res);
+                            }
+                        }).catch((e) => {
+                            console.log(e);
                             return_500(res);
-                        }
+                        });
                     }).catch((e) => {
                         console.log(e);
                         return_500(res);
-                    })
-                }
-                else {
+                    });
+                } else {
                     return_498(res);
                 }
             }).catch((e) => {
                 console.log(e);
                 return_500(res);
-            })
+            });
         }
-    }
-    catch (e) {
+    } catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query parameters");
-        }
-        else {
+        } else {
             return_500(res);
         }
     }
 });
+
 
 app.put('/ingredient', (req, res) => {
     try {
