@@ -116,15 +116,15 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     else if (recipe && editMode) {
         console.log('Edit recipe')
         console.log(recipe);
-        heading.innerText = `Edit ${recipe["RecipeName"]}`;
-        document.title = `Edit ${recipe["RecipeName"]}`;
+        heading.innerText = `Edit ${recipe[0].RecipeName}`;
+        document.title = `Edit ${recipe[0].RecipeName}`;
     }
     else {
         console.log('View Recipe')
         console.log(recipe);
 
-        heading.innerText = recipe["RecipeName"];
-        document.title = recipe["RecipeName"];
+        heading.innerText = recipe[0].RecipeName;
+        document.title = recipe[0].RecipeName;
     }
     recipeFormContainer.appendChild(heading);
 
@@ -177,7 +177,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     estimatedPrepTimeForm.required = true;
     estimatedPrepTimeForm.ariaRequired = "true";
     if (recipe) {
-        estimatedPrepTimeForm.innerText = recipe["PrepTime"];
+        estimatedPrepTimeForm.innerText = recipe[0].PrepTime;
     }
     else {
         estimatedPrepTimeForm.placeholder = "0";
@@ -208,7 +208,8 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     estimatedCookTimeForm.required = true;
     estimatedCookTimeForm.ariaRequired = "true";
     if (recipe) {
-        estimatedCookTimeForm.innerText = recipe["CookTime"];
+        console.log(recipe[0].PrepTime)
+        estimatedCookTimeForm.innerText = recipe[0].CookTime;
     }
     else {
         estimatedCookTimeForm.placeholder = "0";
@@ -268,7 +269,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     descriptionInput.required = true;
     descriptionInput.ariaRequired = "true";
     if (recipe) {
-        descriptionInput.innerText = recipe["Description"].replace(/&quot;/g, '\'');;
+        descriptionInput.innerText = recipe[0].Description.replace(/&quot;/g, '\'');;
     }
     else {
         descriptionInput.placeholder = "Recipe description...";
@@ -334,7 +335,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     instructionsForm.required = true;
     instructionsForm.ariaRequired = "true";
     if (recipe) {
-        instructionsForm.innerText = recipe["Description"].replace(/&quot;/g, '\'');;
+        instructionsForm.innerText = recipe[0].Instructions.replace(/&quot;/g, '\'');;
     }
     else {
         instructionsForm.placeholder = "Recipe instructions...";
@@ -479,13 +480,12 @@ async function getRecipe(recipe) {
                 headers: {
                     session_id: sessionID
                 }
-            }).then((response) => {
+            }).then(async (response) => {
                 if (response.status < 400) {
                     console.log('yes recipe')
 
-                    const result = response.json();
-                    console.log(result);
-                    console.log(result["recipe"]);
+                    const result = await response.json();
+
                     renderRecipeForm(result["recipe"]);
                 }
                 else {
