@@ -373,12 +373,7 @@ app.get("/recipes", async (req, res) => {
             return_500(res);
         }
     }
-        //log results
-        console.log(result);
-    }).catch((e) => {
-        console.log(e);
-        return_500(res);
-    });
+},)
 
     app.post('/add_recipe_ingredient', async (req, res) => {
         try {
