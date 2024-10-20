@@ -2,7 +2,7 @@
 {% set background = '' %}
 {% block content %}
 
-    <div class="container">
+    <div class="container" id="accountInfo" style="display: flex; flex-direction: column; justify-content: space-around; align-items: center;">
         <div class="header">
             <h2 id="greeting"> 
                 
@@ -12,58 +12,60 @@
             <form id="accountForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" id="firstName" name="firstName" placeholder="Enter first name">
+                        <label for="firstName" class="control-label">First Name</label>
+                        <input type="text" id="firstName" name="firstName" placeholder="Enter first name" class="form-control">
                     </div>
                     <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" placeholder="Enter last name">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" id="username" name="username" placeholder="Enter username">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" id="password" name="password" placeholder="Enter your password">
-                        <span class="show-password" onclick="togglePassword()">&#128065;</span> <!-- Eye icon -->
+                        <label for="lastName" class="control-label">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" placeholder="Enter last name" class="form-control">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="emailPrimary">Email</label>
+                        <label for="username" class="control-label">Username</label>
+                        <input type="text" id="username" name="username" placeholder="Enter username" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="password" class="control-label">Password</label>
+                        <input type="password" id="password" name="password" placeholder="Enter your password" class="form-control" style="width: calc(50% - 2px); white-space: nowrap;">
+                        <span class="show-password" id="showPassword" type="button">Show password &#128065;</span> <!-- Eye icon -->
+                    </div>
+                </div>
+
+                <div class="form-row" style="display: flex; align-items: center; justify-content: space-between; width: 50%" align="left">
+                    <div class="form-group">
+                        <label for="emailPrimary" class="control-label">Email</label>
                         <input type="email" id="emailPrimary" name="emailPrimary" placeholder="Enter email">
-                        <label for="emailPrimaryCheckbox">Primary</label>
+                        <label for="emailPrimaryCheckbox" class="control-label">Primary</label>
                         <input type="checkbox" id="emailPrimaryCheckbox">
                     </div>
+                    &emsp;
                     <div class="form-group">
-                        <label for="emailSecondary">Alternate Email</label>
-                        <input type="email" id="emailSecondary" name="emailSecondary" placeholder="Enter alternate email">
-                        <label for="emailSecondaryCheckbox">Primary</label>
+                        <label for="emailSecondary" class="control-label">Alternate Email</label>
+                        <input type="email" id="emailSecondary" name="emailSecondary" placeholder="Enter alternate email"><br>
+                        <label for="emailSecondaryCheckbox" class="control-label">Primary</label>
                         <input type="checkbox" id="emailSecondaryCheckbox">
                     </div>
                 </div>
 
-                <div class="form-row">
+                <div class="form-row" style="display: flex; align-items: center; justify-content: space-between; width: 50%" align="left">
                     <div class="form-group">
                         <label for="phonePrimary">Phone Number</label>
                         <input type="tel" id="phonePrimary" name="phonePrimary" placeholder="Enter your phone number">
                         <label for="phonePrimaryCheckbox">Primary</label>
                         <input type="checkbox" id="phonePrimaryCheckbox">
                     </div>
+                    &emsp;
                     <div class="form-group">
                         <label for="phoneSecondary">Alternate Phone Number</label>
-                        <input type="tel" id="phoneSecondary" name="phoneSecondary" placeholder="Enter your phone number">
+                        <input type="tel" id="phoneSecondary" name="phoneSecondary" placeholder="Enter your phone number"><br>
                         <label for="phoneSecondaryCheckbox">Primary</label>
                         <input type="checkbox" id="phoneSecondaryCheckbox">
+                    </div>
                 </div>
-
-                <button type="button" id="editButton" class="edit-btn" onclick="toggleEditMode()">Edit</button>
-                <button type="button" id="submitButton" onclick="submitForm()">Submit</button>
+                <button type="button" id="editButton" class="edit-btn">Edit</button>&emsp;
+                <button type="button" id="submitButton">Submit</button>
             </form>
         </div>
     </div>

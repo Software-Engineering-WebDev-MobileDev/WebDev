@@ -20,7 +20,7 @@ function toggleEditMode() {
     });
 
     var submitButton = document.getElementById("submitButton");
-    submitButton.style.display = isDisabled ? "block" : "none";
+    submitButton.style.display = isDisabled ? "inline-block" : "none";
 }
 
 function submitForm() {
@@ -40,3 +40,12 @@ function togglePassword() {
         passwordField.type = "password";
     }
 }
+
+const showPassword = document.getElementById("showPassword");
+showPassword.addEventListener("mousedown", togglePassword);
+
+const editButton = document.getElementById("editButton");
+editButton.addEventListener("mousedown", toggleEditMode);
+
+const submitButton = document.getElementById("submitButton");
+submitButton.addEventListener("mousedown", submitForm);
