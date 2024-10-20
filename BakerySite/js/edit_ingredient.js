@@ -1,7 +1,7 @@
 const sessionID = localStorage.getItem('session_id');
 console.log(sessionID)
 const inventoryForm = document.getElementById("inventoryFormContainer");
-const unitsOfMeasure = ['g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs'];
+const unitsOfMeasure = ['(none)', 'g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs'];
 const shelfLifeMeasure = ['days', 'weeks', 'months', 'years'];
 
 // Get the inventoryID from the URL (if available)
@@ -100,8 +100,8 @@ function populateForm(inventoryItem = {}) {
             reorder_unit: document.getElementById("reorderUnit").value
         });
     });
-    
-    inventoryForm.appendChild(submitButton);
+    buttonContainer.appendChild(submitButton)
+    inventoryForm.appendChild(buttonContainer);
 }
 
 /**

@@ -275,12 +275,12 @@ if (process.env.NODE_ENV.trim() !== 'development') {
         const ext = path.extname(req.url).toLowerCase();
         console.log(req.url)
 
-        if (ext === '.html' || req.url.endsWith("/") || html_file_list.includes(req.url.substring(1) + ".html") || html_file_list.includes(req.url.substring(1, req.url.indexOf('?')) + ".html")) {
+        if (ext === '.html' || req.url.endsWith("/") || html_file_list.includes(req.url.substring(1) + ".html") || html_file_list.includes(req.url.substring(1, req.url.indexOf('?')) + ".html") || html_file_list.includes(req.url.substring(1, req.url.indexOf('?')))) {
             let original_html_path,
                 cached_html_path;
             if (req.url.indexOf('?') > -1) {
-                original_html_path = path.join(__dirname, '../BakerySite', req.url.substring(1, req.url.indexOf('?')) + ".html");
-                cached_html_path = path.join(cacheDir, req.url.substring(1, req.url.indexOf('?')) + ".html"); // Cache path mirrors original
+                original_html_path = path.join(__dirname, '../BakerySite', req.url.substring(1, req.url.indexOf('?')));
+                cached_html_path = path.join(cacheDir, req.url.substring(1, req.url.indexOf('?'))); // Cache path mirrors original
                 console.log(`HTML files found: ${original_html_path}`);
             }
             else {
