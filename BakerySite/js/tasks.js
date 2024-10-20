@@ -563,8 +563,7 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     recipeRedirectButton.addEventListener(
         'mousedown',
         () => {
-            window.location = `/recipe_view?recipe=${task["RecipeID"]}`
-            console.log(`Should be going to /recipes?recipe=${task["RecipeID"]}`)
+            window.location = `/recipe_view?recipe=${task["RecipeID"]}`;
         }
     )
     taskViewer.appendChild(recipeRedirectButton);
