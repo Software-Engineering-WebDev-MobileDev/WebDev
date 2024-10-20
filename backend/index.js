@@ -272,14 +272,24 @@ if (process.env.NODE_ENV.trim() !== 'development') {
     // Optimized HTML asset serving
     const optimize_html_css_js = (req, res, next) => {
         const ext = path.extname(req.url).toLowerCase();
+        console.log(req.url)
 
-        if (ext === '.html' || req.url.endsWith("/") || html_file_list.includes(req.url.substring(1) + ".html")) {
-            let original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
+        if (ext === '.html' || req.url.endsWith("/") || html_file_list.includes(req.url.substring(1) + ".html") || html_file_list.includes(req.url.substring(1, req.url.indexOf('?')) + ".html")) {
+            let original_html_path,
+                cached_html_path;
+            if (req.url.indexOf('?') > -1) {
+                original_html_path = path.join(__dirname, '../BakerySite', req.url.substring(1, req.url.indexOf('?')) + ".html");
+                cached_html_path = path.join(cacheDir, req.url.substring(1, req.url.indexOf('?')) + ".html"); // Cache path mirrors original
+                console.log(`HTML files found: ${original_html_path}`);
+            }
+            else {
+                original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
+                cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
+            }
             // Account for requests not having `.html` at the end, but are for HTML files
             if (!original_html_path.endsWith(".html")) {
                 original_html_path += ".html";
             }
-            let cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
             // Account for requests not having `.html` at the end, but are for HTML files
             if (!cached_html_path.endsWith(".html")) {
                 cached_html_path += ".html";
@@ -320,7 +330,7 @@ if (process.env.NODE_ENV.trim() !== 'development') {
                             minifyCSS: true,
                             minifyJS: true,
                             removeComments: true,
-                            removeEmptyElements: true
+                            removeEmptyElements: false
                         });
 
                     // Write the data to the cache directory
