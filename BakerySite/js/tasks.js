@@ -545,7 +545,7 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
 
     // Make the title
     const titleElement = document.createElement('h1');
-    titleElement.innerText = `Make: ${task["RecipeName"]}`;
+    titleElement.innerText = `Make: ${task["RecipeName"].replace(/&quot;/g, '\'')}`;
     titleElement.style.fontWeight = "bold";
     taskViewer.appendChild(titleElement);
 
@@ -561,11 +561,9 @@ async function viewTask(task, taskViewer, taskBox, addTaskButton) {
     recipeRedirectButton.type = "button";
     recipeRedirectButton.className = "form-control";
     recipeRedirectButton.addEventListener(
-        // mousedown?
-        'mouseup',
+        'mousedown',
         () => {
-            // TODO: Make this redirect to the appropriate recipe page
-            // window.location = `/recipes?recipe=${task["RecipeID"]}`
+            window.location = `/recipe_view?recipe=${task["RecipeID"]}`
             console.log(`Should be going to /recipes?recipe=${task["RecipeID"]}`)
         }
     )
@@ -856,7 +854,7 @@ async function renderTasks() {
 
                 // Add the recipe name
                 const name = document.createElement('td');
-                name.innerText = task["RecipeName"];
+                name.innerText = task["RecipeName"].replace(/&quot;/g, '\'');
                 name.style.textAlign = "center";
                 if (whenDue < now && (!("CompletionDate" in task) || task["CompletionDate"] === null)) {
                     name.style.color = overDueTaskColor;
@@ -1052,11 +1050,11 @@ async function addTaskButtonHandler(taskBox, addTaskButton) {
         // Boolean to mark the first recipe as selected
         let selected = true;
         // Add the recipes to the HTML form
-        recipeList["recipes"].forEach((recipe) => {
+        recipeList["recipe"].forEach((recipe) => {
             // Create the option
             const recipeOption = document.createElement('option');
             recipeOption.id = recipe["RecipeID"];
-            recipeOption.innerText = recipe["RecipeName"]
+            recipeOption.innerText = recipe["RecipeName"].replace(/&quot;/g, '\'');
             if (selected) {
                 recipeOption.selected = true;
                 selected = false;
