@@ -376,7 +376,7 @@ app.get("/recipes", async (req, res) => {
     }
 },)
 
-    app.post('/add_recipe_ingredient', async (req, res) => {
+    app.post('/add_recipe_ingredient_full', async (req, res) => {
         try {
             const sessionId = req.header("session_id");
             const recipeId = req.header("recipe_id");
