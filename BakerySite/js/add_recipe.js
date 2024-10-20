@@ -1,6 +1,24 @@
 const sessionID = localStorage.getItem('session_id');
 const recipeForm = document.getElementById("recipeFormContainer");
-const unitsOfMeasure = ['g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs'];
+const unitsOfMeasure = ['g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs', 'each'];
+let ingredientsList = [];
+
+/**
+ * Fetch available ingredients from the inventory.
+ * @returns {Promise<void>} Nothing
+ */
+async function fetchIngredients() {
+    try {
+        const response = await fetch('/api/inventory', {
+            method: 'GET',
+            headers: { session_id: sessionID }
+        });
+        const data = await response.json();
+        ingredientsList = data.ingredients || [];
+    } catch (e) {
+        console.error('Error fetching ingredients:', e);
+    }
+}
 
 /**
  * Add a recipe.
@@ -44,6 +62,53 @@ async function addRecipe(recipeNameForm, descriptionForm, categoryForm, prepTime
         Swal.fire("An error occurred while adding the recipe");
     });
 }
+
+/**
+ * Add a row for selecting ingredients, quantity, and units of measure.
+ */
+function addIngredientRow() {
+    const ingredientRow = document.createElement('div');
+    ingredientRow.className = 'row mb-3 ingredientRow';
+
+    const selectElement = document.createElement('select');
+    selectElement.className = 'form-control ingredientSelect';
+    selectElement.required = true;
+
+    ingredientsList.forEach(ingredient => {
+        const option = document.createElement('option');
+        option.value = ingredient.IngredientID;
+        option.text = ingredient.Name;
+        selectElement.appendChild(option);
+    });
+
+    const quantityInput = document.createElement('input');
+    quantityInput.className = 'form-control ingredientQuantity';
+    quantityInput.type = 'number';
+    quantityInput.placeholder = 'Quantity';
+    quantityInput.required = true;
+
+    const unitSelect = document.createElement('select');
+    unitSelect.className = 'form-control ingredientUnit';
+    unitsOfMeasure.forEach(unit => {
+        const unitOption = document.createElement('option');
+        unitOption.value = unit;
+        unitOption.text = unit;
+        unitSelect.appendChild(unitOption);
+    });
+
+    const removeButton = document.createElement('button');
+    removeButton.className = 'btn btn-danger';
+    removeButton.innerText = 'Remove';
+    removeButton.addEventListener('click', () => ingredientRow.remove());
+
+    ingredientRow.appendChild(selectElement);
+    ingredientRow.appendChild(quantityInput);
+    ingredientRow.appendChild(unitSelect);
+    ingredientRow.appendChild(removeButton);
+
+    document.getElementById('ingredientsContainer').appendChild(ingredientRow);
+}
+
 
 /**
  * Update a recipe.
@@ -97,7 +162,6 @@ async function updateRecipe(recipeNameForm, descriptionForm, categoryForm, prepT
 async function createRecipeForm(recipe = null) {
     recipeForm.innerHTML = '';
 
-    // Create the heading
     const heading = document.createElement("h1");
     heading.innerText = recipe ? "Edit Recipe" : "Add Recipe";
     heading.style.fontWeight = "bold";
@@ -171,6 +235,23 @@ async function createRecipeForm(recipe = null) {
     servingsInput.required = true;
     recipeForm.appendChild(servingsInput);
 
+    // **Ingredients Section**
+    const ingredientsLabel = document.createElement('h3');
+    ingredientsLabel.innerText = 'Ingredients';
+    recipeForm.appendChild(ingredientsLabel);
+
+    const ingredientsContainer = document.createElement('div');
+    ingredientsContainer.id = 'ingredientsContainer';
+    recipeForm.appendChild(ingredientsContainer);
+
+    // Button to add ingredients dynamically
+    const addIngredientButton = document.createElement('button');
+    addIngredientButton.className = 'btn btn-success mt-3';
+    addIngredientButton.type = 'button';
+    addIngredientButton.innerText = 'Add Ingredient';
+    addIngredientButton.addEventListener('click', addIngredientRow);
+    recipeForm.appendChild(addIngredientButton);
+
     // Instructions
     const instructionsLabel = document.createElement("label");
     instructionsLabel.innerText = "Instructions";
@@ -182,14 +263,20 @@ async function createRecipeForm(recipe = null) {
     instructionsInput.required = true;
     recipeForm.appendChild(instructionsInput);
 
-    // Ingredients (omitted for brevity, but follow the same pattern)
-
     // Submit Button
     const submitButton = document.createElement("button");
     submitButton.className = "btn btn-primary mt-4";
     submitButton.innerText = recipe ? "Update Recipe" : "Add Recipe";
     submitButton.addEventListener("click", () => {
         const ingredients = []; // Collect ingredients here
+        // Begin added section
+        document.querySelectorAll('.ingredientRow').forEach(row => {
+            const ingredientID = row.querySelector('.ingredientSelect').value;
+            const quantity = row.querySelector('.ingredientQuantity').value;
+            const unit = row.querySelector('.ingredientUnit').value;
+            ingredients.push({ ingredientID, quantity, unit });
+        });
+        // end added section
         if (recipe) {
             updateRecipe(recipeNameInput, descriptionInput, categoryInput, prepTimeInput, cookTimeInput, servingsInput, instructionsInput, ingredients, recipe.RecipeID);
         } else {
@@ -198,7 +285,6 @@ async function createRecipeForm(recipe = null) {
     });
     recipeForm.appendChild(submitButton);
 }
-
 /**
  * Initialize the recipe form on page load.
  * @param recipeID {String|null} The ID of the recipe to load, or null for a new recipe.
