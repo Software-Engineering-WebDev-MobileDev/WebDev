@@ -135,28 +135,6 @@ function displayIngredients() {
     });
 }
 
-// !!! LATER USEFUL FOR ANY TABLES NEEDED
-/*
-function fillTable() {
-    let strSessionID = sessionStorage.getItem('SessionID');
-    $.getJSON('https://simplecoop.swollenhippo.com/environment.php', {SessionID: strSessionID, days: '999'}, function(result) {
-        if(result.length > 0) {
-            $('#pNoObservations').hide();
-            result.forEach(function(observation) {
-                let strRow = `<tr><td>${observation.ObservationDateTime}</td><td>${observation.Temperature}</td><td>${observation.Humidity}</td></tr`;
-                $('#tblEnvironment, tbody').append(strRow);
-            });
-
-        }
-
-        $('#tblEnvironment').DataTable({
-            "order": [[0, 'dsc']]
-        });
-
-    })
-}  */
-
-
 /*
 function: checkPasswordRequirements
 parameters: none
@@ -223,32 +201,3 @@ function validateField(element, condition, errorMsg) {
         }
     }
 }
-
-// Email in-use check (using AJAX for server-side verification simulation)
-/*function checkEmailInUse(strEmail) {
-    // Simulating an AJAX request for duplicate email check
-    $.ajax({
-        url: '/api/add_user_email', // Example endpoint
-        method: 'POST',
-        headers: { 
-            'email_address': strEmail,  // Send email in the headers
-            //'session_id': sessionID, // session ID
-            'type': 'main' // Email type
-        },
-        success: function (response) {
-            if (response.status === 'success') {
-                validateField('#txtRegisterEmail', true, "");
-            } else if (response.reason === 'Email is already in use.') {
-                validateField('#txtRegisterEmail', false, "Email is already in use.");
-            } else {
-                validateField('#txtRegisterEmail', false, response.reason || "Unknown error.");
-            }
-        },
-        error: function () {
-            validateField('#txtRegisterEmail', false, "Unable to validate email. Please try again.");
-        }
-    });
-}
-
-*/
-

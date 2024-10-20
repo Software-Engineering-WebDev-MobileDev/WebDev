@@ -5,24 +5,19 @@ All notable changes to this project will be documented in this file.
 This format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## TO-DO
-- ~~Make it so that entering the wrong user or password informs the user of this problem~~
-- ~~Use a more secure way of changing pages, as well as using the return and homepage functionality~~
-- Implement the email in use checker
-- Make an error for an already in-use employee ID
-- Make a "main" email and phone number as well as additional ones you can add in account
-- Employee ID needs requirements
-- ~~Fix the Employee ID registration appearance, it's too close to the left~~
-- Make a confirmation option for the clear button so people don't accidentally hit it, possibly make it smaller
-- Integrate templating into the tasks endpoint
-
-## Backend
-- ~~Inventory Routes~~
-- ~~Deployment~~
-
 ## [Unreleased]
 
 ## 2024-10-20
+
+### Added
+- Email Regex
+
+### Removed
+- Settings.js has no use and was deprecated
+- Temp.js has no use and was deprecated
+- FillTable function had no use
+- BtnAbout javascript in buttons.js
+- Email in use checker function
 
 ### Changed
 - Finished recipe creation/view/edit page
