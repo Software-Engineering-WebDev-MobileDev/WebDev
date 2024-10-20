@@ -1,28 +1,21 @@
 {% extends 'base.html' %}
 {% set title = 'Ingredients' %}
 {% block content %}
-
+<!-- Add New Inventory Item button, visible and at the top of the page -->
+<div id="buttonContainer">
+    <button id="addInventoryButton" class="btn btn-primary">Add New Inventory Item</button>
+</div>
 <div id="contentContainer" class="container mt-5">
-
     <!-- Ingredient list container -->
     <div class="list-group" id="ingredient-list">
         <!-- Ingredients will be dynamically inserted here -->
     </div>
-
 </div>
-
-    <!-- Add New Inventory Item button, visible and at the top of the page -->
-    <div class="d-flex justify-content-end mb-4">
+<!-- Add New Inventory Item button, visible and at the top of the page -->
+<!-- <div class="d-flex mb-4">
         <button id="addInventoryButton" class="btn btn-success">Add New Inventory Item</button>
-    </div>
-
-    <!-- View Ingredient button, aligned properly
-    <div class="d-flex justify-content-center mt-4">
-        <button id="viewIngredientButton" class="btn btn-primary">View Ingredient</button>
     </div> -->
-
 <!-- Include SweetAlert or any other plugin if necessary -->
 <script src="js/jsource/sweetalert.js"></script>
 <script src="js/inventory.js"></script>
-
 {% endblock %}
