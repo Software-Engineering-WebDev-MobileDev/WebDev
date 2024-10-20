@@ -2,6 +2,10 @@ const sessionID = localStorage.getItem('session_id');
 const recipeFormContainer = document.getElementById('recipeFormContainer');
 const unitsOfMeasure = ['g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs'];
 
+const urlParams = new URLSearchParams(window.location.search);
+const recipeID = urlParams.get("recipe");
+const quantity = urlParams.get("quantity");
+
 /**
  * Get a list of ingredients from the API.
  * @returns {Promise<*|string>}
@@ -244,6 +248,41 @@ async function renderRecipeForm(recipe = null, editMode = false, ingredients = u
     recipeFormContainer.appendChild(document.createElement('br'));
 
     // TODO: Scale when recipe and not edit mode
+    if (!editMode && recipe) {
+        const scaleFormLabel = document.createElement("label");
+        scaleFormLabel.htmlFor = "scaleForm";
+        scaleFormLabel.className = "control-label";
+        scaleFormLabel.innerText = "Recipe scale";
+        recipeFormContainer.appendChild(scaleFormLabel);
+        const scaleForm = document.createElement('input');
+        scaleForm.id = "scaleForm";
+        scaleForm.name = "Recipe Scale";
+        scaleForm.type = "number";
+        scaleForm.className = "form-control";
+        scaleForm.value = quantity ? quantity : "1";
+        scaleForm.addEventListener(
+            'change',
+            async () => {
+                const scale = document.getElementById('scaleForm');
+
+                // Update ingredients scale
+                const ingredientsTableElement = document.getElementById("ingredientsTable");
+                let rows = ingredientsTableElement.querySelectorAll('tr');
+                if (rows.length > 1) {
+                    for (let i = 1; i < rows.length; i++) {
+                        const columns = rows[i].getElementsByTagName('td');
+                        const amount = columns[1].querySelector('input');
+                        amount.value = String(Number(scale.value) * recipe["recipeIngredients"][i - 1]["quantity"]);
+                    }
+                }
+
+                const numServingsForm = document.getElementById('numServingsForm');
+                numServingsForm.value = String(Number(scale.value) * recipe["Servings"]);
+            }
+        )
+        recipeFormContainer.appendChild(scaleForm);
+        recipeFormContainer.appendChild(document.createElement('br'));
+    }
 
     // Number of servings label
     const numServingsLabel = document.createElement("label");
@@ -263,7 +302,7 @@ async function renderRecipeForm(recipe = null, editMode = false, ingredients = u
     servingsForm.required = true;
     servingsForm.ariaRequired = "true";
     if (recipe) {
-        servingsForm.value = recipe["Servings"];
+        servingsForm.value = quantity ? Number(quantity) * recipe["Servings"] : recipe["Servings"];
     }
     else {
         servingsForm.placeholder = "0";
@@ -381,7 +420,7 @@ async function renderRecipeForm(recipe = null, editMode = false, ingredients = u
             amountForm.required = true;
             amountForm.ariaRequired = "true";
             amountForm.title = "Ingredient Amount";
-            amountForm.value = recipeIngredient["quantity"];
+            amountForm.value = quantity ? Number(quantity) * recipeIngredient["quantity"] : recipeIngredient["quantity"];
             const amountColumn = document.createElement('td');
             amountColumn.style.alignItems = "center";
             if (!editMode) {
@@ -785,8 +824,5 @@ async function getRecipe(recipe) {
         window.location.href = "/"
     }
 }
-
-const urlParams = new URLSearchParams(window.location.search);
-const recipeID = urlParams.get("recipe");
 
 getRecipe(recipeID).then(() => {});
