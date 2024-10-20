@@ -12,6 +12,7 @@ const unitsOfMeasure = ['g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs'];
  * @param reorderUnitForm {HTMLSelectElement} The select element for the reorder amount unit.
  * @returns {Promise<void>} Nothing, await if needed.
  */
+
 async function addInventoryItem(nameForm, shelfLifeForm, shelfLifeUnitForm, reorderAmountForm, reorderUnitForm) {
     await fetch('/api/inventory_item', {
         method: 'POST',
@@ -178,7 +179,7 @@ async function createInventoryForm(inventoryItem = null) {
     reorderLabel.htmlFor = "reorderInput";
     reorderLabel.className = "control-label";
     reorderLabel.id = "reorderInputLabel";
-    reorderLabel.innerText = "Reorder Amount";
+    reorderLabel.innerText = "Stock Amount";
     inventoryForm.appendChild(reorderLabel);
 
     // Reorder form
@@ -190,7 +191,7 @@ async function createInventoryForm(inventoryItem = null) {
     reorderInput.min = "1"
     reorderInput.required = true;
     reorderInput.ariaRequired = "true";
-    reorderInput.title = "Reorder Amount";
+    reorderInput.title = "Stock Amount";
     if (inventoryItem) {
         reorderInput.value = inventoryItem["ReorderAmount"];
     }
@@ -202,7 +203,7 @@ async function createInventoryForm(inventoryItem = null) {
 
     // Unit of measure label
     const reorderUnitOfMeasureLabel = document.createElement("label");
-    reorderUnitOfMeasureLabel.innerText = "Reorder Unit";
+    reorderUnitOfMeasureLabel.innerText = "Unit";
     reorderUnitOfMeasureLabel.className = "control-label";
     reorderUnitOfMeasureLabel.htmlFor = "reorderUnit";
     inventoryForm.appendChild(reorderUnitOfMeasureLabel);
@@ -212,7 +213,7 @@ async function createInventoryForm(inventoryItem = null) {
     reorderUnitOfMeasureForm.className = "form-control";
     reorderUnitOfMeasureForm.id = "reorderUnit";
     reorderUnitOfMeasureForm.name = "reorderUnit";
-    reorderUnitOfMeasureForm.title = "Reorder Unit";
+    reorderUnitOfMeasureForm.title = "Unit";
     reorderUnitOfMeasureForm.required = true;
     reorderUnitOfMeasureForm.ariaRequired = "true";
 

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "set NODE_ENV=development && mocha test",
     "dev": "set NODE_ENV=development && node index.js",
-    "dev2": "set NODE_ENV=development2 && node index.js",
+    "dev2": "set NODE_ENV=development2 && set AZURE_SQL_SERVER=localhost && node index.js",
     "dev_posix": "NODE_ENV=development node index.js",
     "drop_tables": "node drop_tables.js"
   },
