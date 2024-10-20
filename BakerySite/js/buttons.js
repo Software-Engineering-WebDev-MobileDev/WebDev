@@ -1,24 +1,3 @@
-/*$('#btnAbout').on('click',function(){
-   $('#divNavButtons').slideToggle();
-    //Slide Login or Register card before sliding About card down
-    var userLoc;
-    if ($('#divLogin').is(':visible')) {
-        userLoc = 'login';
-        $('#divLogin').slideUp();
-    } else if ($('#divRegister').is(':visible')) {
-        userLoc = 'register';
-        $('#divRegister').slideUp();
-    } else if ($('#divDashboard').is(':visible')) {
-        userLoc = 'dashboard';
-        $('#divDashboard').slideUp();              
-    }   else {
-        userLoc = localStorage.getItem('userLoc');
-        }
-    console.log(userLoc);
-    setUserLocation(userLoc);
-    $('#divAbout').slideDown();
-})
-*/
 $('#btnReturnLogin').on('click',function(){
     userLoc = localStorage.getItem('userLoc');
     console.log(userLoc);
@@ -116,12 +95,7 @@ $(document).ready(function () {
     });
 
     $('#txtRegisterEmail').on('input blur', function () {
-        let value = $(this).val();
-        if (emailRegex.test(value)) {
-            //checkEmailInUse(value); // Check if email is already in use
-        } else {
-            validateField(this, false, "Please enter a valid email.");
-        }
+        validateField(this, emailRegex.test($(this).val()), "Email is not valid.");
     });
 
     $('#numRegisterPhone').on('input blur', function () {
