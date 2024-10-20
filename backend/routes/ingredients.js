@@ -1,7 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const {return_500, return_400, return_498} = require('./codes')
-const isNumber = (v) => typeof v === "number" || (typeof v === "string" && Number.isFinite(+v))
+const {return_500, return_400, return_498} = require('./codes');
 
 // Database setup:
 const config = require('../config.js');
@@ -267,7 +266,7 @@ app.post("/ingredient", (req, res) => {
 app.delete('/ingredient', (req, res) => {
     try {
         const session_id = req.header('session_id');
-        const ingredient_id = req.header("ingredient_id")
+        const ingredient_id = req.header("ingredient_id");
 
         if (ingredient_id === undefined) {
             return_400(res, "Missing ingredient_id in header");
@@ -280,32 +279,37 @@ app.delete('/ingredient', (req, res) => {
                 if (employee_id) {
                     database.executeQuery(
                         `DELETE
-                         FROM tblIngredients
+                         FROM tblRecipeIngredientModifier
                          WHERE IngredientID = '${ingredient_id}'`
-                    ).then((result) => {
-                        if (result.rowsAffected[0] >= 1) {
-                            res.status(200).send(
-                                {
+                    ).then(() => {
+                        database.executeQuery(
+                            `DELETE
+                             FROM tblIngredients
+                             WHERE IngredientID = '${ingredient_id}'`
+                        ).then((result) => {
+                            if (result.rowsAffected[0] >= 1) {
+                                res.status(200).send({
                                     status: "success"
-                                }
-                            );
-                        }
-                        else if (result.rowsAffected[0] === 0) {
-                            res.status(404).send(
-                                {
+                                });
+                            }
+                            else if (result.rowsAffected[0] === 0) {
+                                res.status(404).send({
                                     status: "error",
                                     reason: "Ingredient not found in the database"
-                                }
-                            );
-                        }
-                        else {
-                            console.log(`Error: ${JSON.stringify(result)}`);
+                                });
+                            }
+                            else {
+                                console.log(`Error: ${JSON.stringify(result)}`);
+                                return_500(res);
+                            }
+                        }).catch((e) => {
+                            console.log(e);
                             return_500(res);
-                        }
+                        });
                     }).catch((e) => {
                         console.log(e);
                         return_500(res);
-                    })
+                    });
                 }
                 else {
                     return_498(res);
@@ -313,7 +317,7 @@ app.delete('/ingredient', (req, res) => {
             }).catch((e) => {
                 console.log(e);
                 return_500(res);
-            })
+            });
         }
     }
     catch (e) {
@@ -382,9 +386,9 @@ app.put('/ingredient', (req, res) => {
                 if (employee_id) {
                     database.executeQuery(
                         `UPDATE tblIngredients
-                         SET IngredientID = '${ingredient_id}',
-                             InventoryID = '${inventory_id}',
-                             Quantity = ${quantity},
+                         SET IngredientID  = '${ingredient_id}',
+                             InventoryID   = '${inventory_id}',
+                             Quantity      = ${quantity},
                              UnitOfMeasure = '${unit_of_measurement}'
                          WHERE IngredientID = '${ingredient_id}';
                         UPDATE tblInventory

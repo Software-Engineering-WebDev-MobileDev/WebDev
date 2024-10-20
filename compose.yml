@@ -1,6 +1,6 @@
 services:
   # Local database instance for testing
-  database:
+  databased:
     image: mcr.microsoft.com/mssql/server:2022-latest
     restart: unless-stopped
     container_name: databased
