@@ -14,7 +14,10 @@ async function fetchIngredients() {
             headers: { session_id: sessionID }
         });
         const data = await response.json();
-        ingredientsList = data.ingredients || [];
+        ingredientsList = data.content || [];
+        console.log(response)
+        console.log(data)
+        console.log(ingredientsList)
     } catch (e) {
         console.error('Error fetching ingredients:', e);
     }
@@ -291,6 +294,7 @@ async function createRecipeForm(recipe = null) {
  */
 async function initRecipeForm(recipeID = null) {
     if (sessionID) {
+        await fetchIngredients(); 
         if (recipeID) {
             const response = await fetch(`/api/recipe/${recipeID}`, {
                 method: "GET",
