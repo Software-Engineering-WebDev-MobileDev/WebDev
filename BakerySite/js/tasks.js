@@ -20,8 +20,22 @@ function renderAddTask() {
     const tableTaskContainer = document.createElement('table');
     tableTaskContainer.id = "taskContainer";
     tableTaskContainer.className = "table";
-    tableTaskContainer.hidden = true;
-    tableTaskContainer.style.backgroundColor = "#ffffffd1"
+    tableTaskContainer.hidden = false;
+    tableTaskContainer.style.backgroundColor = "#ffffffd1";
+
+    const spinnerRow = document.createElement('tr');
+    spinnerRow.align = "center";
+    const spinnerColumn = document.createElement('td');
+    const spinner = document.createElement("img");
+    spinner.src = "images/spinner-of-dots.svg";
+    spinner.alt = "loading dots";
+    spinner.style.animation = "rotation 2s infinite linear";
+    spinner.style.width = "20%";
+    spinner.style.backgroundColor = "#0000";
+    spinnerColumn.appendChild(spinner);
+    spinnerRow.appendChild(spinnerColumn);
+    tableTaskContainer.appendChild(spinnerRow);
+
     currentDiv.appendChild(tableTaskContainer);
     contentContainer.appendChild(currentDiv);
 
