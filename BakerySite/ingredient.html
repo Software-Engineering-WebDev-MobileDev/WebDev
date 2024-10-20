@@ -1,83 +1,21 @@
-<!-- Purpose: View all ingredients in the form of cards dynamcially created based on cards in database -->
 {% extends 'base.html' %}
-{% set background = '' %}
 {% set title = 'Ingredients' %}
-
 {% block content %}
-        <!-- <div class="simple-card-container">
-            <div class="simple-card">
-                <div class="simple-card-content">
-                    <div class="icon">
-                        <i class="fas fa-bread-slice"></i>
-                    </div>
-                    <div class="text">
-                        <h2>Flour</h2>
-                        <p>Current inventory</p>
-                    </div>
-                </div>
-            </div>   
-                    
-            <div class="simple-card">
-                <div class="simple-card-content">
-                    <div class="icon">
-                        <i class="fas fa-butter"></i>
-                    </div>
-                    <div class="text">
-                        <h2>Butter</h2>
-                        <p>Current inventory</p>
-                    </div>
-                </div>
-            </div>
-            <div class="simple-card">
-                <div class="simple-card-content">
-                    <div class="icon">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="text">
-                        <h2>Sugar</h2>
-                        <p>Current inventory</p>
-                    </div>
-                </div>
-            </div>
-            <div class="simple-card">
-                <div class="simple-card-content">
-                    <div class="icon">
-                        <i class="fas fa-chocolate-bar"></i>
-                    </div>
-                    <div class="text">
-                        <h2>Chocolate</h2>
-                        <p>Current inventory</p>
-                    </div>
-                </div>
-            </div>
-            <div class="simple-card">
-                <div class="simple-card-content">
-                    <div class="icon">
-                        <i class="fas fa-whole-apple"></i>
-                    </div>
-                    <div class="text">
-                        <h2>Fruit</h2>
-                        <p>Current inventory</p>
-                    </div>
-                </div>
-            </div>
-            <div class="simple-card">
-                <div class="simple-card-content">
-                    <div class="icon">
-                        <i class="fas fa-cube"></i>
-                    </div>
-                    <div class="text">
-                        <h2>Sugar</h2>
-                        <p>Current inventory</p>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-        <!-- <script>displayIngredients();</script> -->
-    <div class="container mt-5">
-        <div class="row" id="ingredient-cards"></div>
+<!-- Add New Inventory Item button, visible and at the top of the page -->
+<div id="buttonContainer">
+    <button id="addInventoryButton" class="btn btn-primary">Add New Inventory Item</button>
+</div>
+<div id="contentContainer" class="container mt-5">
+    <!-- Ingredient list container -->
+    <div class="list-group" id="ingredient-list">
+        <!-- Ingredients will be dynamically inserted here -->
     </div>
-    
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-
+</div>
+<!-- Add New Inventory Item button, visible and at the top of the page -->
+<!-- <div class="d-flex mb-4">
+        <button id="addInventoryButton" class="btn btn-success">Add New Inventory Item</button>
+    </div> -->
+<!-- Include SweetAlert or any other plugin if necessary -->
+<script src="js/jsource/sweetalert.js"></script>
+<script src="js/inventory.js"></script>
 {% endblock %}

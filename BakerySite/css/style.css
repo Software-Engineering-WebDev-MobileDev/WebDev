@@ -268,3 +268,32 @@ body, html {
     margin-left: 10px;
     font-family: 'Pacifico', cursive;
 }
+
+#buttonContainer {
+    text-align: center; /* Centers the button horizontally */
+    margin-bottom: 20px; /* Adds some space between the button and the list */
+}
+
+#addInventoryButton {
+    z-index: 10;
+    position: relative;
+    margin: 20px auto;  /* Center the button horizontally */
+    display: block;  /* Ensure the button behaves as a block element */
+    border: none; /* Remove the border */
+    padding: 12px 20px; /* Add some padding */
+    text-align: center; /* Center the text */
+    font-size: 16px; /* Set font size */
+    border-radius: 4px; /* Add rounded corners */
+    cursor: pointer; /* Change cursor to pointer when hovered */
+}
+
+#viewIngredientButton {
+    z-index: 10;
+    position: relative;
+}
+
+#ingredient-list {
+    position: relative;
+    z-index: 1; /* Ensure that the list isn't covering the buttons */
+    overflow-y: auto; /* Allow scrolling if necessary */
+}

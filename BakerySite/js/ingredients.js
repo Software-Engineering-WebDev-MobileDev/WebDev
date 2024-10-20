@@ -1,84 +1,54 @@
-$(document).ready(function() {
-    // Preview option on single click
-    let clickTimeout;
-    $('#btn').on('click', function() {
-        clearTimeout(clickTimeout);  
-        let button = $(this);
-        clickTimeout = setTimeout(function() {
-            // Single-click action: preview the option
-            $('#preview').html('Preview: ' + button.text());
-        }, 300);
-    });
+// Fetch session_id if required
+const sessionID = localStorage.getItem('session_id');
 
-    /* Navigate to page on double-click */
-    $('.option').on('dblclick', function() {
-        clearTimeout(clickTimeout);  
-        let url = $(this).data('url');
-        window.location.href = url;  
-    });
+// Get the ingredient list container
+const ingredientListContainer = document.getElementById('ingredient-list');
 
-    /* Add Ingredient */
-    $('#addIngredient').on('click', function() {
-        let newIngredient = $('#newIngredient').val();
-        if (newIngredient) {
-            $('#ingredientList').append('<li>' + newIngredient + ' <button class="deleteIngredient">Delete</button></li>');
-            $('#newIngredient').val('');  
-        }
-    });
-
-    /* Delete Ingredient */
-    $('#ingredientList').on('click', '.deleteIngredient', function() {
-        $(this).parent().remove();  
-    });
-});
-
-// Load ingredients from server
-$(document).ready(function() {
-    // Check if SessionID exists in localStorage
-    var sessionID = localStorage.getItem('SessionID');
-    console.log('Ing-Retrieved SessionID:', sessionID); // Log the session ID
-    if (sessionID) {
-        sessionStorage.setItem('SessionID', sessionID);
-
-        
-        $.ajax({
-            url: '/ingredients',
+// Fetch ingredients from the backend API
+async function fetchIngredients() {
+    try {
+        const response = await fetch('/api/ingredients', {
             method: 'GET',
             headers: {
                 'session_id': sessionID
-            },
-            success: function(response) {
-                console.log("inside success");
-                if (response.status === "success") {
-                    const ingredients = response.content;
-                    let cardContainer = $('#ingredient-cards');
-                    // create cards for each ingredient
-                    ingredients.forEach(ingredient => {
-                        let card = `
-                            <div class="col-md-4 mb-4">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${ingredient.Name}</h5>
-                                        <p class="card-text">
-                                            Quantity: ${ingredient.Quantity} ${ingredient.UnitOfMeasure}<br>
-                                            Shelf Life: ${ingredient.ShelfLife} ${ingredient.ShelfLifeUnit}<br>
-                                            Reorder Amount: ${ingredient.ReorderAmount} ${ingredient.ReorderUnit}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                        cardContainer.append(card);
-                    });
-                } else {
-                    console.log(response.reason);
-                }
-            },
-            error: function(error) {
-                console.log(error);
             }
         });
-    } else {
-        console.log('SessionID not found in localStorage');
+
+        if (response.status === 200) {
+            return await response.json();
+        } else {
+            console.error('Failed to fetch ingredients');
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching ingredients:', error);
+        return [];
     }
+}
+
+// Render the ingredient list
+async function renderIngredients() {
+    const ingredients = await fetchIngredients();
+
+    // Clear the container before adding new ingredients
+    ingredientListContainer.innerHTML = '';
+
+    // Loop through the ingredients and create list items
+    ingredients.forEach(ingredient => {
+        const ingredientItem = document.createElement('a');
+        ingredientItem.href = `/ingredient_view?ingredient=${ingredient.id}`;
+        console.log(ingredient);
+        ingredientItem.className = 'list-group-item list-group-item-action';
+        ingredientItem.innerHTML = `
+            <h5 class="mb-1">${ingredient.name}</h5>
+            <p class="mb-1">Quantity: ${ingredient.quantity} ${ingredient.unit}</p>
+        `;
+
+        ingredientListContainer.appendChild(ingredientItem);
+    });
+}
+
+// Initialize the ingredient list rendering
+document.addEventListener('DOMContentLoaded', () => {
+    renderIngredients();
 });
