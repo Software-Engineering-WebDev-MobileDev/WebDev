@@ -268,3 +268,20 @@ body, html {
     margin-left: 10px;
     font-family: 'Pacifico', cursive;
 }
+
+
+#addInventoryButton {
+    z-index: 10;
+    position: relative;
+}
+
+#viewIngredientButton {
+    z-index: 10;
+    position: relative;
+}
+
+#ingredient-list {
+    position: relative;
+    z-index: 1; /* Ensure that the list isn't covering the buttons */
+    overflow-y: auto; /* Allow scrolling if necessary */
+}
