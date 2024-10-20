@@ -1,7 +1,6 @@
 const bodyParser = require('body-parser');
 const express = require('express');
-const { return_500, return_400, return_498 } = require('./codes')
-const isNumber = (v) => typeof v === "number" || (typeof v === "string" && Number.isFinite(+v))
+const {return_500, return_400, return_498} = require('./codes');
 
 // Database setup:
 const config = require('../config.js');
@@ -271,29 +270,35 @@ app.delete('/ingredient', (req, res) => {
 
         if (ingredient_id === undefined) {
             return_400(res, "Missing ingredient_id in header");
-        } else if (!ingredient_id.match(/^[0-9A-Za-z]{32}$/)) {
+        }
+        else if (!ingredient_id.match(/^[0-9A-Za-z]{32}$/)) {
             return_400(res, "Invalid ingredient_id format");
-        } else {
+        }
+        else {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `DELETE FROM tblRecipeIngredientModifier
+                        `DELETE
+                         FROM tblRecipeIngredientModifier
                          WHERE IngredientID = '${ingredient_id}'`
-                    ).then((modifierDeleteResult) => {
+                    ).then(() => {
                         database.executeQuery(
-                            `DELETE FROM tblIngredients
+                            `DELETE
+                             FROM tblIngredients
                              WHERE IngredientID = '${ingredient_id}'`
                         ).then((result) => {
                             if (result.rowsAffected[0] >= 1) {
                                 res.status(200).send({
                                     status: "success"
                                 });
-                            } else if (result.rowsAffected[0] === 0) {
+                            }
+                            else if (result.rowsAffected[0] === 0) {
                                 res.status(404).send({
                                     status: "error",
                                     reason: "Ingredient not found in the database"
                                 });
-                            } else {
+                            }
+                            else {
                                 console.log(`Error: ${JSON.stringify(result)}`);
                                 return_500(res);
                             }
@@ -305,7 +310,8 @@ app.delete('/ingredient', (req, res) => {
                         console.log(e);
                         return_500(res);
                     });
-                } else {
+                }
+                else {
                     return_498(res);
                 }
             }).catch((e) => {
@@ -313,15 +319,16 @@ app.delete('/ingredient', (req, res) => {
                 return_500(res);
             });
         }
-    } catch (e) {
+    }
+    catch (e) {
         if (e instanceof TypeError) {
             return_400(res, "Invalid query parameters");
-        } else {
+        }
+        else {
             return_500(res);
         }
     }
 });
-
 
 app.put('/ingredient', (req, res) => {
     try {
@@ -379,9 +386,9 @@ app.put('/ingredient', (req, res) => {
                 if (employee_id) {
                     database.executeQuery(
                         `UPDATE tblIngredients
-                         SET IngredientID = '${ingredient_id}',
-                             InventoryID = '${inventory_id}',
-                             Quantity = ${quantity},
+                         SET IngredientID  = '${ingredient_id}',
+                             InventoryID   = '${inventory_id}',
+                             Quantity      = ${quantity},
                              UnitOfMeasure = '${unit_of_measurement}'
                          WHERE IngredientID = '${ingredient_id}';
                         UPDATE tblInventory
