@@ -36,7 +36,8 @@ async function addRecipe(recipeName, description, category, prepTime, cookTime, 
     return fetch('api/add_recipe', {
         method: 'POST',
         headers: {
-            session_id: sessionID
+            session_id: sessionID,
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             RecipeName: recipeName.value,
@@ -46,10 +47,11 @@ async function addRecipe(recipeName, description, category, prepTime, cookTime, 
             CookTime: cookTime.value,
             Servings: servings.value,
             Instructions: instructions,
-        }),
+        })
     }).then(async (result) => {
         if (result.status === 201 || result.status === 200) {
-            return "success";
+            const result_json = await result.json();
+            return result_json["recipeID"];
         }
         else {
             console.error(await result.json())
@@ -70,13 +72,15 @@ async function addRecipe(recipeName, description, category, prepTime, cookTime, 
  * @param cookTime {HTMLInputElement} The cook time form.
  * @param servings {HTMLInputElement} The number of servings form.
  * @param instructions {String} The instruction form value.
+ * @param recipeID {String} The recipe to update's id.
  * @returns {Promise<String>} "success" or "error"
  */
 async function updateRecipe(recipeName, description, category, prepTime, cookTime, servings, instructions, recipeID) {
-    return fetch(`api/add_recipe/${recipeID}`, {
+    return fetch(`api/update_recipe/${recipeID}`, {
         method: 'PUT',
         headers: {
-            session_id: sessionID
+            session_id: sessionID,
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             RecipeName: recipeName.value,
@@ -136,7 +140,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     recipeNameForm.required = true;
     recipeNameForm.ariaRequired = "true";
     if (recipe) {
-        recipeNameForm.innerText = recipe["RecipeName"];
+        recipeNameForm.value = recipe["RecipeName"];
     }
     else {
         recipeNameForm.placeholder = "Recipe Name...";
@@ -169,7 +173,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     estimatedPrepTimeForm.required = true;
     estimatedPrepTimeForm.ariaRequired = "true";
     if (recipe) {
-        estimatedPrepTimeForm.innerText = recipe["PrepTime"];
+        estimatedPrepTimeForm.value = recipe["PrepTime"];
     }
     else {
         estimatedPrepTimeForm.placeholder = "0";
@@ -200,7 +204,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     estimatedCookTimeForm.required = true;
     estimatedCookTimeForm.ariaRequired = "true";
     if (recipe) {
-        estimatedCookTimeForm.innerText = recipe["CookTime"];
+        estimatedCookTimeForm.value = recipe["CookTime"];
     }
     else {
         estimatedCookTimeForm.placeholder = "0";
@@ -231,7 +235,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     servingsForm.required = true;
     servingsForm.ariaRequired = "true";
     if (recipe) {
-        servingsForm.innerText = recipe["Servings"];
+        servingsForm.value = recipe["Servings"];
     }
     else {
         servingsForm.placeholder = "0";
@@ -260,7 +264,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     descriptionInput.required = true;
     descriptionInput.ariaRequired = "true";
     if (recipe) {
-        descriptionInput.innerText = recipe["Description"].replace(/&quot;/g, '\'');;
+        descriptionInput.value = recipe["Description"].replace(/&quot;/g, '\'');;
     }
     else {
         descriptionInput.placeholder = "Recipe description...";
@@ -326,7 +330,7 @@ async function renderRecipeForm(recipe = null, editMode = false) {
     instructionsForm.required = true;
     instructionsForm.ariaRequired = "true";
     if (recipe) {
-        instructionsForm.innerText = recipe["Description"].replace(/&quot;/g, '\'');;
+        instructionsForm.innerText = recipe["Instructions"].replace(/&quot;/g, '\'');
     }
     else {
         instructionsForm.placeholder = "Recipe instructions...";
@@ -401,6 +405,9 @@ async function renderRecipeForm(recipe = null, editMode = false) {
                     if (result === "error") {
                         Swal.fire("Invalid recipe!");
                     }
+                    else {
+                        await getRecipe(recipe["RecipeID"]);
+                    }
                 }
             }
         )
@@ -451,6 +458,9 @@ async function renderRecipeForm(recipe = null, editMode = false) {
                     if (result === "error") {
                         Swal.fire("Invalid recipe!");
                     }
+                    else {
+                        await getRecipe(result);
+                    }
                 }
             }
         );
@@ -471,18 +481,18 @@ async function getRecipe(recipe) {
                 headers: {
                     session_id: sessionID
                 }
-            }).then((response) => {
+            }).then(async (response) => {
                 if (response.status < 400) {
-                    const result = response.json();
-                    renderRecipeForm(result["recipe"]);
+                    const result = await response.json();
+                    await renderRecipeForm(result["recipe"][0]);
                 }
                 else {
-                    renderRecipeForm();
+                    await renderRecipeForm();
                 }
             })
         }
         else {
-            await renderRecipeForm()
+            await renderRecipeForm();
         }
     }
     else {
