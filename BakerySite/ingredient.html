@@ -2,10 +2,10 @@
 {% set title = 'Ingredients' %}
 {% block content %}
 <!-- Add New Inventory Item button, visible and at the top of the page -->
-<div id="buttonContainer">
-    <button id="addInventoryButton" class="btn btn-primary">Add New Inventory Item</button>
+<div class="d-flex col-12 align-items-center justify-content-center mt-4" id="buttonContainer">
+    <button id="addInventoryButton" class="btn btn-primary" style="background-color: #f5c976;">Add New Inventory Item</button>
 </div>
-<div id="contentContainer" class="container mt-5">
+<div id="contentContainer" class="container mt-3">
     <!-- Ingredient list container -->
     <div class="list-group" id="ingredient-list">
         <!-- Ingredients will be dynamically inserted here -->

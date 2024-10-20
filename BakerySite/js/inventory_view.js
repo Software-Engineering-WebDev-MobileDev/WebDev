@@ -1,7 +1,7 @@
 const sessionID = localStorage.getItem('session_id');
 const inventoryForm = document.getElementById("inventoryFormContainer");
 const timeUnits = ["days", "weeks", "months", "years"];
-const unitsOfMeasure = ['g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs'];
+const unitsOfMeasure = ['(none)', 'g', 'kg', 'ml', 'l', 'oz', 'cups', 'lbs'];
 
 /**
  * Add an item to the inventory.
@@ -84,14 +84,16 @@ async function createInventoryForm(inventoryItem = null) {
     inventoryForm.innerHTML = '';
 
     // Create the heading
-    const heading = document.createElement("h1");
+    const heading = document.createElement("h2");
     if (inventoryItem) {
         heading.innerText = inventoryItem["Name"];
     }
     else {
         heading.innerText = "Create Inventory Item";
     }
-    heading.style.fontWeight = "bold";
+
+    heading.className = "form-title";
+    heading.style.textAlign = "center";
     inventoryForm.appendChild(heading);
 
     // Create the name label
@@ -118,7 +120,7 @@ async function createInventoryForm(inventoryItem = null) {
     inventoryNameInput.required = true;
     inventoryNameInput.ariaRequired = "true";
     inventoryForm.appendChild(inventoryNameInput);
-    inventoryForm.appendChild(document.createElement('br'));
+    // inventoryForm.appendChild(document.createElement('br'));
 
     // Shelf life label
     const shelfLifeLabel = document.createElement("label");
@@ -145,7 +147,7 @@ async function createInventoryForm(inventoryItem = null) {
         shelfLifeInput.placeholder = "0";
     }
     inventoryForm.appendChild(shelfLifeInput);
-    inventoryForm.appendChild(document.createElement('br'));
+    // inventoryForm.appendChild(document.createElement('br'));
 
     // Unit of measure label
     const shelfLifeUnitOfMeasureLabel = document.createElement("label");
@@ -172,7 +174,7 @@ async function createInventoryForm(inventoryItem = null) {
     }
 
     inventoryForm.appendChild(shelfLifeUnitOfMeasureForm);
-    inventoryForm.appendChild(document.createElement('br'));
+    // inventoryForm.appendChild(document.createElement('br'));
 
     // Reorder label
     const reorderLabel = document.createElement("label");
@@ -199,7 +201,7 @@ async function createInventoryForm(inventoryItem = null) {
         reorderInput.placeholder = "0";
     }
     inventoryForm.appendChild(reorderInput);
-    inventoryForm.appendChild(document.createElement('br'));
+    // inventoryForm.appendChild(document.createElement('br'));
 
     // Unit of measure label
     const reorderUnitOfMeasureLabel = document.createElement("label");
@@ -227,7 +229,7 @@ async function createInventoryForm(inventoryItem = null) {
     }
 
     inventoryForm.appendChild(reorderUnitOfMeasureForm);
-    inventoryForm.appendChild(document.createElement('br'));
+    // inventoryForm.appendChild(document.createElement('br'));
 
     // Submit button
     const submitButton = document.createElement('button');
