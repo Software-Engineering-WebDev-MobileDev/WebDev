@@ -247,7 +247,6 @@ async function renderRecipeForm(recipe = null, editMode = false, ingredients = u
     recipeFormContainer.appendChild(estimatedCookTimeForm);
     recipeFormContainer.appendChild(document.createElement('br'));
 
-    // TODO: Scale when recipe and not edit mode
     if (!editMode && recipe) {
         const scaleFormLabel = document.createElement("label");
         scaleFormLabel.htmlFor = "scaleForm";
@@ -301,8 +300,11 @@ async function renderRecipeForm(recipe = null, editMode = false, ingredients = u
     servingsForm.max = `${2 ** 31 - 1}`;
     servingsForm.required = true;
     servingsForm.ariaRequired = "true";
-    if (recipe) {
+    if (recipe && !editMode) {
         servingsForm.value = quantity ? Number(quantity) * recipe["Servings"] : recipe["Servings"];
+    }
+    else if (recipe && editMode) {
+        servingsForm.value = recipe["Servings"];
     }
     else {
         servingsForm.placeholder = "0";
@@ -420,7 +422,12 @@ async function renderRecipeForm(recipe = null, editMode = false, ingredients = u
             amountForm.required = true;
             amountForm.ariaRequired = "true";
             amountForm.title = "Ingredient Amount";
-            amountForm.value = quantity ? Number(quantity) * recipeIngredient["quantity"] : recipeIngredient["quantity"];
+            if (!editMode) {
+                amountForm.value = quantity ? Number(quantity) * recipeIngredient["quantity"] : recipeIngredient["quantity"];
+            }
+            else {
+                amountForm.value = recipeIngredient["quantity"];
+            }
             const amountColumn = document.createElement('td');
             amountColumn.style.alignItems = "center";
             if (!editMode) {
