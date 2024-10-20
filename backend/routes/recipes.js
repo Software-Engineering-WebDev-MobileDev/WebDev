@@ -248,44 +248,45 @@ app.get('/recipe/:recipe_id/ingredients', (req, res) => {
 
 
 app.delete("/delete_recipe/:recipeID", async (req, res) => {
-    try {
         const session_id = req.header("session_id");
         if (req.params.recipeID === undefined) {
             return_400(res, "Bad request");
             return;
         }
         const recipeID = req.params.recipeID;
-        const query = `DELETE FROM tblRecipes WHERE RecipeID = '${recipeID}'`;
-        database.sessionToEmployeeID(session_id).then((employee_id) => {
-            if (employee_id) {
-                database.executeQuery(query).then((result) => {
-                    res.status(200).send(
-                        {
-                        status: "success",
-                        recipe: result.recordset
-                        }
+        try {
+            database.sessionToEmployeeID(session_id).then(async (employee_id) => {
+                if (employee_id) {
+                const deleteModifierQuery = `
+                    DELETE FROM tblRecipeIngredientModifier
+                    WHERE RecipeID = '${recipeID}';
+                `;
+                await database.executeQuery(deleteModifierQuery);
+        
+                const deleteIngredientQuery = `
+                    DELETE FROM tblIngredients
+                    WHERE IngredientID IN (
+                        SELECT IngredientID FROM tblRecipeIngredientModifier
+                        WHERE RecipeID = '${recipeID}'
                     );
-                }).catch((e) => {
-                    console.log(e);
-                    return_500(res);})
-            }
-            else {
-                return_498(res);
-            }
-        }).catch((e) => {
-            console.log(e);
-            return_500(res);
-        });
-    }
-    catch (e) {
-        if (e instanceof TypeError) {
-            return_400(res, "Invalid query parameters");
-        }
-        else {
+                `;
+                await database.executeQuery(deleteIngredientQuery);
+        
+                const deleteRecipeQuery = `
+                    DELETE FROM tblRecipes
+                    WHERE RecipeID = '${recipeID}';
+                `;
+                const result = await database.executeQuery(deleteRecipeQuery);
+                res.status(200).send({
+                    status: "success",
+                    message: `Recipe with ID ${recipeID} deleted successfully.`
+                });
+            }})
+        } catch (error) {
+            console.log(error);
             return_500(res);
         }
-    }
-});
+    });
 
 //add a recipe
 app.post('/add_recipe', async (req, res) => {
