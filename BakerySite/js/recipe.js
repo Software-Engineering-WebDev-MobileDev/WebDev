@@ -26,6 +26,9 @@ async function fetchRecipes() {
             if (response.status < 400) {
                 return response.json();
             }
+        }).then((data) => {
+            console.log("Fetched recipes:", data); // Log the full response
+            return data;
         }).catch((e) => {
             console.error(e);
             return [{
@@ -38,40 +41,62 @@ async function fetchRecipes() {
     }
 }
 
-// adds recipes to page as buttons
 async function getRecipes() {
     try {
-        if (recipeList.length === 0){
+        if (recipeList.length === 0) {
             recipeList = await fetchRecipes();
-            
         }
-        recipeList["recipes"].sort((a,b) => a.RecipeName.localeCompare(b.RecipeName));
-        recipeIDForm.innerHTML = '';
-        const rowNew = document.createElement('div');
-        rowNew.className = "row g-2 justify-content-center";
-        rowNew.id = 'row';
-        recipeIDForm.appendChild(rowNew)
 
-        recipeList["recipes"].forEach((recipe) => {
-            const recipeButton = document.createElement('button');
-            recipeButton.id = recipe["RecipeID"];
-            recipeButton.className = "btn col-lg-2 col-md-3 col-sm-4 mx-1";
-            recipeButton.style = "background-color: #f5c976;"
-            recipeButton.type = "button";
-            recipeButton.innerText = recipe["RecipeName"];
+        recipeIDForm.innerHTML = '';  // Clear the container
 
-            recipeButton.onclick = function() {
-                window.location.href = 'recipe_view.html?recipe=' + recipe.RecipeID;
-                userLoc = recipe.RecipeName;
-                setUserLocation(userLoc);
-            };
+        // Check if the recipe list contains any recipes
+        if (recipeList["recipes"] && recipeList["recipes"].length > 0) {
+            recipeList["recipes"].sort((a, b) => a.RecipeName.localeCompare(b.RecipeName));
 
-            rowNew.appendChild(recipeButton);
-        });
+            const rowNew = document.createElement('div');
+            rowNew.className = "row g-2 justify-content-center";
+            rowNew.id = 'row';
+            recipeIDForm.appendChild(rowNew);
+
+            recipeList["recipes"].forEach((recipe) => {
+                const recipeButton = document.createElement('button');
+                recipeButton.id = recipe["RecipeID"];
+                recipeButton.className = "btn col-lg-2 col-md-3 col-sm-4 mx-1";
+                recipeButton.style = "background-color: #f5c976;";
+                recipeButton.type = "button";
+                recipeButton.innerText = recipe["RecipeName"];
+
+                recipeButton.onclick = function () {
+                    window.location.href = 'recipe_view.html?recipe=' + recipe.RecipeID;
+                    userLoc = recipe.RecipeName;
+                    setUserLocation(userLoc);
+                };
+
+                rowNew.appendChild(recipeButton);
+            });
+        } else {
+            // No recipes found, display a message
+            const noRecipesMessage = document.createElement('p');
+            noRecipesMessage.className = "text-center mt-4";
+            noRecipesMessage.style.color = "#8c481b";  // Set a custom color if needed
+            noRecipesMessage.innerText = "No recipes found. Please add a new recipe.";
+
+            recipeIDForm.appendChild(noRecipesMessage);
+        }
     } catch (e) {
         console.error(e);
+        const errorMessage = document.createElement('p');
+        errorMessage.className = "text-center mt-4";
+        errorMessage.style.color = "red";  // Color for error messages
+        errorMessage.innerText = "An error occurred while fetching recipes.";
+        recipeIDForm.appendChild(errorMessage);
     }
 }
 
-getRecipes();
+getRecipes(); 
+
+document.getElementById('btnAddRecipe').addEventListener('click', function() {
+    // Redirect to the add recipe page
+    window.location.href = '/add_recipe.html';
+});
 
