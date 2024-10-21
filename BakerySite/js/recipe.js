@@ -1,69 +1,103 @@
+// User's session_id to be used
 const sessionID = localStorage.getItem('session_id');
-const recipeContainer = document.getElementById('recipeContainer');
 
-async function getRecipes() {
+// variable to hold recipes from the api
+let recipeList = []
+
+// recipe container
+const recipeIDForm = document.getElementById('divRecipes');
+
+/**
+ * Gets a list of recipes from the API
+ * @returns {Promise<Response | [{error: string}]>} Returns the JSON response object from the API or "error"
+ * if there was an error.
+ * @throws {Error} if the user is not logged in
+ */
+async function fetchRecipes() {
     if (sessionID) {
-        return fetch("/api/recipes", {
-            method: "GET",
-            headers: {
-                session_id: sessionID
+        return fetch("/api/recipes",
+            {
+                method: "GET",
+                headers: {
+                    session_id: sessionID
+                }
+
+            }).then((response) => {
+            if (response.status < 400) {
+                return response.json();
             }
-        }).then(async (response) => {
-            if (response.status === 200) {
-                let recipes = await response.json();
-                console.log(recipes);
-                return recipes["recipe"];
-            }
-            else {
-                return "error"
-            }
+        }).then((data) => {
+            console.log("Fetched recipes:", data); // Log the full response
+            return data;
         }).catch((e) => {
             console.error(e);
-            return "error";
+            return [{
+                error: "error"
+            }];
         });
     }
     else {
-        window.location.href = "/";
+        throw new Error("User is not logged in!");
     }
 }
 
-function recipeCard(recipe) {
-    const cardDiv = document.createElement("div");
-    cardDiv.id = recipe["RecipeID"];
-    cardDiv.role = "button";
-
-    const cardTitle = document.createElement("h3");
-    cardTitle.style.fontWeight = "bold";
-    cardTitle.innerText = recipe["RecipeName"];
-    cardDiv.appendChild(cardTitle);
-
-    const cardTime = document.createElement("p");
-    cardTime.innerText = `Prep: ${recipe["PrepTime"]}\tCook: ${recipe["CookTime"]}`;
-    cardDiv.appendChild(cardTime);
-
-    cardDiv.addEventListener(
-        "mousedown",
-        () => {
-            window.location.href = `/recipe_view?recipe=${recipe["RecipeID"]}`;
+async function getRecipes() {
+    try {
+        if (recipeList.length === 0) {
+            recipeList = await fetchRecipes();
         }
-    );
-    return cardDiv;
+        console.log(recipeList);
+
+        recipeIDForm.innerHTML = '';  // Clear the container
+
+        // Check if the recipe list contains any recipes
+        if (recipeList["recipe"] && recipeList["recipe"].length > 0) {
+            recipeList["recipe"].sort((a, b) => a.RecipeName.localeCompare(b.RecipeName));
+
+            const rowNew = document.createElement('div');
+            rowNew.className = "row g-2 justify-content-center";
+            rowNew.id = 'row';
+            recipeIDForm.appendChild(rowNew);
+
+            console.log(recipeList)
+            recipeList["recipe"].forEach((recipe) => {
+                const recipeButton = document.createElement('button');
+                recipeButton.id = recipe["RecipeID"];
+                recipeButton.className = "btn col-lg-2 col-md-3 col-sm-4 mx-1";
+                recipeButton.style.backgroundColor = "#f5c976";
+                recipeButton.type = "button";
+                recipeButton.innerText = recipe["RecipeName"].replace(/&quot;/g, '\'');
+
+                recipeButton.onclick = function () {
+                    window.location.href = 'recipe_view?recipe=' + recipe.RecipeID;
+                    const userLoc = recipe.RecipeName;
+                    setUserLocation(userLoc);
+                };
+
+                rowNew.appendChild(recipeButton);
+            });
+        } else {
+            // No recipes found, display a message
+            const noRecipesMessage = document.createElement('p');
+            noRecipesMessage.className = "text-center mt-4";
+            noRecipesMessage.style.color = "#8c481b";  // Set a custom color if needed
+            noRecipesMessage.innerText = "No recipes found. Please add a new recipe.";
+
+            recipeIDForm.appendChild(noRecipesMessage);
+        }
+    } catch (e) {
+        console.error(e);
+        const errorMessage = document.createElement('p');
+        errorMessage.className = "text-center mt-4";
+        errorMessage.style.color = "red";  // Color for error messages
+        errorMessage.innerText = "An error occurred while fetching recipes.";
+        recipeIDForm.appendChild(errorMessage);
+    }
 }
 
-async function renderRecipePage(recipeList) {
-    console.log(recipeList)
-    recipeContainer.innerHTML = '';
-    for (const recipe of recipeList) {
-        recipeContainer.appendChild(recipeCard(recipe));
-    }
-}
+getRecipes().then(() => {});
 
-getRecipes().then((recipes) => {
-    if (recipes !== "error") {
-        renderRecipePage(recipes).then(() => {
-        });
-    }
-    else {
-        alert("Error fetching recipes!")
-    }
+document.getElementById('btnAddRecipe').addEventListener('click', function() {
+    // Redirect to the recipe page
+    window.location.href = '/recipe_view';
 });
