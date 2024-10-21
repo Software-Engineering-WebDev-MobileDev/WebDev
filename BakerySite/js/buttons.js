@@ -1,31 +1,9 @@
-$('#btnAbout').on('click',function(){
-   $('#divNavButtons').slideToggle();
-    //Slide Login or Register card before sliding About card down
-    var userLoc;
-    if ($('#divLogin').is(':visible')) {
-        userLoc = 'login';
-        $('#divLogin').slideUp();
-    } else if ($('#divRegister').is(':visible')) {
-        userLoc = 'register';
-        $('#divRegister').slideUp();
-    } else if ($('#divDashboard').is(':visible')) {
-        userLoc = 'dashboard';
-        $('#divDashboard').slideUp();              
-    }   else {
-        userLoc = sessionStorage.getItem('userLoc');
-        }
-    console.log(userLoc);
-    setUserLocation(userLoc);
-    $('#divAbout').slideDown();
-})
-
 $('#btnReturnLogin').on('click',function(){
-    $('#divAbout').slideUp();
-    var userLoc = sessionStorage.getItem('userLoc');
+    userLoc = localStorage.getItem('userLoc');
     console.log(userLoc);
     switch (userLoc) {
-        case 'dashboard':
-            $('#divDashboard').slideDown();
+        case 'errorPage':
+            $('#divErrorPage').slideDown();
             break;
         case 'registration':
             $('#divRegistration').slideDown;
@@ -43,11 +21,9 @@ $('#btnLogin').on('click',function(){
     let strPassword = $('#txtLoginPassword').val();
 
     if(strUsername.length < 1 || strPassword.length < 1){
-        Swal.fire({
-            title: "Oops!",
-            html: '<p>Email and Password cannot be blank</p>',
-            icon: "error"
-        })
+        $('#errLoginUsername').text('Username cannot be blank').addClass('error-message');
+        $('#errLoginPassword').text('Password cannot be blank').addClass('error-message');
+
     } else {
 
         $.ajax({
@@ -59,25 +35,31 @@ $('#btnLogin').on('click',function(){
             },
             success: function(result) {
                 console.log(result);
-                
-
-                sessionStorage.setItem('SessionID',result.SessionID);
-                localStorage.setItem('SessionID', result.SessionID);
-
-                $("#btnDashboard").show()
+                $("#btnHamburger").show();
+                $("#btnDashboard").show();
                 $('#btnLogout').show();
-                $("#btnAccount").show()
-                $("#btnIngredient").show()
-                $("#btnRecipe").show()
-                $("#btnTask").show()
+                $("#btnAccount").show();
+                $("#btnIngredient").show();
+                $("#btnRecipe").show();
+                $("#btnTask").show();
                 //$('#divNavbar').slideUp();
                 $('#divLogin').slideUp(function(){
-                    $('#divDashboard').slideDown();
+                    // $('#divErrorPage').slideDown();
+                    userLoc = 'task'
+                    window.location.href = "/task";
                 });
-                return result;
+                localStorage.setItem('session_id', result['session_id'])
+                return result['session_id'];
             },
             error: function(e) {
                 console.log(e);
+
+                if (e.status === 400) { // Assuming 400 is returned for incorrect credentials
+                    $('#errLoginUsername').text('');
+                    $('#errLoginPassword').text('Incorrect username or password').addClass('error-message');
+                } else {
+                    $('#errLoginUsername').text('An error occurred. Please try again.').addClass('error-message');
+                }
                 return e;
             }
         });
@@ -85,7 +67,14 @@ $('#btnLogin').on('click',function(){
 })
 
 $(document).ready(function () {
-    const phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
+    let strUsername = $('#txtRegisterUsername');
+    let strPassword = $('#txtRegisterPassword');
+    let strFirstName = $('#txtRegisterFirstName');
+    let strLastName = $('#txtRegisterLastName');
+    let strEmail = $('#txtRegisterEmail');
+    let strPhone = $('#numRegisterPhone');
+    let strEmployeeId = $('#txtRegisterEmployeeId');
+    const phoneRegex = /^\(?\d{3}\)?[\d -]?\d{3}[\d -]?\d{4}$/;
     const emailRegex = new RegExp("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?");
 
     // Add inline validation for other fields
@@ -106,16 +95,11 @@ $(document).ready(function () {
     });
 
     $('#txtRegisterEmail').on('input blur', function () {
-        let value = $(this).val();
-        if (emailRegex.test(value)) {
-            //checkEmailInUse(value); // Check if email is already in use
-        } else {
-            validateField(this, false, "Please enter a valid email.");
-        }
+        validateField(this, emailRegex.test($(this).val()), "Email is not valid.");
     });
 
     $('#numRegisterPhone').on('input blur', function () {
-        validateField(this, phoneRegex.test($(this).val()), "Phone number is not valid, please use the format xxx-xxx-xxxx.");
+        validateField(this, phoneRegex.test($(this).val()), "Phone number is not valid, please use the format xxx-xxx-xxxx or xxxxxxxxxx.");
     });
 
     $('#txtRegisterEmployeeId').on('input blur', function () {
@@ -123,14 +107,6 @@ $(document).ready(function () {
     });
     
     $('#btnRegister').on('click', function () {
-        let strUsername = $('#txtRegisterUsername').val();
-        let strPassword = $('#txtRegisterPassword').val();
-        let strFirstName = $('#txtRegisterFirstName').val();
-        let strLastName = $('#txtRegisterLastName').val();
-        let strEmail = $('#txtRegisterEmail').val();
-        let strPhone = $('#numRegisterPhone').val();
-        let strEmployeeId = $('#txtRegisterEmployeeId').val();
-        let phoneRegex = /^[0-9]{3}-[0-9]{3}-[0-9]{4}$/;
 
         if ($('.error').length) {
             // Scroll to the first error if any errors exist
@@ -147,24 +123,31 @@ $(document).ready(function () {
             url: "/api/create_account",
             method: "POST",
             headers: {
-                employee_id: strEmployeeId,
-                first_name: strFirstName,
-                last_name: strLastName,
-                username: strUsername,
-                password: strPassword,
+                employee_id: strEmployeeId.val(),
+                first_name: strFirstName.val(),
+                last_name: strLastName.val(),
+                username: strUsername.val(),
+                password: strPassword.val(),
+                email_address: strEmail.val(),
+                phone_number: strPhone.val()
             },
             success: function(result) {
                 console.log(result);
+                
 
-                //show dashboard
+                //show Error Page
                 //$('#divNavbar').slideUp();
                 $('#divRegister').slideUp(function(){
-                $('#divDashboard').slideDown();
+                //$('#divErrorPage').slideDown();
+                //userLoc = 'errorpage'
+                userLoc = 'task'
+                setUserLocation(userLoc);
+                window.location.href = '/task'
                 });
                 var observationDateTime = getTime();
         
                 console.log(observationDateTime);
-                return result;
+                return result['session_id'];
             },
             error: function(e) {
                 console.log(e);
@@ -173,27 +156,6 @@ $(document).ready(function () {
         })};
     })
     });
-
-// Email in-use check (using AJAX for server-side verification simulation)
-/*function checkEmailInUse(email) {
-    // Simulating an AJAX request for duplicate email check
-    $.ajax({
-        url: '/check-email', // Example endpoint
-        method: 'POST',
-        data: { email: email },
-        success: function (response) {
-            if (response.inUse) {
-                validateField('#txtRegisterEmail', false, "Email is already in use.");
-            } else {
-                validateField('#txtRegisterEmail', true, "");
-            }
-        },
-        error: function () {
-            validateField('#txtRegisterEmail', false, "Unable to validate email. Please try again.");
-        }
-    });
-}*/
-
 
 $('#btnToggle').on('click',function(){
     $('#divLogin').slideUp(function(){
@@ -236,30 +198,46 @@ $('#btnRefresh').on('click', function(){
 })
 
 $('#btnLogout').on('click', function(){
-    let strSessionID = sessionStorage.getItem('SessionID');
-    sessionStorage.removeItem('SessionID');
-    localStorage.removeItem('SessionID');
+    let strSessionID = localStorage.getItem('session_id');
+    fetch('/api/logout', {
+        method: "POST",
+        headers: {
+            session_id: strSessionID
+        }
+    }).then(() => {}).catch(() => {});
+    localStorage.removeItem('session_id');
     $('#btnLogout').hide();
-    window.location.reload();
-    setUserLocation('login');
+    localStorage.setItem('userLoc', "login");
+    // Redirect to the login page
+    window.location.href = 'index.html';
 });
 
 $('#btnIngredient').on('click', function(){
     window.location.href = 'ingredient.html';
+    userLoc = 'ingredient';
+    setUserLocation(userLoc);
 })
 
 $('#btnAccount').on('click', function(){
     window.location.href = 'account.html';
+    userLoc = 'account';
+    setUserLocation(userLoc);
 })
 
 $('#btnDashboard').on('click', function(){
     window.location.href = 'dashboard.html';
+    userLoc = 'dashboard';
+    setUserLocation(userLoc);
 })
 
 $('#btnRecipe').on('click', function(){
     window.location.href = 'recipe.html';
+    userLoc = 'recipe';
+    setUserLocation(userLoc);
 })
 
 $('#btnTask').on('click', function(){
     window.location.href = 'task.html';
+    userLoc = 'task';
+    setUserLocation(userLoc);
 })

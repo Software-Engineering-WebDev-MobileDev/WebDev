@@ -11,6 +11,9 @@ const database = new Database(config);
 // Used for API routes
 const app = express.Router();
 
+// Max that the database will hold
+const decimal_10_whole_2_fraction = 99_999_999.99;
+
 // using bodyParser to parse JSON bodies into JS objects
 app.use(bodyParser.json());
 
@@ -189,7 +192,7 @@ app.post('/inventory_item', (req, res) => {
         else if (!name.match(/^[\w\s.,*/]{1,50}$/)) {
             return_400(res, "Invalid name characters or length");
         }
-        else if (reorder_amount > 9_999_999_999.99) {
+        else if (reorder_amount > decimal_10_whole_2_fraction) {
             return_400(res, "reorder_amount too large");
         }
         else if (reorder_amount < 0) {
@@ -331,7 +334,7 @@ app.put('/inventory_item', (req, res) => {
         else if (!name.match(/^[\w\s.,*/]{1,50}$/)) {
             return_400(res, "Invalid name characters or length");
         }
-        else if (reorder_amount > 9_999_999_999.99) {
+        else if (reorder_amount > decimal_10_whole_2_fraction) {
             return_400(res, "reorder_amount too large");
         }
         else if (reorder_amount < 0) {
@@ -563,10 +566,10 @@ app.post('/inventory_change', (req, res) => {
         else if (!isNumber(change_amount)) {
             return_400(res, "change_amount must be a number")
         }
-        else if (change_amount > 9_999_999_999.99) {
+        else if (change_amount > decimal_10_whole_2_fraction) {
             return_400(res, "change_amount too large");
         }
-        else if (change_amount < -9_999_999_999.99) {
+        else if (change_amount < -decimal_10_whole_2_fraction) {
             return_400(res, "change_amount too small");
         }
         else if (expiration_date !== undefined && (test_date.toString() === "Invalid Date" || isNaN(test_date.getTime()) || test_date.toISOString() !== expiration_date)) {
@@ -585,11 +588,11 @@ app.post('/inventory_change', (req, res) => {
                 if (employee_id && expiration_date !== undefined) {
                     database.executeQuery(
                         `INSERT INTO tblInventoryHistory (HistID, ChangeAmount, EmployeeID, InventoryID, ` +
-                         (description !== undefined ? 'Description, ' : '') +
-                         'ExpirationDate) ' +
-                         `VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}', ` +
-                         (description !== undefined ? `\'${description}\', ` : '') +
-                         `CAST ('${expiration_date}' AS DATETIME))`
+                        (description !== undefined ? 'Description, ' : '') +
+                        'ExpirationDate) ' +
+                        `VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}', ` +
+                        (description !== undefined ? `\'${description}\', ` : '') +
+                        `CAST ('${expiration_date}' AS DATETIME))`
                     ).then((result) => {
                         if (result.rowsAffected[0] > 0) {
                             res.status(201).send(
@@ -610,10 +613,10 @@ app.post('/inventory_change', (req, res) => {
                 else if (employee_id) {
                     database.executeQuery(
                         `INSERT INTO tblInventoryHistory (HistID, ChangeAmount, EmployeeID, InventoryID` +
-                         (description !== undefined ? ', Description' : '') +
-                         `) VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}'` +
-                         (description !== undefined ? `, \'${description}\'` : '') +
-                         ')'
+                        (description !== undefined ? ', Description' : '') +
+                        `) VALUES ('${hist_id}', ${change_amount}, '${employee_id}', '${inventory_id}'` +
+                        (description !== undefined ? `, \'${description}\'` : '') +
+                        ')'
                     ).then((result) => {
                         if (result.rowsAffected[0] > 0) {
                             res.status(201).send(
@@ -842,13 +845,13 @@ app.get('/inventory_amount', (req, res) => {
             database.sessionToEmployeeID(session_id).then((employee_id) => {
                 if (employee_id) {
                     database.executeQuery(
-                        `SELECT inv.InventoryID AS InventoryID,
-                                inv.Name AS Name,
+                        `SELECT inv.InventoryID                     AS InventoryID,
+                                inv.Name                            AS Name,
                                 SUM(COALESCE(hist.ChangeAmount, 0)) AS Amount,
-                                inv.ShelfLife AS ShelfLife,
-                                inv.ShelfLifeUnit AS ShelfLifeUnit,
-                                inv.ReorderAmount AS ReorderAmount,
-                                inv.ReorderUnit AS ReorderUnit
+                                inv.ShelfLife                       AS ShelfLife,
+                                inv.ShelfLifeUnit                   AS ShelfLifeUnit,
+                                inv.ReorderAmount                   AS ReorderAmount,
+                                inv.ReorderUnit                     AS ReorderUnit
                          FROM tblInventory AS inv
                                   LEFT JOIN tblInventoryHistory AS hist ON inv.InventoryID = hist.InventoryID
                          GROUP BY inv.InventoryID, inv.Name, inv.ShelfLife, inv.ShelfLifeUnit, inv.ReorderAmount,
@@ -888,6 +891,319 @@ app.get('/inventory_amount', (req, res) => {
                 console.error(e);
                 return_500(res);
             })
+        }
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
+        }
+        else {
+            return_500(res);
+        }
+    }
+});
+
+app.get('/purchase_order', (req, res) => {
+    // Maybe paginate this in the future?
+    try {
+        const session_id = req.header("session_id");
+
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            );
+        }
+        else {
+            database.sessionToEmployeeID(session_id).then((employee_id) => {
+                if (employee_id) {
+                    database.executeQuery(
+                        `SELECT inv.InventoryID,
+                                Name,
+                                PurchaseOrderID,
+                                Date,
+                                OrderQuantity,
+                                Vendor,
+                                PayableAmount,
+                                PayableDate,
+                                EmployeeID
+                         FROM tblPurchaseOrder AS po
+                                  INNER JOIN tblInventory AS inv ON po.InventoryID = inv.InventoryID`
+                    ).then((result) => {
+                        if (result.rowsAffected[0] > 0) {
+                            res.status(200).send(
+                                {
+                                    status: "success",
+                                    content: result.recordsets[0]
+                                }
+                            );
+                        }
+                        else {
+                            res.status(503).send(
+                                {
+                                    status: "error",
+                                    reason: "Missing purchase orders in the database. Try adding some first."
+                                }
+                            );
+                        }
+                    });
+                }
+                else {
+                    return_498(res);
+                }
+            }).catch((e) => {
+                console.error(e);
+                return_500(res);
+            })
+        }
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
+        }
+        else {
+            return_500(res);
+        }
+    }
+});
+
+app.get('/purchase_order_id', (req, res) => {
+    try {
+        const session_id = req.header("session_id");
+        const purchase_order_id = req.header("purchase_order_id");
+
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            );
+        }
+        else if (purchase_order_id === undefined) {
+            return_400(res, "Missing purchase_order_id in headers");
+        }
+        else if (!purchase_order_id.match(/^\w{0,32}$/)) {
+            return_400(res, "Invalid purchase_order_id format");
+        }
+        else {
+            database.sessionToEmployeeID(session_id).then((employee_id) => {
+                if (employee_id) {
+                    database.executeQuery(
+                        `SELECT inv.InventoryID,
+                                PurchaseOrderID,
+                                Name,
+                                ShelfLife,
+                                ShelfLifeUnit,
+                                ReorderAmount,
+                                ReorderUnit,
+                                Date,
+                                OrderQuantity,
+                                Vendor,
+                                PayableAmount,
+                                PayableDate,
+                                EmployeeID
+                         FROM tblPurchaseOrder AS po
+                                  INNER JOIN tblInventory AS inv ON po.InventoryID = inv.InventoryID
+                         WHERE po.PurchaseOrderID = '${purchase_order_id}'`
+                    ).then((result) => {
+                        if (result.rowsAffected[0] > 0) {
+                            res.status(200).send(
+                                {
+                                    status: "success",
+                                    content: result.recordsets[0][0]
+                                }
+                            )
+                        }
+                    })
+                }
+                else {
+                    return_498(res);
+                }
+            }).catch((e) => {
+                console.error(e);
+                return_500(res);
+            })
+        }
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
+        }
+        else {
+            return_500(res);
+        }
+    }
+})
+
+app.post('/purchase_order', (req, res) => {
+    try {
+        const session_id = req.header("session_id");
+        const purchase_order_id = database.gen_uuid();
+        const inventory_id = req.header("inventory_id");
+        const date = req.header("po_date");
+        const order_quantity = req.header("order_quantity");
+        const vendor = req.header("vendor");
+        const payable_amount = req.header("payable_amount");
+        const payable_date = req.header("payable_date");
+
+        let test_date = new Date(date);
+        let test_date2 = new Date(payable_date);
+
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            );
+        }
+        else if (inventory_id === undefined) {
+            return_400(res, "Missing inventory_id in headers");
+        }
+        else if (date === undefined) {
+            return_400(res, "Missing date in headers");
+        }
+        else if (order_quantity === undefined) {
+            return_400(res, "Missing order_quantity in headers");
+        }
+        else if (vendor === undefined) {
+            return_400(res, "Missing vendor in headers");
+        }
+        else if (payable_amount === undefined) {
+            return_400(res, "Missing payable_amount in headers");
+        }
+        else if (payable_date === undefined) {
+            return_400(res, "Missing payable_date in headers");
+        }
+        else if (!inventory_id.match(/^\w{0,32}$/)) {
+            return_400(res, "Invalid inventory_id format");
+        }
+        else if (test_date.toString() === "Invalid Date" || isNaN(test_date.getTime()) || test_date.toISOString() !== date) {
+            return_400(res, "Invalid date format. It should be in ISO 8601 format");
+        }
+        else if (test_date2.toString() === "Invalid Date" || isNaN(test_date2.getTime()) || test_date2.toISOString() !== payable_date) {
+            return_400(res, "Invalid payable_date format. It should be in ISO 8601 format");
+        }
+        else if (order_quantity > decimal_10_whole_2_fraction) {
+            return_400(res, "Order quantity too large");
+        }
+        else if (order_quantity < 0) {
+            return_400(res, "Order quantity too small. It must be positive");
+        }
+        else if (!vendor.match(/^[\w\s.,*/]{0,255}$/)) {
+            return_400(res, "Invalid vendor string");
+        }
+        else if (payable_amount > decimal_10_whole_2_fraction) {
+            return_400(res, "payable_amount too large");
+        }
+        else if (payable_amount < -decimal_10_whole_2_fraction) {
+            return_400(res, "payable_amount too small");
+        }
+        else {
+            database.sessionToEmployeeID(session_id).then((employee_id) => {
+                if (employee_id) {
+                    database.executeQuery(
+                        `INSERT INTO tblPurchaseOrder
+                         VALUES ('${purchase_order_id}', '${inventory_id}', CAST('${date}' AS DATETIME),
+                                 ${order_quantity}, '${vendor}', ${payable_amount}, CAST('${payable_date}' AS DATETIME),
+                                 '${employee_id}')`
+                    ).then((result) => {
+                        if (result.rowsAffected[0]) {
+                            res.status(201).send(
+                                {
+                                    status: "success",
+                                    purchase_order_id: purchase_order_id
+                                }
+                            );
+                        }
+                        else {
+                            return_400(res, "Invalid query value(s)");
+                        }
+                    }).catch((e) => {
+                        if (e.message.includes("FOREIGN KEY constraint")) {
+                            console.error(e);
+                            return_400(res, "inventory_id not found in the database");
+                        }
+                        else if (e.message.startsWith("Invalid column name")) {
+                            return_400(res, "You probably converted `undefined`, `NULL` or `null` to a string");
+                        }
+                        else {
+                            console.error(e);
+                            return_500(res);
+                        }
+                    })
+                }
+                else {
+                    return_498(res);
+                }
+            }).catch((e) => {
+                console.error(e);
+                return_500(res);
+            })
+        }
+    }
+    catch (e) {
+        if (e instanceof TypeError) {
+            return_400(res, "Invalid query parameters");
+        }
+        else {
+            return_500(res);
+        }
+    }
+});
+
+app.delete('/purchase_order', (req, res) => {
+    try {
+        const session_id = req.header("session_id");
+        const purchase_order_id = req.header("purchase_order_id");
+
+        if (session_id === undefined) {
+            res.status(403).send(
+                {
+                    status: "error",
+                    reason: "Missing session_id in headers"
+                }
+            );
+        }
+        else if (purchase_order_id === undefined) {
+            return_400(res, "Missing purchase_order_id in headers");
+        }
+        else if (!purchase_order_id.match(/^\w{0,32}$/)) {
+            return_400(res, "Invalid purchase_order_id format");
+        }
+        else {
+            database.sessionToEmployeeID(session_id).then((employee_id) => {
+                if (employee_id) {
+                    database.executeQuery(
+                        `DELETE
+                         FROM tblPurchaseOrder
+                         WHERE PurchaseOrderID = '${purchase_order_id}'`
+                    ).then((result) => {
+                        if (result.rowsAffected[0] > 0) {
+                            res.status(200).send({
+                                status: "success"
+                            });
+                        }
+                        else {
+                            res.status(404).send(
+                                {
+                                    status: "error",
+                                    reason: "purchase_order_id not found"
+                                }
+                            );
+                        }
+                    })
+                }
+                else {
+                    return_498(res);
+                }
+            }).catch((e) => {
+                console.error(e);
+                return_500(res);
+            });
         }
     }
     catch (e) {

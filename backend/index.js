@@ -25,6 +25,7 @@ const userInfoRouter = require('./routes/user_info');
 const ingredientRouter = require('./routes/ingredients');
 const recipeRouter = require('./routes/recipes');
 const taskRouter = require('./routes/tasks');
+const recipeIngredientRouter = require('./routes/recipe_ingredients');
 
 // App
 const app = express();
@@ -115,7 +116,8 @@ if (process.env.NODE_ENV.trim() === 'development') {
                         "INSERT INTO tblEmailTypes (EmailTypeID, EmailTypeDescription, Active) VALUES " +
                         "('personal', 'Personal Email', 1), " +
                         "('work', 'Work Email', 1), " +
-                        "('other', 'Other Email', 1)"
+                        "('other', 'Other Email', 1), " +
+                        "('primary', 'Primary email', 1)"
                     ).then(() => {});
                     // Insert some phone types
                     database.executeQuery(
@@ -123,7 +125,8 @@ if (process.env.NODE_ENV.trim() === 'development') {
                         "('mobile', 'Mobile Phone', 1), " +
                         "('home', 'Home Phone', 1), " +
                         "('work', 'Work Phone', 1), " +
-                        "('fax', 'Fax', 1)"
+                        "('fax', 'Fax', 1), " +
+                        "('primary', 'Primary phone number', 1)"
                     ).then(() => {});
 
                     // Insert some user roles
@@ -170,7 +173,7 @@ app.use(cookieParser());
 nunjucks.configure('../BakerySite', {
     autoescape: true,
     express: app
-})
+});
 // Make it the view engine
 app.set('views', path.join(__dirname, '../BakerySite'));
 app.set('view engine', 'html');
@@ -178,20 +181,29 @@ app.set('view engine', 'html');
 // Find all the HTML files
 let html_file_list = [];
 html_file_list = fs.readdirSync("../BakerySite");
+console.log(`HTML files found: ${html_file_list}`);
 
 /*
  * For frontend development!
  * It sets up the relevant renderers outside the compression middleware.
  */
 if (process.env.NODE_ENV.trim() === 'development') {
+    console.log("Development environment detected. Setting up renderers...");
     html_file_list.forEach((file) => {
+        // Setup index rendering for the dev environment
+        app.get(`/`, (req, res) => {
+            res.render(`../BakerySite/index.html`);
+        });
         if (file.endsWith(".html")) {
+            console.log(`Setting up renderer for ${file}`);
             // Version with `.html`
             app.get(`/${file}`, (req, res) => {
+                console.log(`Rendering ${file}`);
                 res.render(`../BakerySite/${file}`);
             });
             // Version without `.html`
             app.get(`/${file.substring(0, file.length - 5)}`, (req, res) => {
+                console.log(`Rendering ${file}`);
                 res.render(`../BakerySite/${file}`);
             });
         }
@@ -261,14 +273,24 @@ if (process.env.NODE_ENV.trim() !== 'development') {
     // Optimized HTML asset serving
     const optimize_html_css_js = (req, res, next) => {
         const ext = path.extname(req.url).toLowerCase();
+        console.log(req.url)
 
-        if (ext === '.html' || req.url.endsWith("/") || html_file_list.includes(req.url.substring(1) + ".html")) {
-            let original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
+        if (ext === '.html' || req.url.endsWith("/") || html_file_list.includes(req.url.substring(1) + ".html") || html_file_list.includes(req.url.substring(1, req.url.indexOf('?')) + ".html") || html_file_list.includes(req.url.substring(1, req.url.indexOf('?')))) {
+            let original_html_path,
+                cached_html_path;
+            if (req.url.indexOf('?') > -1) {
+                original_html_path = path.join(__dirname, '../BakerySite', req.url.substring(1, req.url.indexOf('?')));
+                cached_html_path = path.join(cacheDir, req.url.substring(1, req.url.indexOf('?'))); // Cache path mirrors original
+                console.log(`HTML files found: ${original_html_path}`);
+            }
+            else {
+                original_html_path = path.join(__dirname, '../BakerySite', req.url.endsWith("/") ? req.url + "index.html" : req.url);
+                cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
+            }
             // Account for requests not having `.html` at the end, but are for HTML files
             if (!original_html_path.endsWith(".html")) {
                 original_html_path += ".html";
             }
-            let cached_html_path = path.join(cacheDir, req.url.endsWith("/") ? req.url + "index.html" : req.url); // Cache path mirrors original
             // Account for requests not having `.html` at the end, but are for HTML files
             if (!cached_html_path.endsWith(".html")) {
                 cached_html_path += ".html";
@@ -309,7 +331,7 @@ if (process.env.NODE_ENV.trim() !== 'development') {
                             minifyCSS: true,
                             minifyJS: true,
                             removeComments: true,
-                            removeEmptyElements: true
+                            removeEmptyElements: false
                         });
 
                     // Write the data to the cache directory
@@ -422,7 +444,8 @@ app.use('/api',
     userInfoRouter,
     ingredientRouter,
     recipeRouter,
-    taskRouter
+    taskRouter,
+    recipeIngredientRouter
 );
 
 // Serve the static frontend

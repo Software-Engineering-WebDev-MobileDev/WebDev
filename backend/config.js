@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config({path: `.env.${process.env.NODE_ENV}`.trim(), debug: true, encoding: 'UTF-8'});
 
-const server = process.env.AZURE_SQL_SERVER;
+const server = process.env.AZURE_SQL_SERVER.trim();
 const database = process.env.AZURE_SQL_DATABASE;
 const port = parseInt(process.env.AZURE_SQL_PORT);
 const type = process.env.AZURE_SQL_AUTHENTICATIONTYPE;

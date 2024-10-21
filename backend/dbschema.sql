@@ -140,7 +140,7 @@ CREATE TABLE tblRecipeIngredientModifier (
     PRIMARY KEY (RecipeID, IngredientID, ModifierID),
     FOREIGN KEY (RecipeID) REFERENCES tblRecipes (RecipeID) ON UPDATE CASCADE,
     FOREIGN KEY (IngredientID) REFERENCES tblIngredients (IngredientID) ON UPDATE CASCADE,
-    -- FOREIGN KEY (ModifierID) REFERENCES tblModifiers (ModifierID) ON UPDATE CASCADE
+    -- FOREIGN KEY (ModifierID) REFERENCES tblIngredientModifiers (ModifierID) ON UPDATE CASCADE
 );
 
 -- Task Management Tables --

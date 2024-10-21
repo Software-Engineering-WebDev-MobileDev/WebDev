@@ -1,6 +1,6 @@
-init_values();
+$(document).ready(function () {
+  init_values();
 
-$(document).ready(function() {
     // Check if SessionID exists in localStorage
     var sessionID = localStorage.getItem('SessionID');
     if (sessionID) {
@@ -19,29 +19,38 @@ $(document).ready(function() {
         fillTable();
         
     }
-    
-})
-
-/*
-function check(a,b){
-  // init
-  var valid = true;
-
-  let field = a;
-  let error = b;
-  if (!field.checkValidity()) {
-    valid = false;
-    field.classList.add("err");
-    error.innerHTML = " Please Enter a valid input\r\n ";
-  } else {
-    field.classList.remove("err");
-    error.innerHTML = "";
-  }
-
-  return valid;
-}*/
-
-// Attach event listener to the password input
+    // Hide error message on page load
+    $('#loginErrorMessage').hide();
+  
+    // Check if SessionID exists in localStorage
+    var sessionID = localStorage.getItem('session_id');
+  
+    // Debugging: Log the session ID
+    console.log('Session ID:', sessionID);
+  
+    // Detect the current page (login page or task page)
+    var currentPage = window.location.pathname;
+  
+    // Handle login page logic
+    if (currentPage.includes('index.html') || currentPage === '/') {
+        if (sessionID) {
+            // If session exists and we're on the login page, redirect to task page
+            console.log('Session ID exists, redirecting to task.html');
+            window.location.href = 'task.html';
+        }
+    } else if (currentPage.includes('task.html')) {
+        // If we are on the task page and no session ID, redirect to login
+        if (!sessionID) {
+            console.log('No session ID, redirecting to login page');
+            window.location.href = 'index.html';
+        } else {
+            // Show task page if session exists
+            $('#navMain').show();
+            $('#mainContent').show();
+        }
+    }
+  
+    // Attach event listener to the password input
 document.getElementById('txtLoginPassword').addEventListener('keypress', checkCapsLock);
 
 // Attach event listener to the password registration
@@ -55,7 +64,7 @@ document.getElementById('txtLoginUsername').addEventListener('focusout', functio
 });
 
 document.getElementById('txtLoginPassword').addEventListener('input', function() {
-  validatePassword(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
+  check(document.getElementById('txtLoginPassword'), document.getElementById('passwordRequirements'));
 });
 
 document.getElementById('txtRegisterUsername').addEventListener('focusout', function() {
@@ -63,11 +72,11 @@ document.getElementById('txtRegisterUsername').addEventListener('focusout', func
 });
 
 document.getElementById('txtRegisterPassword').addEventListener('input', function() {
-  validatePassword(document.getElementById('txtRegisterPassword'), document.getElementById('passwordRequirements'));
+  checkPasswordRequirements(document.getElementById('txtRegisterPassword'), document.getElementById('passwordRequirements'));
 });
 
 document.getElementById('txtRegisterEmail').addEventListener('focusout', function() {
-  checkEmail(document.getElementById('txtRegisterEmail'), document.getElementById('errRegisterEmail'));
+  check(document.getElementById('txtRegisterEmail'), document.getElementById('errRegisterEmail'));
 });
 
 document.getElementById('txtRegisterFirstName').addEventListener('focusout', function() {
@@ -75,28 +84,6 @@ document.getElementById('txtRegisterFirstName').addEventListener('focusout', fun
 });
 
 document.getElementById('txtRegisterLastName').addEventListener('focusout', function() {
-  checkEmail(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastName'));
+  check(document.getElementById('txtRegisterLastName'), document.getElementById('errRegisterLastName'));
 });
-
-// Get the modal
-var modal = document.getElementById("settingsModal");
-
-// Get the link that opens the modal
-var link = document.getElementById("settingsLink");
-
-// Get the <span> element that closes the modal
-var span = document.getElementsByClassName("close")[0];
-
-// When the user clicks on <span> (x), close the modal
-span.onclick = function () {
-modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function (event) {
-if (event.target == modal) {
-modal.style.display = "none";
-}
-}
-
-
+});

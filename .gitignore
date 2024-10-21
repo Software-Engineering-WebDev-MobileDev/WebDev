@@ -1,2 +1,8 @@
 .idea/
 .vscode/
+logout.html
+temp.js
+settings.js
+**node_modules/
+package.json
+package-lock.json

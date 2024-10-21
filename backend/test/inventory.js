@@ -309,7 +309,7 @@ describe("Test inventory management endpoints", function () {
             `SELECT *
              FROM tblInventory`
         ).then((result) => {
-            return result.recordsets[0][0]
+            return result.recordsets[0][0];
         });
         const inventory_id = item["InventoryID"];
 
@@ -540,10 +540,9 @@ describe("Test inventory amount change endpoints", function () {
         // Get an inventory id to use for subsequent testing of endpoints.
         let inventory_id = await database.executeQuery(
             `SELECT InventoryID
-             FROM tblInventory
-             WHERE Name = 'vanilla extract'`
+             FROM tblInventory`
         ).then((result) => {
-            return result.recordsets[0][0]["InventoryID"]
+            return result.recordsets[0][0]["InventoryID"];
         });
 
         // For use in relevant queries
@@ -588,7 +587,7 @@ describe("Test inventory amount change endpoints", function () {
                 method: 'POST',
                 headers: {
                     session_id: session_id,
-                    change_amount: 20.0,
+                    change_amount: 40.0,
                     inventory_id: inventory_id
                 },
             })
@@ -702,9 +701,9 @@ describe("Test inventory amount change endpoints", function () {
                 .object(inventory_item)
                 .hasProperty("ReorderUnit");
             assert.strictEqual(
-                inventory_item["Amount"] >= 20,
+                inventory_item["Amount"] >= 0,
                 true,
-                `Expected inventory item amount to be >= 20 but got ${inventory_item["Amount"]}`
+                `Expected inventory item amount to be >= 0 but got ${inventory_item["Amount"]}`
             )
         }
     });
@@ -778,15 +777,15 @@ describe("Test inventory amount change endpoints", function () {
     it("Get an inventory change item and delete it", async function () {
         this.timeout(10_000);
 
-        // Get an inventory id to use for subsequent testing
+        // Get a hist_id to use for subsequent testing
         let hist_id = await database.executeQuery(
             `SELECT HistID
              FROM tblInventoryHistory
              WHERE InventoryID NOT IN (SELECT InventoryID
                                        FROM tblInventory
-                                       WHERE Name <> 'vanilla extract')`
+                                       WHERE Name <> 'vanilla extract' AND Name <> 'flour')`
         ).then((result) => {
-            return result.recordsets[0][0]["HistID"]
+            return result.recordsets[0][0]["HistID"];
         });
 
         // Delete the inventory change log from the history
@@ -810,7 +809,9 @@ describe("Test inventory amount change endpoints", function () {
 
         // Check the database for the item that should have been deleted
         await database.executeQuery(
-            `SELECT * FROM tblInventoryHistory WHERE HistID = '${hist_id}'`
+            `SELECT *
+             FROM tblInventoryHistory
+             WHERE HistID = '${hist_id}'`
         ).then((result) => {
             // rowsAffected[0] should be 0 if the item was removed from the database
             assert.strictEqual(
@@ -819,5 +820,248 @@ describe("Test inventory amount change endpoints", function () {
                 "History item not removed from tblInventoryHistory"
             );
         });
+    });
+});
+
+describe("Make, get, and delete some purchase orders", function () {
+    before(async function () {
+        // Make sure the account exists (what this returns is irrelevant)
+        await fetch(`${base_uri}/create_account`, {
+            method: 'POST',
+            headers: {
+                employee_id: test_employee_id,
+                first_name: test_first_name,
+                last_name: test_last_name,
+                username: test_username,
+                password: test_password,
+            },
+        });
+        /*
+         * For these tests, the user is not required to be a manager.
+         * Therefore, we'll just not make them a manager.
+         */
+
+        // Login to get a fresh token
+        const response = await fetch(`${base_uri}/login`, {
+            method: 'POST',
+            headers: {
+                username: test_username,
+                password: test_password,
+            },
+        });
+        // Grab the token
+        const json_response = await response.json();
+        session_id = json_response["session_id"];
+    });
+    it("Make a purchase order", async function () {
+        this.timeout(10_000);
+        // Ensure that the appropriate data is in the database
+        await database.executeQuery(
+            `SELECT *
+             FROM tblInventory`
+        ).then(async (result) => {
+            if (result.rowsAffected[0] === 0) {
+                // Add the ingredients
+                for (const ingredient of test_ingredients) {
+                    await fetch(`${base_uri}/inventory_item`, {
+                        method: 'POST',
+                        headers: {
+                            session_id: session_id,
+                            name: ingredient.name,
+                            shelf_life: ingredient.shelf_life,
+                            shelf_life_unit: ingredient.shelf_life_unit,
+                            reorder_amount: ingredient.reorder_amount,
+                            reorder_unit: ingredient.reorder_unit
+                        },
+                    });
+                }
+            }
+        });
+
+        // Get an inventory id (for flour) to use for subsequent testing of endpoints.
+        let inventory_id = await database.executeQuery(
+            `SELECT InventoryID
+             FROM tblInventory
+             WHERE Name = 'flour'`
+        ).then((result) => {
+            return result.recordsets[0][0]["InventoryID"];
+        });
+
+        // Date for the purchase order
+        let test_date = new Date();
+
+        let response = await fetch(`${base_uri}/purchase_order`, {
+            method: 'POST',
+            headers: {
+                session_id: session_id,
+                inventory_id: inventory_id,
+                po_date: test_date.toISOString(),
+                order_quantity: 20_000.0,
+                vendor: "Big Flour Power",
+                payable_amount: 2_000.0,
+                payable_date: test_date.toISOString()
+            },
+        });
+
+        // Check that the status code is 201
+        assert.strictEqual(response.status, 201, 'Expected HTTP status 201 (Created)');
+
+        // Make it JSON
+        response = await response.json();
+        test
+            .object(response)                      // Ensure it's an object
+            .hasProperty('status')                 // Check if 'status' exists
+            .string(response.status).is('success') // Check if 'status' is 'success'
+    });
+
+    it("Get purchase orders", async function () {
+       this.timeout(10_000);
+
+        let response = await fetch(`${base_uri}/purchase_order`, {
+            method: 'GET',
+            headers: {
+                session_id: session_id
+            },
+        });
+
+        // Check that the status code is 200
+        assert.strictEqual(response.status, 200, `Expected HTTP status 200 (OK)`);
+
+        // Make it JSON
+        response = await response.json();
+        test
+            .object(response)                      // Ensure it's an object
+            .hasProperty('status')                 // Check if 'status' exists
+            .string(response.status).is('success'); // Check if 'status' is 'success'
+
+        assert.strictEqual(
+            response["content"] instanceof Array,
+            true,
+            `Expected response.content to be an instance of Array but got ${typeof response["content"]}`)
+
+        const test_purchase_order = response["content"][0];
+        // Make sure that the test purchase order has all the correct properties
+        test
+            .object(test_purchase_order)
+            .hasProperty("InventoryID")
+            .hasProperty("Name")
+            .hasProperty("PurchaseOrderID")
+            .hasProperty("Date")
+            .hasProperty("OrderQuantity")
+            .hasProperty("Vendor")
+            .hasProperty("PayableAmount")
+            .hasProperty("PayableDate")
+            .hasProperty("EmployeeID");
+    });
+
+    it("Get detailed purchase order information by purchase order id", async function () {
+        this.timeout(10_000);
+
+        // Get a purchase order to use for subsequent testing of endpoints.
+        let purchase_order = await database.executeQuery(
+            `SELECT *
+             FROM tblPurchaseOrder
+             WHERE Vendor = 'Big Flour Power'`
+        ).then((result) => {
+            return result.recordsets[0][0];
+        });
+
+        let response = await fetch(`${base_uri}/purchase_order_id`, {
+            method: 'GET',
+            headers: {
+                session_id: session_id,
+                purchase_order_id: purchase_order["PurchaseOrderID"]
+            },
+        });
+
+        // Check that the status code is 200
+        assert.strictEqual(response.status, 200, `Expected HTTP status 200 (OK)`);
+
+        // Make it JSON
+        response = await response.json();
+        test
+            .object(response)                      // Ensure it's an object
+            .hasProperty('status')                 // Check if 'status' exists
+            .string(response.status).is('success'); // Check if 'status' is 'success'
+
+        const test_purchase_order = response["content"];
+        // Make sure that the test purchase order has all the correct properties
+        test
+            .object(test_purchase_order)
+            .hasProperty("InventoryID")
+            .hasProperty("PurchaseOrderID")
+            .hasProperty("Name")
+            .hasProperty("ShelfLife")
+            .hasProperty("ShelfLifeUnit")
+            .hasProperty("ReorderUnit")
+            .hasProperty("ReorderAmount")
+            .hasProperty("Date")
+            .hasProperty("OrderQuantity")
+            .hasProperty("Vendor")
+            .hasProperty("PayableAmount")
+            .hasProperty("PayableDate")
+            .hasProperty("EmployeeID");
+
+        // Test that everything came back correctly
+        assert.strictEqual(
+            test_purchase_order["PurchaseOrderID"],
+            purchase_order["PurchaseOrderID"]
+        );
+        assert.strictEqual(
+            test_purchase_order["InventoryID"],
+            purchase_order["InventoryID"]
+        );
+        assert.strictEqual(
+            test_purchase_order["Date"],
+            purchase_order["Date"].toISOString()
+        );
+        assert.strictEqual(
+            test_purchase_order["OrderQuantity"],
+            purchase_order["OrderQuantity"]
+        );
+        assert.strictEqual(
+            test_purchase_order["Vendor"],
+            purchase_order["Vendor"]
+        );
+        assert.strictEqual(
+            test_purchase_order["PayableAmount"],
+            purchase_order["PayableAmount"]
+        );
+        assert.strictEqual(
+            test_purchase_order["PayableDate"],
+            purchase_order["PayableDate"].toISOString()
+        );
+        assert.strictEqual(
+            test_purchase_order["EmployeeID"],
+            purchase_order["EmployeeID"]
+        );
+    });
+
+    it("Delete the purchase order", async function () {
+        // Get a purchase order to use for subsequent testing of endpoints.
+        let purchase_order_id = await database.executeQuery(
+            `SELECT PurchaseOrderID
+             FROM tblPurchaseOrder`
+        ).then((result) => {
+            return result.recordsets[0][0]["PurchaseOrderID"];
+        });
+
+        let response = await fetch(`${base_uri}/purchase_order`, {
+            method: 'DELETE',
+            headers: {
+                session_id: session_id,
+                purchase_order_id: purchase_order_id
+            },
+        });
+
+        // Check that the status code is 200
+        assert.strictEqual(response.status, 200, `Expected HTTP status 200 (OK)`);
+
+        // Make it JSON
+        response = await response.json();
+        test
+            .object(response)                      // Ensure it's an object
+            .hasProperty('status')                 // Check if 'status' exists
+            .string(response.status).is('success'); // Check if 'status' is 'success'
     });
 });

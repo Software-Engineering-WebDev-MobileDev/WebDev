@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Rolling Scones Bakery</title>
+
+    <style>
+        .settings-box input::-webkit-outer-spin-button,
+        .settings-box input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .settings-box input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .error-message {
+            color: red;
+            display: none;
+        }
+    </style>
+
+    <link href="images/BreadIcon.png" rel="icon" type="image/png" />
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/animate.min.css" rel="stylesheet" />
+    <link href="css/bootstrap-icons.css" rel="stylesheet" />
+    <link href="css/dataTables.css" rel="stylesheet" />
+    <link href="css/font.all.css" rel="stylesheet" />
+    <link href="css/style.css" rel="stylesheet">
+    <link href="images/spinner-of-dots.svg" rel="preload" as="image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+</head>
+
+<body background="images/BreadBack.jfif" style="background-repeat: no-repeat; background-size: cover; background-attachment: fixed;">
+    <!-- Navbar (hidden on login page, visible after login) -->
+    <nav class="navbar navbar-expand-md navbar-custom" id="navMain">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="task.html">
+                <img src="images/BreadIcon.png" alt="Bakery Logo" width="50" height="50">
+                The Rolling Scones
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" id="btnAccount">Account</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="btnIngredient">Inventory</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="btnRecipe">Recipes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="btnTask">Tasks</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="btnLogout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <div id="mainContent" class="d-flex align-items-center justify-content-center" style="display: none;">
+        <!-- Content after login -->
+    </div>
+
+    <!-- START OF JAVASCRIPT -->
+    <script src="js/jsource/jquery.js"></script>
+    <script src="js/buttons.js"></script>
+    <script src="js/functions.js"></script>
+
+    {% block js %}
+    <script src="js/jsource/chart.js"></script>
+    <script src="js/jsource/dataTables.js"></script>
+    <script src="js/jsource/jsbootstrap.js"></script>
+    <script src="js/jsource/sweetalert.js"></script>
+
+    <script src="js/main.js"></script>
+    <script src="js/ingredients.js"></script>
+    {% endblock %}
+</body>
+</html>

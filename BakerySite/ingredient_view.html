@@ -1,25 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Card_Icons</title>
-    <link rel="stylesheet" href="css/ingredients_icons.css">
-</head>
-<body>
-    <div class="card">
-        <div class="card-image">
-            <img src="path/to/your/image.jpg" alt="Card Image">
-        </div>
-        <div class="card-content">
-             <h2 class="card-title">Recipes</h2>
-             <p class="card-description">Try this recipe</p>
-             <div class="card-icons">
-                <i class="fas fa-apple-whole"></i>
-                <i class="fas fa-bread-slice"></i>
-                <i class="fas fa-carrot"></i>
-             </div>
-        </div>
+<!-- Ingredient view
+ Purpose: see details of one ingredient when clicked on from ingredient page -->
+
+{% extends 'base.html' %}
+{% set background = '' %}
+{% set title = 'Ingredient View' %} <!-- Change dynamically based on which ingredient was clicked on from ingredient.html -->
+{% block content %}
+
+<div align="center">
+    <div class="task-form col-12" id="ingredientFormContainer" align="left">
     </div>
-</body>
-</html>
+</div>
+
+<script src="js/jsource/sweetalert.js"></script>
+<script src="js/ingredient_view.js"></script>
+{% endblock %}
+{% block js %}
+{% endblock %}
