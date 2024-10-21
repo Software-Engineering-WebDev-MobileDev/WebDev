@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0]
+
 ## 2024-10-20
 
 ### Added
@@ -349,6 +351,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial Commit
 
+[1.0.0]: https://github.com/Software-Engineering-WebDev-MobileDev/WebDev/compare/v0.2.0...v1.0.0
 [0.2.0]: https://github.com/Software-Engineering-WebDev-MobileDev/WebDev/compare/v0.1.2...v0.2.0
 [0.1.2]: https://github.com/Software-Engineering-WebDev-MobileDev/WebDev/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/Software-Engineering-WebDev-MobileDev/WebDev/compare/v0.1.0...v0.1.1
