@@ -23,7 +23,7 @@
 
 /* Login Form Style */
 
-#divLogin, #taskFormContainer, #taskViewer, .task-row, #ingredientFormContainer, #inventoryFormContainer, #purchaseOrderFormContainer, #accountInfo, #recipeFormContainer {
+#divLogin, #taskFormContainer, #taskViewer, .task-row, #ingredientFormContainer, #inventoryFormContainer, #purchaseOrderFormContainer, #accountInfo, #recipeFormContainer, #divRecipes {
     background-color: rgba(246, 235, 216, 0.8); /* Beige background with 80% opacity */
     border-radius: 0.25rem;
     padding: 1.5rem;
