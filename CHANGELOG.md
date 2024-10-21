@@ -26,7 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Finished recipe creation/view/edit page
-- Made the button in the task view page direct to the recipe view page with the recipe and quantity scaling
+- Made the button in the task view page direct to the recipe view page with the recipe and quantity scaling.
+- Add recipe page
 
 ## 2024-10-15
 
