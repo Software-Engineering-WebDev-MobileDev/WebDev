@@ -25,6 +25,39 @@ services:
       - "NODE_ENV=development"
 ```
 
+<details>
+  <summary><b>Apple Silicon Macs</b></summary>
+
+Microsoft, despite their current push for Windows on ARM, does not provide a version of the database container for ARM.
+Plus, ARM is not tested well and is therefore not a part of our CI build. 
+So, a few extra flags are needed to run the two containers. 
+
+```yml 
+services:
+  # Local database instance for testing
+  databased:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    platform: linux/amd64
+    restart: unless-stopped
+    container_name: databased
+    ports:
+      - 1433:1433
+    environment:
+      - "ACCEPT_EULA=Y"
+      - "MSSQL_SA_PASSWORD=Password123"
+    hostname: databased
+  server:
+    image: samhaswon/webdev-server:dev
+    platform: linux/amd64
+    container_name: dev-server
+    ports:
+      - 3000:3000
+    environment:
+      - "NODE_ENV=development"
+      - "AZURE_SQL_SERVER=databased"
+```
+</details>
+
 If this is part of a larger stack, you may need to set `NODE_ENV=development2`.
 
 Alternatively, you may need to set up the network differently for the containers:
@@ -46,7 +79,10 @@ Alternatively, you may need to set up the network differently for the containers
 
 ## Setup For Development
 
-For the mobile team, the above instructions should be sufficient. For developers of this repository, please see the instructions in the [Backend README](./backend/README.md).
+For the mobile team, the above instructions should be sufficient. 
+For developers of this repository, please see the instructions in the [Backend README](./backend/README.md).
+
+Developers from both teams can view the API documentation at [DOCUMENTATION.md](./backend/DOCUMENTATION.md)
 
 ## Layout
 
@@ -59,7 +95,7 @@ graph TB
         wp[Webpage]
     end
     subgraph Docker
-      subgraph Node.js
+      subgraph "webdev-server (Node.js)"
         direction TB
         exp[Express] <--> expr[Express Router]
         api["/api/..."]
@@ -68,7 +104,7 @@ graph TB
         public --> expr
         html["nunjucks"] --> public
       end
-      subgraph MSSQL 
+      subgraph "databased (MSSQL)"
           database
           api <--> database
       end

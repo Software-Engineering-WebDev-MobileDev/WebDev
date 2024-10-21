@@ -11,10 +11,11 @@ const quantity = urlParams.get("quantity");
  * @returns {Promise<*|string>}
  */
 async function getIngredients() {
-    return await fetch('api/ingredients_short',{
+    return await fetch('api/inventory',{
         method: 'GET',
         headers: {
-            session_id: sessionID
+            session_id: sessionID,
+            page_size: '30'
         }
     }).then(async (result) => {
         if (result.status === 200) {
