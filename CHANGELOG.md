@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Made the button in the task view page direct to the recipe view page with the recipe and quantity scaling.
 - Add recipe page
 
+### Fixed
+- Navbar brand link
+
 ## 2024-10-15
 
 ### Added
