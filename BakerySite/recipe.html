@@ -1,4 +1,16 @@
 {% extends 'base.html' %}
 {% set background = '' %}
 {% block content %}
+<div align="center">
+    <div class="task-form col-12" id="recipeContainer" align="left">
+        <div align="center">
+            <img src="images/spinner-of-dots.svg" alt="loading dots" style="animation: rotation 2s infinite linear; width: 20%">
+        </div>
+    </div>
+</div>
+
+<script src="js/jsource/sweetalert.js"></script>
+<script src="js/recipe.js"></script>
+{% endblock %}
+{% block js %}
 {% endblock %}
